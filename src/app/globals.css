@@ -1,26 +1,228 @@
 @import "tailwindcss";
 
+/* ================================
+   joborg Theme Tokens
+   Light mode is default
+================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand */
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-soft: #dbeafe;
+
+  --accent: #14b8a6;
+  --accent-hover: #0f9f92;
+  --accent-soft: #ccfbf1;
+
+  /* App backgrounds */
+  --bg: #f8fafc;
+  --bg-soft: #f1f5f9;
+  --surface: #ffffff;
+  --surface-soft: #f8fafc;
+  --surface-hover: #f1f5f9;
+
+  /* Layout */
+  --sidebar: #ffffff;
+  --header: #ffffff;
+  --hrt: #ffffff;
+
+  /* Text */
+  --text: #0f172a;
+  --text-soft: #334155;
+  --muted: #64748b;
+  --muted-light: #94a3b8;
+
+  /* Borders */
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+
+  /* Inputs */
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --input-text: #0f172a;
+  --input-placeholder: #94a3b8;
+
+  /* Cards */
+  --card: #ffffff;
+  --card-border: #e2e8f0;
+  --card-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+
+  /* Tables */
+  --table-header: #f8fafc;
+  --table-row: #ffffff;
+  --table-row-hover: #f8fafc;
+
+  /* Status colors */
+  --success: #22c55e;
+  --success-soft: #dcfce7;
+  --success-text: #15803d;
+
+  --warning: #f59e0b;
+  --warning-soft: #fef3c7;
+  --warning-text: #b45309;
+
+  --danger: #ef4444;
+  --danger-soft: #fee2e2;
+  --danger-text: #dc2626;
+
+  --info: #3b82f6;
+  --info-soft: #dbeafe;
+  --info-text: #1d4ed8;
+
+  --neutral: #64748b;
+  --neutral-soft: #f1f5f9;
+  --neutral-text: #475569;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ================================
+   Dark mode
+   Add className="dark" to html/body/root
+================================ */
+
+.dark {
+  /* Brand */
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --primary-soft: #1e3a8a;
+
+  --accent: #2dd4bf;
+  --accent-hover: #14b8a6;
+  --accent-soft: #134e4a;
+
+  /* App backgrounds */
+  --bg: #020617;
+  --bg-soft: #0f172a;
+  --surface: #0f172a;
+  --surface-soft: #111827;
+  --surface-hover: #1e293b;
+
+  /* Layout */
+  --sidebar: #020617;
+  --header: #020617;
+  --hrt: #0f172a;
+
+  /* Text */
+  --text: #f8fafc;
+  --text-soft: #cbd5e1;
+  --muted: #94a3b8;
+  --muted-light: #64748b;
+
+  /* Borders */
+  --border: #1e293b;
+  --border-strong: #334155;
+
+  /* Inputs */
+  --input-bg: #0f172a;
+  --input-border: #334155;
+  --input-text: #f8fafc;
+  --input-placeholder: #64748b;
+
+  /* Cards */
+  --card: #0f172a;
+  --card-border: #1e293b;
+  --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+
+  /* Tables */
+  --table-header: #111827;
+  --table-row: #0f172a;
+  --table-row-hover: #1e293b;
+
+  /* Status colors */
+  --success: #22c55e;
+  --success-soft: #052e16;
+  --success-text: #86efac;
+
+  --warning: #fbbf24;
+  --warning-soft: #451a03;
+  --warning-text: #fde68a;
+
+  --danger: #f87171;
+  --danger-soft: #450a0a;
+  --danger-text: #fecaca;
+
+  --info: #60a5fa;
+  --info-soft: #172554;
+  --info-text: #bfdbfe;
+
+  --neutral: #94a3b8;
+  --neutral-soft: #1e293b;
+  --neutral-text: #cbd5e1;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ================================
+   Global base styles
+================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* Optional reusable utility classes */
+.app-shell {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app-sidebar {
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+}
+
+.app-header {
+  background: var(--header);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  border-radius: var(--radius-lg);
+}
+
+.app-input {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--input-text);
+  border-radius: var(--radius-md);
+}
+
+.app-input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.app-table {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.app-table-header {
+  background: var(--table-header);
+}
+
+.app-table-row {
+  background: var(--table-row);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-table-row:hover {
+  background: var(--table-row-hover);
 }
