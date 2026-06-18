@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Header } from "@/components/layout/PublicHeader";
+import { PublicHeader } from "@/components/layout/PublicHeader";
 import { Footer } from "@/components/layout/Footer";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { LayoutVariantEnum } from "@/enum/LayoutVariantEnum";
@@ -20,7 +20,7 @@ export const MainComponent = ({
           <Sidebar />
 
           <div className="flex min-h-screen flex-1 flex-col">
-            <Header variant={LayoutVariantEnum.APP} />
+            <PublicHeader variant={LayoutVariantEnum.APP} />
 
             <main className="flex-1 px-6 py-6">{children}</main>
           </div>
@@ -32,7 +32,7 @@ export const MainComponent = ({
   if (variant === LayoutVariantEnum.AUTH) {
     return (
       <div className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
-        <Header variant={LayoutVariantEnum.AUTH} />
+        <PublicHeader variant={LayoutVariantEnum.AUTH} />
 
         <main className="flex min-h-[calc(100vh-73px)] items-center justify-center px-4 py-10">
           {children}
@@ -43,7 +43,7 @@ export const MainComponent = ({
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
-      <Header variant={LayoutVariantEnum.PUBLIC} />
+      <PublicHeader variant={LayoutVariantEnum.PUBLIC} />
 
       <main>{children}</main>
 
