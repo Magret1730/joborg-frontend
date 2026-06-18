@@ -6,6 +6,7 @@ import { RouteEnum } from "@/enum/RouteEnum";
 import { FaRegMoon, FaRegSun } from "react-icons/fa";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { LayoutVariantEnum } from "@/enum/LayoutVariantEnum";
+import { Button } from "@heroui/react";
 
 type HeaderProps = {
   variant?: LayoutVariantEnum;
@@ -82,14 +83,14 @@ export const PublicHeader = ({
           </div>
         )}
 
-        <button
+        <Button
           type="button"
           onClick={toggleTheme}
           className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] transition hover:bg-[var(--surface-hover)]"
           aria-label="Toggle theme"
         >
           {theme === "dark" ? <FaRegSun size={16} /> : <FaRegMoon size={16} />}
-        </button>
+        </Button>
       </div>
     </header>
   );
