@@ -4,7 +4,10 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
 
 export const metadata: Metadata = {
-  title: "joborg",
+  title: {
+    default: "joborg",
+    template: "%s | joborg",
+  },
   description: "Track career pages and detect changes early.",
 };
 

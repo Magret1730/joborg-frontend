@@ -7,6 +7,7 @@ import { FiMoon, FiSun } from "react-icons/fi";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { LayoutVariantEnum } from "@/enum/LayoutVariantEnum";
 import { Button } from "@heroui/react";
+import { AppLogo } from "@/components/ui/AppLogo";
 
 type HeaderProps = {
   variant?: LayoutVariantEnum;
@@ -24,11 +25,7 @@ export const PublicHeader = ({
   return (
     <header className="flex items-center justify-between border-b border-[var(--border)] bg-[var(--header)] px-6 py-4 text-[var(--text)]">
       <Link href={RouteEnum.HOME} className="flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] bg-[var(--primary-soft)] text-[var(--primary)]">
-          <MdOutlineWork size={22} />
-        </div>
-
-        <p className="text-lg font-semibold">joborg</p>
+        <AppLogo />
       </Link>
 
       <div className="flex items-center gap-4">

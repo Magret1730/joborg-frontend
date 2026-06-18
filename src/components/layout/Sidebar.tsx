@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MdOutlineWork } from "react-icons/md";
 import { appNavItems } from "@/constants/navItems";
+import { AppLogo } from "@/components/ui/AppLogo";
 
 export const Sidebar = () => {
   const pathname = usePathname();
@@ -12,9 +13,7 @@ export const Sidebar = () => {
   return (
     <aside className="hidden w-64 border-r border-[var(--border)] bg-[var(--sidebar)] px-4 py-5 text-[var(--text)] lg:block">
       <div className="mb-8 flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] bg-[var(--primary-soft)] text-[var(--primary)]">
-          <MdOutlineWork size={22} />
-        </div>
+          <AppLogo />
 
         <p className="text-lg font-semibold">joborg</p>
       </div>
