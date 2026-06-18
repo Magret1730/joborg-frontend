@@ -1,12 +1,25 @@
 @import "tailwindcss";
 
-/* ================================
-   joborg Theme Tokens
-   Light mode is default
-================================ */
+/* 
+  ================================
+  joborg Theme Tokens
+  Light mode is the default.
+  
+  How to use:
+
+  bg-[var(--bg)]
+  text-[var(--text)]
+  border-[var(--border)]
+  bg-[var(--card)]
+  bg-[var(--primary)]
+  ================================
+*/
 
 :root {
-  /* Brand */
+  /* 
+    BRAND COLORS
+    Use for buttons, links, logo icon, active sidebar item.
+  */
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
   --primary-soft: #dbeafe;
@@ -15,45 +28,75 @@
   --accent-hover: #0f9f92;
   --accent-soft: #ccfbf1;
 
-  /* App backgrounds */
+  /* 
+    BACKGROUNDS
+    --bg: main page background
+    --bg-soft: slightly softer section background
+    --surface: header/cards/dropdowns background
+    --surface-hover: hover background for nav items/buttons
+  */
   --bg: #f8fafc;
   --bg-soft: #f1f5f9;
   --surface: #ffffff;
   --surface-soft: #f8fafc;
   --surface-hover: #f1f5f9;
 
-  /* Layout */
+  /* 
+    LAYOUT AREAS
+    Use these for big layout parts.
+  */
   --sidebar: #ffffff;
   --header: #ffffff;
-  --hrt: #ffffff;
 
-  /* Text */
+  /* 
+    TEXT COLORS
+    --text: main text
+    --text-soft: headings/subheadings that are softer
+    --muted: secondary text
+    --muted-light: very light text
+  */
   --text: #0f172a;
   --text-soft: #334155;
   --muted: #64748b;
   --muted-light: #94a3b8;
 
-  /* Borders */
+  /* 
+    BORDERS
+    --border: normal borders
+    --border-strong: stronger borders, inputs, dividers
+  */
   --border: #e2e8f0;
   --border-strong: #cbd5e1;
 
-  /* Inputs */
+  /* 
+    INPUTS
+    Use for input, textarea, select fields.
+  */
   --input-bg: #ffffff;
   --input-border: #cbd5e1;
   --input-text: #0f172a;
   --input-placeholder: #94a3b8;
 
-  /* Cards */
+  /* 
+    CARDS
+    Use for dashboard cards, auth cards, modals, tables.
+  */
   --card: #ffffff;
   --card-border: #e2e8f0;
   --card-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 
-  /* Tables */
+  /* 
+    TABLES
+    Use for table headers and hover states.
+  */
   --table-header: #f8fafc;
   --table-row: #ffffff;
   --table-row-hover: #f8fafc;
 
-  /* Status colors */
+  /* 
+    STATUS COLORS
+    Use for badges like Active, Paused, Failed, Sent.
+  */
   --success: #22c55e;
   --success-soft: #dcfce7;
   --success-text: #15803d;
@@ -74,20 +117,25 @@
   --neutral-soft: #f1f5f9;
   --neutral-text: #475569;
 
-  /* Radius */
+  /* 
+    RADIUS
+    Use for cards, buttons, inputs, modals.
+  */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 18px;
 }
 
-/* ================================
-   Dark mode
-   Add className="dark" to html/body/root
-================================ */
+/* 
+  ================================
+  Dark Mode Tokens
+
+  When <html class="dark">
+  ================================
+*/
 
 .dark {
-  /* Brand */
   --primary: #3b82f6;
   --primary-hover: #2563eb;
   --primary-soft: #1e3a8a;
@@ -96,45 +144,36 @@
   --accent-hover: #14b8a6;
   --accent-soft: #134e4a;
 
-  /* App backgrounds */
   --bg: #020617;
   --bg-soft: #0f172a;
   --surface: #0f172a;
   --surface-soft: #111827;
   --surface-hover: #1e293b;
 
-  /* Layout */
   --sidebar: #020617;
   --header: #020617;
-  --hrt: #0f172a;
 
-  /* Text */
   --text: #f8fafc;
   --text-soft: #cbd5e1;
   --muted: #94a3b8;
   --muted-light: #64748b;
 
-  /* Borders */
   --border: #1e293b;
   --border-strong: #334155;
 
-  /* Inputs */
   --input-bg: #0f172a;
   --input-border: #334155;
   --input-text: #f8fafc;
   --input-placeholder: #64748b;
 
-  /* Cards */
   --card: #0f172a;
   --card-border: #1e293b;
   --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 
-  /* Tables */
   --table-header: #111827;
   --table-row: #0f172a;
   --table-row-hover: #1e293b;
 
-  /* Status colors */
   --success: #22c55e;
   --success-soft: #052e16;
   --success-text: #86efac;
@@ -156,9 +195,11 @@
   --neutral-text: #cbd5e1;
 }
 
-/* ================================
-   Global base styles
-================================ */
+/* 
+  ================================
+  Global Base Styles
+  ================================
+*/
 
 * {
   box-sizing: border-box;
@@ -172,57 +213,4 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: Inter, system-ui, sans-serif;
-}
-
-/* Optional reusable utility classes */
-.app-shell {
-  background: var(--bg);
-  color: var(--text);
-}
-
-.app-sidebar {
-  background: var(--sidebar);
-  border-right: 1px solid var(--border);
-}
-
-.app-header {
-  background: var(--header);
-  border-bottom: 1px solid var(--border);
-}
-
-.app-card {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  box-shadow: var(--card-shadow);
-  border-radius: var(--radius-lg);
-}
-
-.app-input {
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
-  color: var(--input-text);
-  border-radius: var(--radius-md);
-}
-
-.app-input::placeholder {
-  color: var(--input-placeholder);
-}
-
-.app-table {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-}
-
-.app-table-header {
-  background: var(--table-header);
-}
-
-.app-table-row {
-  background: var(--table-row);
-  border-bottom: 1px solid var(--border);
-}
-
-.app-table-row:hover {
-  background: var(--table-row-hover);
 }

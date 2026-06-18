@@ -3,7 +3,7 @@
 import { MdOutlineWork } from "react-icons/md";
 import Link from "next/link";
 import { RouteEnum } from "@/enum/RouteEnum";
-import { FaRegMoon, FaRegSun } from "react-icons/fa";
+import { FiMoon, FiSun } from "react-icons/fi";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { LayoutVariantEnum } from "@/enum/LayoutVariantEnum";
 import { Button } from "@heroui/react";
@@ -89,7 +89,7 @@ export const PublicHeader = ({
           className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] transition hover:bg-[var(--surface-hover)]"
           aria-label="Toggle theme"
         >
-          {theme === "dark" ? <FaRegSun size={16} /> : <FaRegMoon size={16} />}
+          {theme === "dark" ? <FiSun size={16} /> : <FiMoon size={16} />}
         </Button>
       </div>
     </header>
