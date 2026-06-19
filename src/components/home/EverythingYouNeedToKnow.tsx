@@ -53,7 +53,7 @@ export const EverythingYouNeedToKnow = () => {
           {EVERYTHING_YOU_NEED_TO_KNOW_ITEMS.map((item, index) => (
             <Card
               key={index}
-              className="group h-full rounded-[var(--radius-lg)] border border-[var(--input-border)] bg-white p-6 shadow-sm"
+              className="group h-full rounded-[var(--radius-lg)] border border-[var(--input-border)] p-6 shadow-sm"
             >
               <div className="flex h-full flex-col items-start text-left">
                 <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--primary)]/10 text-2xl text-[var(--primary)]">

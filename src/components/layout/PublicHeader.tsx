@@ -32,7 +32,7 @@ export const PublicHeader = ({
         {isPublic && (
           <>
             <Link
-              href={RouteEnum.HOME}
+              href={RouteEnum.ABOUT}
               className="text-sm font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
             >
               About

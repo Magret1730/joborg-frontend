@@ -20,7 +20,7 @@ export default function NotFound() {
         </h1>
 
         <p className="mb-6 text-sm leading-6 text-[var(--muted)]">
-          The page you are looking for does not exist or may have been moved.
+          The page you are looking for may have not been created or does not exist.
         </p>
 
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
@@ -31,12 +31,12 @@ export default function NotFound() {
             Go home
           </Link>
 
-          <Link
+          {/* <Link
             href={RouteEnum.DASHBOARD}
             className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] px-5 py-2.5 text-sm font-medium text-[var(--text)] transition hover:bg-[var(--surface-hover)]"
           >
             Go to dashboard
-          </Link>
+          </Link> */}
         </div>
       </section>
     </main>
