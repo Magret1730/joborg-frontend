@@ -23,12 +23,12 @@ export const PublicHeader = ({
   const isPublic = variant === LayoutVariantEnum.PUBLIC;
 
   return (
-    <header className="flex items-center justify-between border-b border-[var(--border)] bg-[var(--header)] px-6 py-4 text-[var(--text)]">
+    <header className="flex items-center justify-between border-b border-[var(--border)] bg-[var(--header)] px-20 py-4 text-[var(--text)]">
       <Link href={RouteEnum.HOME} className="flex items-center gap-2">
         <AppLogo />
       </Link>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-8">
         {isPublic && (
           <>
             <Link

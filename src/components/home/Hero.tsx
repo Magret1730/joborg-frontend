@@ -9,7 +9,7 @@ export const Hero = () => {
   const router = useRouter();
 
   return (
-    <section className="flex flex-col items-center justify-center gap-4 px-6 py-32 text-center">
+    <section className="flex flex-col items-center justify-center gap-4 px-6 py-24 text-center">
       <div>
         <p className="text-4xl md:text-7xl font-semibold">
           Never Miss a Job
@@ -27,7 +27,7 @@ export const Hero = () => {
       <div className="flex flex-col md:flex-row">
         <Button
           size="lg"
-          className="flex items-center mt-6 rounded-[var(--radius-md)] bg-[var(--primary)] px-6 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+          className="flex items-center mt-6 rounded-[var(--radius-md)] bg-[var(--primary)] px-6 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] cursor-pointer"
           onPress={() => {
             router.push(RouteEnum.REGISTER);
           }}
@@ -37,7 +37,7 @@ export const Hero = () => {
 
         <Button
           size="lg"
-          className="ml-4 mt-6 rounded-[var(--radius-md)] border border-[var(--input-border)] px-6 py-3 text-sm font-medium text-[var(--text)] transition hover:border-[var(--text)]"
+          className="ml-4 mt-6 rounded-[var(--radius-md)] border border-[var(--input-border)] px-6 py-3 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] cursor-pointer"
           onPress={() => {
             router.push(RouteEnum.LOGIN);
           }}
