@@ -1,174 +1,101 @@
-# joborg Frontend
+# Joborg Frontend
 
-joborg is a career page tracking app that helps users monitor company job/career pages and get notified when changes are detected.
+Joborg is a web application that helps users monitor company career pages and stay aware of possible updates without manually checking the same pages repeatedly.
 
-This repository contains the frontend application for joborg.
+This frontend is part of an MVP that is currently under active development.
 
----
+## Status
 
-## Project Overview
+Work in progress.
 
-The joborg frontend is built with Next.js and provides the user interface for:
+The frontend is being built with a focus on clean UI architecture, reusable layouts, light/dark mode support, authentication screens, and dashboard pages that will connect to the backend API.
 
-- Landing page
-- User registration
-- User login
-- Dashboard
-- Tracker management
-- Alerts history
-- Settings page
+## Overview
 
-In MVP 1, users can add company career page URLs, view their saved trackers, manually check for page changes, and see alert history.
+The MVP focuses on allowing users to save career page links, manage their trackers, and view monitoring activity from a simple dashboard.
 
----
+The frontend is designed to support future improvements while keeping the current version focused and maintainable.
 
 ## Tech Stack
 
 - Next.js
+- React
 - TypeScript
 - Tailwind CSS
-- App Router
-- React
+- CSS variables for light/dark themes
+- Zustand for selected client-side state
 - React Icons
-- Fetch API or Axios
 
----
+## Main Areas
 
-## MVP 1 Features
+- Public landing pages
+- Authentication pages
+- User dashboard
+- Tracker management
+- Change activity views
+- Alert history
+- Settings
+- Future admin area
 
-### Authentication
+## Frontend and Backend Connection
 
-Users can:
+The frontend connects to the backend through an API base URL.
 
-- Register
-- Log in
-- Log out
-- Access protected dashboard pages
+Create a `.env.local` file in the frontend project root:
 
----
+`NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1`
 
-### Dashboard
-
-The dashboard will show:
-
-- Total trackers
-- Active trackers
-- Changes detected today
-- Alerts sent
-- Recent changes
-- Recent alerts
-
----
-
-### Trackers
-
-Users can:
-
-- Add a career page tracker
-- View saved trackers
-- Edit tracker details
-- Delete trackers
-- Pause trackers
-- Resume trackers
-- Run a manual “Check Now”
-
----
-
-### Alerts
-
-Users can view email notification history, including:
-
-- Date and time sent
-- Company name
-- Alert type
-- Alert method
-- Delivery status
-
----
-
-### Settings
-
-Users can view basic account and app settings, including:
-
-- Name
-- Email
-- Default alert email
-- Polling interval
-- Dark mode preference
-
----
-
-## Folder Structure
-
-```txt
-src/
-  app/
-    page.tsx
-    login/
-      page.tsx
-    register/
-      page.tsx
-    dashboard/
-      page.tsx
-    trackers/
-      page.tsx
-    alerts/
-      page.tsx
-    settings/
-      page.tsx
-
-  components/
-    layout/
-    ui/
-    trackers/
-    dashboard/
-    alerts/
-
-  hooks/
-
-  lib/
-
-  types/
-
-## Pages
-
-| Page | Route | Description |
-|---|---|---|
-| Landing Page | `/` | Public homepage for joborg |
-| Login | `/login` | User login page |
-| Register | `/register` | User registration page |
-| Dashboard | `/dashboard` | Main user dashboard |
-| Trackers | `/trackers` | Manage career page trackers |
-| Alerts | `/alerts` | View email alert history |
-| Settings | `/settings` | View and update user settings |
-
----
+The frontend uses this value when making requests to the backend during local development.
 
 ## Getting Started
 
-### 1. Clone the repository
+- Install dependencies:
 
-```
-git clone https://github.com/YOUR_USERNAME/joborg-frontend.git
-cd joborg-frontend
-```
+`npm install`
 
-### 2. Install dependencies
-```
-npm install
-```
+- Start the development server:
 
-### 3. Create environment file
-Create a .env.local file in the root of the project.
-```
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
-```
+`npm run dev`
 
-### 4. Run the development server
-```
-npm run dev
-```
-The app should be available at:
-```
-http://localhost:3000
-```
+- The frontend should run on:
+
+`http://localhost:3000`
+
+## Available Scripts
+
+`npm run dev  `
+Runs the app in development mode.
+
+`npm run build  `
+Builds the app for production.
+
+`npm run start ` 
+Runs the production build.
+
+`npm run lint  `
+Runs linting checks.
+
+## Design Direction
+
+The UI is designed as a clean SaaS-style dashboard.
+
+Brand direction:
+
+- **App name**: Joborg
+- **Theme**: Light and dark mode support
+- **Style**: Simple, modern, professional, and dashboard-focused
+- **Goal**: Easy to understand, easy to navigate, and scalable for future features
+
+## Links
+
+- Frontend Repository: [Frontend GitHub Link](https://github.com/Magret1730/joborg-frontend)
+- Backend Repository: [Backend GitHub Link](https://github.com/Magret1730/joborg-backend)
+<!-- - Live Frontend: [Add deployed frontend link here] -->
+
+## Notes
+
+This project is still in progress.
+
+The frontend is being structured to support real authentication, protected pages, API integration, reusable components, and future product expansion.
+
+Some features may currently use placeholder content or mock UI while backend integration is being completed.
