@@ -21,16 +21,16 @@ const FOOTER_LINKS: {
       { label: "Blog", href: "#blog" },
       { label: "Help Center", href: "#help-center" },
       { label: "Guides", href: "#guides" },
-      { label: "API (Coming Soon)", href: "#api" },
+      { label: "API", href: "#api" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About Us", href: "#about" },
-      { label: "Privacy Policy", href: "/privacy-policy" },
-      { label: "Terms of Service", href: "/terms-of-service" },
-      { label: "Contact", href: "#contact" },
+      { label: "About Us", href: RouteEnum.ABOUT },
+      { label: "Privacy Policy", href: RouteEnum.PRIVACY },
+      { label: "Terms of Service", href: RouteEnum.TERMS },
+      { label: "Contact", href: RouteEnum.CONTACT },
     ],
   },
 ];
