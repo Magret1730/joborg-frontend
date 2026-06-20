@@ -4,7 +4,7 @@ export default function Public() {
   return (
     <UnderConstruction
       title="Public Page is coming soon"
-      description="In MVP 2, joborg will detect actual job postings from supported platforms like Greenhouse, Lever, Ashby, and Workday. For now, you can track career pages and receive alerts when changes are detected."
+      description="We're working hard to bring you an informative and engaging Public page. Stay tuned for updates!"
     />
   );
 }
