@@ -5,6 +5,10 @@ import {
   VerifyEmailResponse,
   LoginPayload,
   LoginResponse,
+  ForgotPasswordPayload,
+  ForgotPasswordResponse,
+  ResetPasswordPayload,
+  ResetPasswordResponse
 } from "@/types/auth.type";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -79,7 +83,57 @@ export const loginUser = async (
 
     return data;
   } catch (error) {
-    console.error("Error in registerUser:", error);
+    console.error("Error in loginUser:", error);
+    throw error;
+  }
+};
+
+export const forgotPasswordUser = async (
+  payload: ForgotPasswordPayload
+): Promise<ForgotPasswordResponse> => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/auth/forgot-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || "Forgot Password failed");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in forgot password user:", error);
+    throw error;
+  }
+};
+
+export const resetPasswordUser = async (
+  payload: ResetPasswordPayload
+): Promise<ResetPasswordResponse> => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/auth/reset-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || "Reset Password failed");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in resetUser:", error);
     throw error;
   }
 };
@@ -94,19 +148,11 @@ export const resendVerificationLink = async (email: string) => {
       body: JSON.stringify({ email }),
     });
 
-    console.log("Resend verification response:", response); // Log the response object
-
     const data = await response.json();
-    console.log("Resend verification response data:", data.message); // Log the parsed JSON data
 
     if (!response.ok) {
       throw new Error(data.message || "Failed to resend verification email");
     }
-
-    // return {
-    //   // success: true,
-    //   // message: data.message || "Verification email resent successfully",
-    // };
 
     return data;
   } catch (error) {

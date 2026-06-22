@@ -2,13 +2,11 @@
 
 import {
   Button,
-  Description,
   Form,
   Input,
   Label,
   TextField,
   Card,
-  Checkbox,
 } from "@heroui/react";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -80,6 +78,7 @@ export default function Login() {
     e.preventDefault();
 
     if (!isFormValid()) {
+      toast.error("Please fill in all required fields correctly.");
       return;
     }
 
@@ -108,7 +107,6 @@ export default function Login() {
   const handleResendVerification = async () => {
     try {
       const result = await resendVerification(email);
-      console.log("Resend verification result:", result); /// HERE
       toast.success(result.message || "Verification email resent successfully");
     } catch (error) {
       const message =
@@ -118,7 +116,7 @@ export default function Login() {
 
       toast.error(message);
     }
-  }
+  };
 
   return (
     <section className="max-w-md mx-auto my-12 p-6 rounded-[var(--radius-md)] shadow-lg">
@@ -130,7 +128,7 @@ export default function Login() {
       </div>
 
       <Card className="mx-auto mt-8 w-full p-6 border border-[var(--input-border)] rounded-[var(--radius-md)] shadow-lg border">
-        <Form className="flex w-full flex-col gap-4" onSubmit={onSubmit}>
+        <Form className="flex w-full flex-col gap-6" onSubmit={onSubmit}>
           <TextField
             isRequired
             name="email"
@@ -159,9 +157,19 @@ export default function Login() {
             }}
             value={password}
           >
-            <Label className="text-sm font-medium text-[var(--text)]">
-              Password
-            </Label>
+            <div className="flex justify-between items-center">
+              <Label className="text-sm font-medium text-[var(--text)]">
+                Password
+              </Label>
+              <span
+                className="text-xs text-[var(--primary)] cursor-pointer hover:underline"
+                onClick={() => {
+                  router.push(RouteEnum.FORGOT_PASSWORD);
+                }}
+              >
+                Forgot password?
+              </span>
+            </div>
 
             <div className="relative mt-1">
               <Input
@@ -184,7 +192,7 @@ export default function Login() {
             type="submit"
             size="lg"
             isDisabled={isSubmitDisabled || isLoading}
-            className={`flex justify-center items-center mt-6 rounded-[var(--radius-md)] px-6 py-3 text-sm font-medium text-white transition ${
+            className={`flex justify-center items-center rounded-[var(--radius-md)] px-6 py-3 text-sm font-medium text-white transition ${
               isSubmitDisabled
                 ? "bg-slate-500 cursor-not-allowed opacity-60"
                 : "bg-[var(--primary)] hover:bg-[var(--primary-hover)] cursor-pointer"
@@ -227,11 +235,3 @@ export default function Login() {
     </section>
   );
 }
-
-// 0. Style Reg and Login cards
-// 1. If a user is logged in and adjusts url to "/", it should still take the user to the dashbaord page
-// 2. Verify resend login
-// 3. Logout
-// 4. Forgot password
-// reset password
-

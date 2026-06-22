@@ -45,3 +45,25 @@ export type LoginResponse = {
     };
   };
 };
+
+export type ForgotPasswordPayload = {
+  email: string;
+};
+
+export type ForgotPasswordResponse = {
+  message?: string;
+  error?: string;
+  success?: boolean;
+};
+
+export type ResetPasswordPayload = {
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
+export type ResetPasswordResponse = {
+  message?: string;
+  error?: string;
+  success?: boolean;
+};
