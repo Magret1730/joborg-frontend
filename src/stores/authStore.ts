@@ -78,37 +78,3 @@ export const useAuthStore = create<AuthStore>((set) => ({
     });
   },
 }));
-
-
-// useAuthStore.getState().setAuth(user, token);
-// OR
-// const setAuth = useAuthStore((state) => state.setAuth);
-// setAuth(user, token);
-
-// Login
-// const setAuth = useAuthStore((state) => state.setAuth);
-// const handleLogin = async () => {
-//   const response = await loginUser({
-//     email,
-//     password,
-//   });
-
-//   setAuth(response.user, response.token);
-// };
-
-// Navbar
-// const user = useAuthStore((state) => state.user);
-// const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-// const logout = useAuthStore((state) => state.logout);
-// return (
-//   <nav>
-//     {isAuthenticated ? (
-//       <>
-//         <p>{user?.email}</p>
-//         <button onClick={logout}>Logout</button>
-//       </>
-//     ) : (
-//       <Link href="/login">Login</Link>
-//     )}
-//   </nav>
-// );

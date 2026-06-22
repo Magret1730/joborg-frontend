@@ -42,8 +42,8 @@ export const Hero = () => {
             router.push(RouteEnum.LOGIN);
           }}
         >
-            Sign In
-          </Button>
+          Sign In
+        </Button>
       </div>
     </section>
   )
