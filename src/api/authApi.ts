@@ -94,11 +94,19 @@ export const resendVerificationLink = async (email: string) => {
       body: JSON.stringify({ email }),
     });
 
+    console.log("Resend verification response:", response); // Log the response object
+
     const data = await response.json();
+    console.log("Resend verification response data:", data.message); // Log the parsed JSON data
 
     if (!response.ok) {
       throw new Error(data.message || "Failed to resend verification email");
     }
+
+    // return {
+    //   // success: true,
+    //   // message: data.message || "Verification email resent successfully",
+    // };
 
     return data;
   } catch (error) {
@@ -106,4 +114,3 @@ export const resendVerificationLink = async (email: string) => {
     throw error;
   }
 };
-

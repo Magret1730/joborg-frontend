@@ -10,7 +10,7 @@ import {
   Card,
   Checkbox,
 } from "@heroui/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { RouteEnum } from "@/enum/RouteEnum";
@@ -107,8 +107,9 @@ export default function Login() {
 
   const handleResendVerification = async () => {
     try {
-      await resendVerification(email);
-      toast.success("Verification email resent successfully");
+      const result = await resendVerification(email);
+      console.log("Resend verification result:", result); /// HERE
+      toast.success(result.message || "Verification email resent successfully");
     } catch (error) {
       const message =
         error instanceof Error
@@ -233,3 +234,4 @@ export default function Login() {
 // 3. Logout
 // 4. Forgot password
 // reset password
+

@@ -33,7 +33,7 @@ export const useLogin = () => {
 
       setError(message);
 
-      if (message.toLowerCase().includes("Please verify your email before logging in")) {
+      if (message.toLowerCase().includes("verify your email")) {
         setShowResendVerification(true);
       }
 

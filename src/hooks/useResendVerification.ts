@@ -12,7 +12,8 @@ export const useResendVerification = () => {
       setIsLoading(true);
       setError("");
 
-      await resendVerificationLink(email);
+      const data = await resendVerificationLink(email);
+      return data;
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Something went wrong";

@@ -1,5 +1,6 @@
 // import { AuthHeader } from "@/components/layout/AuthHeader";
 import { PublicHeader } from "@/components/layout/PublicHeader";
+import { GuestOnlyRoute } from "@/components/auth/GuestOnlyRoute";
 
 const metadata = {
   title: "Joborg - Auth",
@@ -16,8 +17,8 @@ export default function AuthLayout({
       <PublicHeader />
 
       <main className="flex min-h-[calc(100vh-73px)] w-full items-center justify-center px-4 py-10">
-        <div className="w-full">
-          {children}
+        <div className="w-full max-w-5xl">
+          <GuestOnlyRoute>{children}</GuestOnlyRoute>
         </div>
       </main>
     </div>
