@@ -1,5 +1,11 @@
 // talks to backend
-import { RegisterPayload, RegisterResponse, VerifyEmailResponse } from "@/types/auth.type";
+import {
+  RegisterPayload,
+  RegisterResponse,
+  VerifyEmailResponse,
+  LoginPayload,
+  LoginResponse,
+} from "@/types/auth.type";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 if (!BACKEND_URL) {
@@ -19,8 +25,6 @@ export const registerUser = async (
       },
       body: JSON.stringify(payload),
     });
-
-    console.log("first response", response);
 
     const data = await response.json();
 
@@ -54,3 +58,52 @@ export const verifyEmail = async (
 
   return data;
 };
+
+export const loginUser = async (
+  payload: LoginPayload
+): Promise<LoginResponse> => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || "Login failed");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in registerUser:", error);
+    throw error;
+  }
+};
+
+export const resendVerificationLink = async (email: string) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/auth/resend-verification`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to resend verification email");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in handleResendVerification:", error);
+    throw error;
+  }
+};
+

@@ -41,7 +41,7 @@ export default function VerifyEmailPage() {
 
   return (
     <section className="flex items-center justify-center px-6 py-2">
-      <Card className="w-full min-w-2xl border border-[var(--input-border)] bg-[var(--card)] p-8 text-center shadow-lg">
+      <Card className="max-w-lg border border-[var(--input-border)] bg-[var(--card)] p-8 text-center shadow-lg">
         <div className="flex flex-col items-center">
           {isLoading && (
             <Spinner size="lg" />

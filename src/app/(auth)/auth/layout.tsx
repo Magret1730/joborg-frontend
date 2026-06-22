@@ -15,8 +15,10 @@ export default function AuthLayout({
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
       <PublicHeader />
 
-      <main className="flex min-h-[calc(100vh-73px)] items-center justify-center px-4 py-10">
-        {children}
+      <main className="flex min-h-[calc(100vh-73px)] w-full items-center justify-center px-4 py-10">
+        <div className="w-full">
+          {children}
+        </div>
       </main>
     </div>
   );

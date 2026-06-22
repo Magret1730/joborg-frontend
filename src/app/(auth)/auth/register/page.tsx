@@ -158,7 +158,7 @@ export default function Register() {
     }
   };
   return (
-    <section>
+    <section className="max-w-xl mx-auto px-4 py-12">
       <div className="flex flex-col items-center text-center">
         <h1 className="text-4xl md:text-4xl font-semibold">
           Create an account
@@ -245,14 +245,14 @@ export default function Register() {
                 className="block w-full rounded-md border border-[var(--input-border)] bg-transparent px-3 py-2 pr-10 text-sm shadow-sm placeholder:text-[var(--muted)] focus:border-[var(--primary)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)] disabled:cursor-not-allowed disabled:opacity-50"
               />
 
-              <button
+              <Button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--primary)]"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
+              </Button>
             </div>
 
             <Description className="text-sm text-[var(--muted)]">
@@ -300,7 +300,6 @@ export default function Register() {
           <Button
             type="submit"
             size="lg"
-            // isLoading={isLoading}
             isDisabled={isSubmitDisabled || isLoading}
             className={`flex justify-center items-center mt-6 rounded-[var(--radius-md)] px-6 py-3 text-sm font-medium text-white transition ${
               isSubmitDisabled
@@ -319,7 +318,7 @@ export default function Register() {
             )}
           </Button>
 
-          <p className="text-md text-[var(--muted)] flex justify-center items-center gap-1">
+          <p className="text-sm text-[var(--muted)] flex justify-center items-center gap-1">
             Already have an account?{" "}
             <span
               className="text-[var(--primary)] cursor-pointer hover:underline"
