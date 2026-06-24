@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { RouteEnum } from "@/enum/RouteEnum";
-import { useVerifyEmail } from "@/hooks/useVerifyEmail";
+import { useVerifyEmail } from "@/hooks/auth/useVerifyEmail";
 import { Spinner } from "@/components/ui/Spinner";
 
 export default function VerifyEmailPage() {
