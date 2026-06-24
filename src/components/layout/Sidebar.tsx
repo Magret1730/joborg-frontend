@@ -7,7 +7,7 @@ import { AppLogo } from "@/components/ui/AppLogo";
 import { useAuthStore } from "@/stores/authStore";
 import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import { RouteEnum } from "@/enum/RouteEnum";
+import { toast } from "react-toastify";
 
 export const Sidebar = () => {
   const pathname = usePathname();
@@ -64,7 +64,10 @@ export const Sidebar = () => {
             </p>
 
             <Button
-              onClick={logout}
+              onClick={() => {
+                logout();
+                toast.success("Logged out successfully");
+              }}
               className="mt-4 w-full rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
             >
               Logout

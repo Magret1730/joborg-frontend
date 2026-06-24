@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Button,
-  Form,
-  Input,
-  Label,
-  TextField,
-  Card,
-} from "@heroui/react";
+import { Button, Form, Input, Label, TextField, Card } from "@heroui/react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -21,7 +14,16 @@ import { useResendVerification } from "@/hooks/useResendVerification";
 
 export default function Login() {
   const router = useRouter();
-  const { login, isLoading, setIsLoading, showResendVerification } = useLogin();
+  const {
+    login,
+    isLoading,
+    setIsLoading,
+    showResendVerification,
+    setVerificationEmailSent,
+    verificationEmailSent,
+    isResendingVerification,
+    setIsResendingVerification,
+  } = useLogin();
   const { resendVerification } = useResendVerification();
 
   const [email, setEmail] = useState("");
@@ -77,6 +79,8 @@ export default function Login() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    setVerificationEmailSent(false);
+
     if (!isFormValid()) {
       toast.error("Please fill in all required fields correctly.");
       return;
@@ -106,8 +110,13 @@ export default function Login() {
 
   const handleResendVerification = async () => {
     try {
+      setIsResendingVerification(true);
       const result = await resendVerification(email);
+      if (result.success) {
+        setVerificationEmailSent(true);
+      }
       toast.success(result.message || "Verification email resent successfully");
+      setIsResendingVerification(false);
     } catch (error) {
       const message =
         error instanceof Error
@@ -115,6 +124,8 @@ export default function Login() {
           : "Failed to resend verification email";
 
       toast.error(message);
+    } finally {
+      setIsResendingVerification(false);
     }
   };
 
@@ -135,6 +146,7 @@ export default function Login() {
             type="email"
             onChange={(value: string) => {
               setEmail(value);
+              setVerificationEmailSent(false); // Reset verification email sent state when email changes
             }}
             value={email}
           >
@@ -219,14 +231,23 @@ export default function Login() {
             </span>
           </p>
 
-          {showResendVerification && (
-            <div className="text-sm mt-2 text-center text-[var(--danger)]">
-              Your email is not verified.{" "}
+          {showResendVerification && !verificationEmailSent && (
+            <div className="flex text-sm mt-2 text-center text-[var(--danger)] gap-2">
+              Your email is not verified.{"  "}
               <span
                 className="text-[var(--primary)] cursor-pointer hover:underline"
                 onClick={handleResendVerification}
               >
-                Resend verification email
+                {isResendingVerification ? (
+                  <span className="inline-flex items-center gap-2">
+                    <Spinner size="sm" />
+                    Sending...
+                  </span>
+                ) : (
+                  <p className="text-sm flex justify-center items-center gap-2">
+                    Resend verification email
+                  </p>
+                )}
               </span>
             </div>
           )}

@@ -8,15 +8,19 @@ import { useAuthStore } from "@/stores/authStore";
 export const useLogin = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isResendingVerification, setIsResendingVerification] = useState(false);
   const [showResendVerification, setShowResendVerification] = useState(false);
+  const [verificationEmailSent, setVerificationEmailSent] = useState(false);
 
   const setAuth = useAuthStore((state) => state.setAuth);
 
   const login = async (payload: LoginPayload) => {
     try {
       setIsLoading(true);
+      setIsResendingVerification(false);
       setError("");
       setShowResendVerification(false);
+      setVerificationEmailSent(false);
 
       const response = await loginUser(payload);
 
@@ -35,6 +39,8 @@ export const useLogin = () => {
 
       if (message.toLowerCase().includes("verify your email")) {
         setShowResendVerification(true);
+        setVerificationEmailSent(false);
+        setIsResendingVerification(false);
       }
 
       throw err;
@@ -49,5 +55,9 @@ export const useLogin = () => {
     isLoading,
     setIsLoading,
     showResendVerification,
+    verificationEmailSent,
+    setVerificationEmailSent,
+    setIsResendingVerification,
+    isResendingVerification,
   };
 };
