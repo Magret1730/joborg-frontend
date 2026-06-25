@@ -107,6 +107,13 @@ const getStatusClass = (status: string) => {
 export const DashboardClient = () => {
   const { trackers, isLoading, error, fetchTrackers } = useTrackers();
 
+  const slicedTrackers = trackers.slice(0, 5).sort((a, b) => {
+    const dateA = new Date(a.last_changed_at).getTime();
+    const dateB = new Date(b.last_changed_at).getTime();
+
+    return dateB - dateA; // Sort in descending order
+  });
+
   useEffect(() => {
     fetchTrackers();
   }, []);
@@ -199,34 +206,34 @@ export const DashboardClient = () => {
             <table className="w-full min-w-[520px] table-fixed text-left text-sm">
               <thead className="bg-[var(--surface)] text-xs uppercase tracking-wide text-[var(--muted)]">
                 <tr>
-                  <th className="w-[140px] px-5 py-3 font-semibold">Company</th>
-                  <th className="w-[120px] px-5 py-3 font-semibold">
+                  <th className="w-[140px] pl-5 pr-2 py-3 font-semibold">Company</th>
+                  <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">
                     Last Checked
                   </th>
-                  <th className="w-[120px] px-5 py-3 font-semibold">
+                  <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">
                     Last Changed
                   </th>
-                  <th className="w-[100px] px-5 py-3 font-semibold">Status</th>
-                  <th className="w-[40px] px-5 py-3 font-semibold"></th>
+                  <th className="w-[100px] pl-5 pr-2 py-3 font-semibold">Status</th>
+                  <th className="w-[40px] pl-2 pr-5 py-3 font-semibold"></th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-[var(--border)]">
-                {trackers.map((tracker, index) => (
+                {slicedTrackers.map((tracker, index) => (
                   <tr
                     key={`${index}`}
                     className="transition hover:bg-[var(--surface-hover)]"
                   >
-                    <td className="px-5 py-4 font-medium text-[var(--text)]">
+                    <td className="pl-5 pr-2 py-4 font-medium text-[var(--text)]">
                       {tracker.company_name}
                     </td>
-                    <td className="px-5 py-4 text-[var(--muted)]">
+                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
                       {formatDate(tracker.last_changed_at)}
                     </td>
-                    <td className="px-5 py-4 text-[var(--muted)]">
+                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
                       {formatDate(tracker.last_checked_at)}
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="pl-5 pr-2 py-4">
                       <span
                         className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
                           tracker.status
@@ -235,7 +242,7 @@ export const DashboardClient = () => {
                         {tracker.status}
                       </span>
                     </td>
-                    <td className="px-5 py-4 cursor-pointer">
+                    <td className="pl-2 pr-5 py-4 cursor-pointer">
                       <Link
                         href={tracker.url}
                       >
