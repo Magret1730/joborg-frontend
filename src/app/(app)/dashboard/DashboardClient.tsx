@@ -56,39 +56,6 @@ const stats = [
   },
 ];
 
-const recentChanges = [
-  {
-    company: "Stripe",
-    url: "careers.stripe.com",
-    detectedAt: "Today, 10:30 AM",
-    status: "New Change",
-  },
-  {
-    company: "Vercel",
-    url: "vercel.com/careers",
-    detectedAt: "Today, 9:15 AM",
-    status: "New Change",
-  },
-  {
-    company: "Linear",
-    url: "linear.app/careers",
-    detectedAt: "Yesterday, 4:20 PM",
-    status: "Reviewed",
-  },
-  {
-    company: "Notion",
-    url: "notion.so/careers",
-    detectedAt: "Yesterday, 2:45 PM",
-    status: "New Change",
-  },
-  {
-    company: "Figma",
-    url: "figma.com/careers",
-    detectedAt: "Jun 22, 6:20 PM",
-    status: "Reviewed",
-  },
-];
-
 const recentAlerts = [
   {
     company: "Stripe",
@@ -162,12 +129,7 @@ export const DashboardClient = () => {
   }
 
   console.log("Trackers: ", trackers);
-//   last_changed_at
-// : 
-// "2026-06-22T18:32:01.259Z"
-// last_checked_at
-// : 
-// "2026-06-25T12:30:18.621Z"
+
 
   return (
     <section className="space-y-8">
@@ -234,12 +196,16 @@ export const DashboardClient = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[800px] table-fixed text-left text-sm">
+            <table className="w-full min-w-[520px] table-fixed text-left text-sm">
               <thead className="bg-[var(--surface)] text-xs uppercase tracking-wide text-[var(--muted)]">
                 <tr>
-                  <th className="w-[160px] px-5 py-3 font-semibold">Company</th>
-                  <th className="w-[300px] px-5 py-3 font-semibold">URL</th>
-                  <th className="w-[140px] px-5 py-3 font-semibold">Detected At</th>
+                  <th className="w-[140px] px-5 py-3 font-semibold">Company</th>
+                  <th className="w-[120px] px-5 py-3 font-semibold">
+                    Last Checked
+                  </th>
+                  <th className="w-[120px] px-5 py-3 font-semibold">
+                    Last Changed
+                  </th>
                   <th className="w-[100px] px-5 py-3 font-semibold">Status</th>
                   <th className="w-[40px] px-5 py-3 font-semibold"></th>
                 </tr>
@@ -255,10 +221,10 @@ export const DashboardClient = () => {
                       {tracker.company_name}
                     </td>
                     <td className="px-5 py-4 text-[var(--muted)]">
-                      {tracker.url}
+                      {formatDate(tracker.last_changed_at)}
                     </td>
                     <td className="px-5 py-4 text-[var(--muted)]">
-                      {formatDate(tracker.last_changed_at)}
+                      {formatDate(tracker.last_checked_at)}
                     </td>
                     <td className="px-5 py-4">
                       <span
@@ -270,16 +236,11 @@ export const DashboardClient = () => {
                       </span>
                     </td>
                     <td className="px-5 py-4 cursor-pointer">
-                      {/* <FiExternalLink className="text-[var(--muted)]" /> */}
-                      <Tooltip delay={0}>
-                        {/* <Button variant="secondary"> */}
-                          <FiExternalLink className="text-[var(--muted)]" />
-                        {/* </Button> */}
-                        {/* <Button variant="secondary">Hover me</Button> */}
-                        <Tooltip.Content>
-                          <p>{tracker.url}</p>
-                        </Tooltip.Content>
-                      </Tooltip>
+                      <Link
+                        href={tracker.url}
+                      >
+                        <FiExternalLink className="text-[var(--muted)]" />
+                      </Link>
                     </td>
                   </tr>
                 ))}

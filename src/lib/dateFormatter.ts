@@ -1,12 +1,18 @@
-export const formatDate = (dateString: string): string => {
+export const formatDate = (dateString?: string | null): string => {
+  if (!dateString) return "Not checked yet";
+
   const date = new Date(dateString);
-  // const options: Intl.DateTimeFormatOptions = {
-  //   year: "numeric",
-  //   month: "short",
-  //   day: "numeric",
-  //   hour: "2-digit",
-  //   minute: "2-digit",
-  // };
-  // return date.toLocaleDateString(undefined, options);
-  return date.toUTCString();
+
+  if (Number.isNaN(date.getTime())) {
+    return "Invalid date";
+  }
+
+  return new Intl.DateTimeFormat("en-CA", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).format(date);
 };
