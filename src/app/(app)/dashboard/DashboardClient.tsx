@@ -17,77 +17,6 @@ import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 import { formatDate } from "@/lib/dateFormatter";
 import { useAlerts } from "@/hooks/alerts/useAlerts";
 
-const stats = [
-  {
-    label: "Total Trackers",
-    value: 24,
-    icon: FiGrid,
-    iconClass:
-      "bg-blue-100 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400",
-  },
-  {
-    label: "Active Trackers",
-    value: 18,
-    icon: FiCheckCircle,
-    iconClass:
-      "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400",
-  },
-  {
-    label: "Paused Trackers",
-    value: 6,
-    icon: FiPauseCircle,
-    iconClass:
-      "bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400",
-  },
-  {
-    label: "Changes Detected",
-    value: 9,
-    icon: FiRefreshCcw,
-    iconClass:
-      "bg-purple-100 text-purple-600 dark:bg-purple-500/15 dark:text-purple-400",
-  },
-  {
-    label: "Alerts Sent",
-    value: 15,
-    icon: FiBell,
-    iconClass:
-      "bg-green-100 text-green-600 dark:bg-green-500/15 dark:text-green-400",
-  },
-];
-
-const recentAlerts = [
-  {
-    company: "Stripe",
-    alertType: "Page Change",
-    sentAt: "Today, 10:31 AM",
-    status: "Delivered",
-  },
-  {
-    company: "Vercel",
-    alertType: "Page Change",
-    sentAt: "Today, 9:16 AM",
-    status: "Delivered",
-  },
-  {
-    company: "Notion",
-    alertType: "Page Change",
-    sentAt: "Yesterday, 2:46 PM",
-    status: "Failed",
-  },
-  {
-    company: "Linear",
-    alertType: "Tracker Update",
-    sentAt: "Yesterday, 4:22 PM",
-    status: "Delivered",
-  },
-  {
-    company: "Figma",
-    alertType: "Page Change",
-    sentAt: "Jun 22, 6:21 PM",
-    status: "Delivered",
-  },
-];
-
 const getStatusClass = (status: string) => {
   switch (status?.toLowerCase()) {
     case TrackerStatusEnum.ACTIVE.toLowerCase():
@@ -141,8 +70,60 @@ export const DashboardClient = () => {
     );
   }
 
+  const totalTrackers = trackers.length;
+  const activeTrackers = trackers.filter(
+    (tracker) => tracker.status === TrackerStatusEnum.ACTIVE
+  ).length;
+  const pausedTrackers = trackers.filter(
+    (tracker) => tracker.status === TrackerStatusEnum.PAUSED
+  ).length;
+  const alertsSent = alerts.length;
+
   // console.log("Trackers: ", trackers);
   // console.log("Alerts: ", alerts);
+
+  const stats: {
+    label: string;
+    value: number;
+    icon: React.ComponentType<{ size?: string | number }>;
+    iconClass: string;
+  }[] = [
+    {
+      label: "Total Trackers",
+      value: totalTrackers,
+      icon: FiGrid,
+      iconClass:
+        "bg-blue-100 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400",
+    },
+    {
+      label: "Active Trackers",
+      value: activeTrackers,
+      icon: FiCheckCircle,
+      iconClass:
+        "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400",
+    },
+    {
+      label: "Paused Trackers",
+      value: pausedTrackers,
+      icon: FiPauseCircle,
+      iconClass:
+        "bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400",
+    },
+    // {
+    //   label: "Changes Detected",
+    //   value: 9,
+    //   icon: FiRefreshCcw,
+    //   iconClass:
+    //     "bg-purple-100 text-purple-600 dark:bg-purple-500/15 dark:text-purple-400",
+    // },
+    {
+      label: "Alerts Sent",
+      value: alertsSent,
+      icon: FiBell,
+      iconClass:
+        "bg-green-100 text-green-600 dark:bg-green-500/15 dark:text-green-400",
+    },
+  ];
 
   return (
     <section className="space-y-8">
@@ -251,6 +232,7 @@ export const DashboardClient = () => {
                     <td className="pl-2 pr-5 py-4 cursor-pointer">
                       <Link
                         href={tracker.url}
+                        target="_blank"
                       >
                         <FiExternalLink className="text-[var(--muted)]" />
                       </Link>
@@ -287,7 +269,7 @@ export const DashboardClient = () => {
               <thead className="bg-[var(--surface)] text-xs uppercase tracking-wide text-[var(--muted)]">
                 <tr>
                   <th className="w-[160px] pl-5 pr-2 py-3 font-semibold">Company</th>
-                  <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">Delivery Channel</th>
+                  <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">Channel</th>
                   <th className="w-[140px] pl-5 pr-2 py-3 font-semibold">Sent At</th>
                   <th className="w-[100px] pl-2 pr-5 py-3 font-semibold">Status</th>
                 </tr>
