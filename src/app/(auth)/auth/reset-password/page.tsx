@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { RouteEnum } from "@/enum/RouteEnum";
 import { FaArrowRight } from "react-icons/fa6";
-import { useResetPassword } from "@/hooks/useResetPassword";
+import { useResetPassword } from "@/hooks/auth/useResetPassword";
 import { ResetPasswordPayload } from "@/types/auth.type";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Spinner } from "@/components/ui/Spinner";

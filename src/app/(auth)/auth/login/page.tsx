@@ -6,11 +6,11 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { RouteEnum } from "@/enum/RouteEnum";
 import { FaArrowRight } from "react-icons/fa6";
-import { useLogin } from "@/hooks/useLogin";
+import { useLogin } from "@/hooks/auth/useLogin";
 import { LoginPayload } from "@/types/auth.type";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Spinner } from "@/components/ui/Spinner";
-import { useResendVerification } from "@/hooks/useResendVerification";
+import { useResendVerification } from "@/hooks/auth/useResendVerification";
 
 export default function Login() {
   const router = useRouter();
