@@ -18,8 +18,18 @@ import { useAlerts } from "@/hooks/alerts/useAlerts";
 import { getStatusClass } from "@/lib/getStatusClass";
 
 export const DashboardClient = () => {
-  const { trackers, isLoading: isTrackerLoading, error: trackerError, fetchTrackers } = useGetTrackers();
-  const { alerts, isLoading: isAlertsLoading, error: alertsError, fetchAlerts } = useAlerts();
+  const {
+    trackers,
+    isLoading: isTrackerLoading,
+    error: trackerError,
+    fetchTrackers,
+  } = useGetTrackers();
+  const {
+    alerts,
+    isLoading: isAlertsLoading,
+    error: alertsError,
+    fetchAlerts,
+  } = useAlerts();
 
   useEffect(() => {
     fetchTrackers();
@@ -27,8 +37,7 @@ export const DashboardClient = () => {
   }, []);
 
   // Sort trackers by last_changed_at in descending order and slice the first 5
-  const slicedTrackers = trackers.slice(0, 5)
-                                 .sort((a, b) => {
+  const slicedTrackers = trackers.slice(0, 5).sort((a, b) => {
     const dateA = new Date(a.last_changed_at).getTime();
     const dateB = new Date(b.last_changed_at).getTime();
 
@@ -41,7 +50,7 @@ export const DashboardClient = () => {
   if (isTrackerLoading || isAlertsLoading) {
     return <PageLoader message="Loading dashboard..." />;
   }
-  
+
   if (trackerError || alertsError) {
     return (
       <PageError
@@ -174,52 +183,64 @@ export const DashboardClient = () => {
             <table className="w-full min-w-[520px] table-fixed text-left text-sm">
               <thead className="bg-[var(--surface)] text-xs uppercase tracking-wide text-[var(--muted)]">
                 <tr>
-                  <th className="w-[140px] pl-5 pr-2 py-3 font-semibold">Company</th>
+                  <th className="w-[140px] pl-5 pr-2 py-3 font-semibold">
+                    Company
+                  </th>
                   <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">
                     Last Checked
                   </th>
                   <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">
                     Last Changed
                   </th>
-                  <th className="w-[100px] pl-5 pr-2 py-3 font-semibold">Status</th>
+                  <th className="w-[100px] pl-5 pr-2 py-3 font-semibold">
+                    Status
+                  </th>
                   <th className="w-[40px] pl-2 pr-5 py-3 font-semibold"></th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-[var(--border)]">
-                {slicedTrackers.map((tracker, index) => (
-                  <tr
-                    key={`${index}`}
-                    className="transition hover:bg-[var(--surface-hover)]"
-                  >
-                    <td className="pl-5 pr-2 py-4 font-medium text-[var(--text)]">
-                      {tracker.company_name}
-                    </td>
-                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
-                      {formatDate(tracker.last_changed_at)}
-                    </td>
-                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
-                      {formatDate(tracker.last_checked_at)}
-                    </td>
-                    <td className="pl-5 pr-2 py-4">
-                      <span
-                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
-                          tracker.status
-                        )}`}
-                      >
-                        {tracker.status}
-                      </span>
-                    </td>
-                    <td className="pl-2 pr-5 py-4 cursor-pointer">
-                      <Link
-                        href={tracker.url}
-                        target="_blank"
-                      >
-                        <FiExternalLink className="text-[var(--muted)]" />
-                      </Link>
+                {trackers.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="text-center py-4 text-[var(--muted)]"
+                    >
+                      No trackers added yet.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  slicedTrackers.map((tracker, index) => (
+                    <tr
+                      key={`${index}`}
+                      className="transition hover:bg-[var(--surface-hover)]"
+                    >
+                      <td className="pl-5 pr-2 py-4 font-medium text-[var(--text)]">
+                        {tracker.company_name}
+                      </td>
+                      <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
+                        {formatDate(tracker.last_changed_at)}
+                      </td>
+                      <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
+                        {formatDate(tracker.last_checked_at)}
+                      </td>
+                      <td className="pl-5 pr-2 py-4">
+                        <span
+                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
+                            tracker.status
+                          )}`}
+                        >
+                          {tracker.status}
+                        </span>
+                      </td>
+                      <td className="pl-2 pr-5 py-4 cursor-pointer">
+                        <Link href={tracker.url} target="_blank">
+                          <FiExternalLink className="text-[var(--muted)]" />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -249,39 +270,60 @@ export const DashboardClient = () => {
             <table className="w-full min-w-[540px] table-fixed text-left text-sm">
               <thead className="bg-[var(--surface)] text-xs uppercase tracking-wide text-[var(--muted)]">
                 <tr>
-                  <th className="w-[160px] pl-5 pr-2 py-3 font-semibold">Company</th>
-                  <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">Channel</th>
-                  <th className="w-[140px] pl-5 pr-2 py-3 font-semibold">Sent At</th>
-                  <th className="w-[100px] pl-2 pr-5 py-3 font-semibold">Status</th>
+                  <th className="w-[160px] pl-5 pr-2 py-3 font-semibold">
+                    Company
+                  </th>
+                  <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">
+                    Channel
+                  </th>
+                  <th className="w-[140px] pl-5 pr-2 py-3 font-semibold">
+                    Sent At
+                  </th>
+                  <th className="w-[100px] pl-2 pr-5 py-3 font-semibold">
+                    Status
+                  </th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-[var(--border)]">
-                {slicedAlerts.map((alert, index) => (
-                  <tr
-                    key={index}
-                    className="transition hover:bg-[var(--surface-hover)]"
-                  >
-                    <td className="pl-5 pr-2 py-4 font-medium text-[var(--text)]">
-                      {alert.company_name}
-                    </td>
-                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
-                      {alert.channel.charAt(0).toUpperCase() + alert.channel.slice(1)} Alert
-                    </td>
-                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
-                      {formatDate(alert.sent_at)}
-                    </td>
-                    <td className="pl-2 pr-5 py-4">
-                      <span
-                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
-                          alert.status
-                        )}`}
-                      >
-                        {alert.status}
-                      </span>
+                {alerts.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="text-center py-4 text-[var(--muted)]"
+                    >
+                      No alerts sent yet.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  slicedAlerts.map((alert, index) => (
+                    <tr
+                      key={index}
+                      className="transition hover:bg-[var(--surface-hover)]"
+                    >
+                      <td className="pl-5 pr-2 py-4 font-medium text-[var(--text)]">
+                        {alert.company_name}
+                      </td>
+                      <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
+                        {alert.channel.charAt(0).toUpperCase() +
+                          alert.channel.slice(1)}{" "}
+                        Alert
+                      </td>
+                      <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
+                        {formatDate(alert.sent_at)}
+                      </td>
+                      <td className="pl-2 pr-5 py-4">
+                        <span
+                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
+                            alert.status
+                          )}`}
+                        >
+                          {alert.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
