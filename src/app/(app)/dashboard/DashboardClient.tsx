@@ -7,30 +7,15 @@ import {
   FiExternalLink,
   FiGrid,
   FiPauseCircle,
-  FiRefreshCcw,
 } from "react-icons/fi";
 import { RouteEnum } from "@/enum/RouteEnum";
 import { useEffect } from "react";
 import { useTrackers } from "@/hooks/trackers/useTrackers";
-import { Spinner } from "@/components/ui/Spinner";
+import { PageError, PageLoader } from "@/components/ui/PageState";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 import { formatDate } from "@/lib/dateFormatter";
 import { useAlerts } from "@/hooks/alerts/useAlerts";
-
-const getStatusClass = (status: string) => {
-  switch (status?.toLowerCase()) {
-    case TrackerStatusEnum.ACTIVE.toLowerCase():
-      return "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300";
-    case TrackerStatusEnum.PAUSED.toLowerCase():
-      return "bg-slate-100 text-slate-700 dark:bg-slate-700/60 dark:text-slate-300";
-    case TrackerStatusEnum.INVALID.toLowerCase():
-      return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300";
-    case TrackerStatusEnum.ERROR:
-      return "bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300";
-    default:
-      return "bg-slate-100 text-slate-700 dark:bg-slate-700/60 dark:text-slate-300";
-  }
-};
+import { getStatusClass } from "@/lib/getStatusClass";
 
 export const DashboardClient = () => {
   const { trackers, isLoading: isTrackerLoading, error: trackerError, fetchTrackers } = useTrackers();
@@ -54,19 +39,18 @@ export const DashboardClient = () => {
   const slicedAlerts = alerts.slice(0, 5);
 
   if (isTrackerLoading || isAlertsLoading) {
-    return (
-      <div className="flex h-full w-full items-center justify-center">
-        <Spinner size="lg" />
-      </div>
-    );
+    return <PageLoader message="Loading dashboard..." />;
   }
-
-  // Need something for error generally like spinner
+  
   if (trackerError || alertsError) {
     return (
-      <div className="flex h-full w-full items-center justify-center">
-        <p className="text-red-500">{trackerError || alertsError}</p>
-      </div>
+      <PageError
+        message={trackerError || alertsError}
+        onRetry={() => {
+          fetchTrackers();
+          fetchAlerts();
+        }}
+      />
     );
   }
 
@@ -78,9 +62,6 @@ export const DashboardClient = () => {
     (tracker) => tracker.status === TrackerStatusEnum.PAUSED
   ).length;
   const alertsSent = alerts.length;
-
-  // console.log("Trackers: ", trackers);
-  // console.log("Alerts: ", alerts);
 
   const stats: {
     label: string;
@@ -182,7 +163,7 @@ export const DashboardClient = () => {
             </div>
 
             <Link
-              href={RouteEnum.CHANGES}
+              href={RouteEnum.TRACKERS}
               className="text-sm font-medium text-[var(--primary)] hover:underline"
             >
               View all
