@@ -1,10 +1,11 @@
-import { UnderConstruction } from "@/components/shared/UnderConstruction";
+import type { Metadata } from "next";
+import { TrackerClient } from "@/app/(app)/trackers/TrackerClient";
 
-export default function Tracker() {
-  return (
-    <UnderConstruction
-      title="Tracker Page is coming soon"
-      description="In MVP 2, joborg will detect actual job postings from supported platforms like Greenhouse, Lever, Ashby, and Workday. For now, you can track career pages and receive alerts when changes are detected."
-    />
-  );
+export const metadata: Metadata = {
+  title: "Tracker",
+  description: "Overview of your career tracker page monitoring.",
+};
+
+export default function TrackerPage() {
+  return <TrackerClient />;
 }

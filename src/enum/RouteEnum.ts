@@ -17,6 +17,7 @@ export enum RouteEnum {
   // App Routes
   DASHBOARD = "/dashboard",
   TRACKERS = "/trackers",
+  ADD_TRACKER = "/trackers/new",
   CHANGES = "/changes",
   ALERTS = "/alerts",
   JOBS = "/jobs",

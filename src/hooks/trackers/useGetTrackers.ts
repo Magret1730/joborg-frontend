@@ -4,7 +4,7 @@ import { useState } from "react";
 import { getTrackers } from "@/api/trackersApi";
 import { TrackerPayload } from "@/types/tracker.type.js";
 
-export const useTrackers = () => {
+export const useGetTrackers = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [trackers, setTrackers] = useState<TrackerPayload[]>([]);
@@ -23,8 +23,6 @@ export const useTrackers = () => {
         err instanceof Error ? err.message : "Failed to fetch trackers";
 
         setError(message);
-
-      // throw err;
     } finally {
       setIsLoading(false);
     }
