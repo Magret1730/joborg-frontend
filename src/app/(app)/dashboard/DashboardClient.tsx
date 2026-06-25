@@ -7,6 +7,7 @@ import {
   FiExternalLink,
   FiGrid,
   FiPauseCircle,
+  FiPlusCircle,
 } from "react-icons/fi";
 import { RouteEnum } from "@/enum/RouteEnum";
 import { useEffect } from "react";
@@ -16,8 +17,11 @@ import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 import { formatDate } from "@/lib/dateFormatter";
 import { useAlerts } from "@/hooks/alerts/useAlerts";
 import { getStatusClass } from "@/lib/getStatusClass";
+import { Button } from "@heroui/react";
+import { useRouter } from "next/navigation";
 
 export const DashboardClient = () => {
+  const router = useRouter();
   const {
     trackers,
     isLoading: isTrackerLoading,
@@ -207,6 +211,14 @@ export const DashboardClient = () => {
                       className="text-center py-4 text-[var(--muted)]"
                     >
                       No trackers added yet.
+                      <Button
+                        type="button"
+                        onClick={() => router.push(RouteEnum.ADD_TRACKER)}
+                        className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+                      >
+                        <FiPlusCircle size={16} className="mr-2" />
+                        Add Tracker
+                      </Button>
                     </td>
                   </tr>
                 ) : (
@@ -293,6 +305,14 @@ export const DashboardClient = () => {
                       className="text-center py-4 text-[var(--muted)]"
                     >
                       No alerts sent yet.
+                      <Button
+                        type="button"
+                        onClick={() => router.push(RouteEnum.ADD_TRACKER)}
+                        className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+                      >
+                        <FiPlusCircle size={16} className="mr-2" />
+                        Add Tracker
+                      </Button>
                     </td>
                   </tr>
                 ) : (

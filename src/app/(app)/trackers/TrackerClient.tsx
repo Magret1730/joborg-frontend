@@ -67,7 +67,7 @@ export const TrackerClient = () => {
         <Button
           type="button"
           onClick={() => router.push(RouteEnum.ADD_TRACKER)}
-          className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+          className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
         >
           <FiPlusCircle size={16} className="mr-2" />
           Add Tracker
@@ -102,7 +102,18 @@ export const TrackerClient = () => {
             </thead>
 
             <tbody className="divide-y divide-[var(--border)]">
-              {trackers.map((tracker, index) => (
+              { trackers.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="text-center py-8 text-[var(--muted)]"
+                  >
+                    No trackers found. Click "Add Tracker" to create one.
+                  </td>
+                </tr>
+              ) : (
+
+              trackers.map((tracker, index) => (
                 <tr
                   key={`${index}`}
                   className="transition hover:bg-[var(--surface-hover)]"
@@ -226,7 +237,7 @@ export const TrackerClient = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>
