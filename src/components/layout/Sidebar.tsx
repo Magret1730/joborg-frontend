@@ -73,8 +73,20 @@ export const Sidebar = () => {
       }`}
     >
       <section className="flex h-full flex-col justify-between">
-        <div>
-          {/* Logo + collapse button */}
+        <div className="">
+          <Button
+            type="button"
+            onClick={() => setIsCollapsed((prev) => !prev)}
+            className={`flex min-w-0 items-center justify-center mb-4 border-[var(--border)] bg-[var(--card)] p-0 text-[var(--text)] shadow-sm transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)] ${
+              isCollapsed
+                ? "h-6 w-6 rounded-[var(--radius-sm)] ml-6"
+                : "h-6 w-6 rounded-[var(--radius-md)]"
+            }`}
+            aria-label={isCollapsed ? "Open sidebar" : "Collapse sidebar"}
+          >
+            {isCollapsed ? <Menu size={16} /> : <X size={16} />}
+          </Button>
+
           <div
             className={`mb-8 flex ${
               isCollapsed
@@ -83,19 +95,6 @@ export const Sidebar = () => {
             }`}
           >
             <AppLogo showText={!isCollapsed} />
-
-            <Button
-              type="button"
-              onClick={() => setIsCollapsed((prev) => !prev)}
-              className={`flex min-w-0 items-center justify-center border border-[var(--border)] bg-[var(--card)] p-0 text-[var(--text)] shadow-sm transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)] ${
-                isCollapsed
-                  ? "h-10 w-10 rounded-[var(--radius-md)]"
-                  : "h-9 w-9 rounded-[var(--radius-md)]"
-              }`}
-              aria-label={isCollapsed ? "Open sidebar" : "Collapse sidebar"}
-            >
-              {isCollapsed ? <Menu size={20} /> : <X size={18} />}
-            </Button>
           </div>
 
           {/* Navigation */}
@@ -111,9 +110,7 @@ export const Sidebar = () => {
                   title={item.label}
                   onClick={handleNavClick}
                   className={`group relative flex items-center rounded-[var(--radius-md)] text-sm font-medium transition ${
-                    isCollapsed
-                      ? "h-12 justify-center px-0"
-                      : "gap-3 px-3 py-2"
+                    isCollapsed ? "h-12 justify-center px-0" : "gap-3 px-3 py-2"
                   } ${
                     isActive
                       ? "bg-[var(--primary)] text-white"
@@ -164,7 +161,9 @@ export const Sidebar = () => {
 
           <div
             className={`flex w-full ${
-              isCollapsed ? "flex-col items-center gap-2" : "mt-4 flex-col gap-2"
+              isCollapsed
+                ? "flex-col items-center gap-2"
+                : "mt-4 flex-col gap-2"
             }`}
           >
             <Button
