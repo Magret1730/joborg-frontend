@@ -10,7 +10,11 @@ import {
 import { FiRefreshCw } from "react-icons/fi";
 import { Briefcase } from "lucide-react";
 
-export const appNavItems = [
+export const appNavItems: {
+  label: string;
+  href: RouteEnum;
+  icon: React.ElementType;
+}[] = [
   {
     label: "Dashboard",
     href: RouteEnum.DASHBOARD,
@@ -32,19 +36,16 @@ export const appNavItems = [
     icon: MdNotificationsNone,
   },
   {
-    label: "Jobs",
-    href: RouteEnum.JOBS,
-    icon: Briefcase,
-    badge: "Soon",
-  },
-  {
     label: "Settings",
     href: RouteEnum.SETTINGS,
     icon: MdSettings,
   },
 ];
 
-export const publicNavItems = [
+export const publicNavItems: {
+  label: string;
+  href: RouteEnum;
+}[] = [
   {
     label: "About",
     href: RouteEnum.ABOUT,

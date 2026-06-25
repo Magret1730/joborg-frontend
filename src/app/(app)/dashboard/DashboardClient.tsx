@@ -10,7 +10,7 @@ import {
 } from "react-icons/fi";
 import { RouteEnum } from "@/enum/RouteEnum";
 import { useEffect } from "react";
-import { useTrackers } from "@/hooks/trackers/useTrackers";
+import { useGetTrackers } from "@/hooks/trackers/useGetTrackers";
 import { PageError, PageLoader } from "@/components/ui/PageState";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 import { formatDate } from "@/lib/dateFormatter";
@@ -18,7 +18,7 @@ import { useAlerts } from "@/hooks/alerts/useAlerts";
 import { getStatusClass } from "@/lib/getStatusClass";
 
 export const DashboardClient = () => {
-  const { trackers, isLoading: isTrackerLoading, error: trackerError, fetchTrackers } = useTrackers();
+  const { trackers, isLoading: isTrackerLoading, error: trackerError, fetchTrackers } = useGetTrackers();
   const { alerts, isLoading: isAlertsLoading, error: alertsError, fetchAlerts } = useAlerts();
 
   useEffect(() => {

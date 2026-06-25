@@ -1,5 +1,5 @@
 "use client";
-import { useTrackers } from "@/hooks/trackers/useTrackers";
+import { useGetTrackers } from "@/hooks/trackers/useGetTrackers";
 import { useEffect } from "react";
 import { formatDate } from "@/lib/dateFormatter";
 import Link from "next/link";
@@ -12,16 +12,21 @@ import {
   FiEdit2,
   FiTrash2,
   FiExternalLink,
+  FiPlusCircle,
 } from "react-icons/fi";
 import { Button, Tooltip } from "@heroui/react";
+import { RouteEnum } from "@/enum/RouteEnum";
+import { useRouter } from "next/navigation";
 
 export const TrackerClient = () => {
+  const router = useRouter();
+
   const {
     trackers,
     isLoading: isTrackerLoading,
     error: trackerError,
     fetchTrackers,
-  } = useTrackers();
+  } = useGetTrackers();
 
   useEffect(() => {
     fetchTrackers();
@@ -49,13 +54,24 @@ export const TrackerClient = () => {
 
   return (
     <section className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] sm:text-4xl">
-          Trackers
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)] sm:text-base">
-          Manage your career tracker page monitors.
-        </p>
+      <div className="flex items-center justify-between ">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] sm:text-4xl">
+            Trackers
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)] sm:text-base">
+            Manage your career tracker page monitors.
+          </p>
+        </div>
+
+        <Button
+          type="button"
+          onClick={() => router.push(RouteEnum.ADD_TRACKER)}
+          className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+        >
+          <FiPlusCircle size={16} className="mr-2" />
+          Add Tracker
+        </Button>
       </div>
 
       <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] shadow-sm">
@@ -70,10 +86,10 @@ export const TrackerClient = () => {
                   Label
                 </th>
                 <th className="w-[200px] pl-5 pr-2 py-3 font-semibold">URL</th>
-                <th className="w-[100px] pl-5 pr-2 py-3 font-semibold">
+                <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">
                   Last Checked
                 </th>
-                <th className="w-[100px] pl-5 pr-2 py-3 font-semibold">
+                <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">
                   Last Changed
                 </th>
                 <th className="w-[100px] pl-5 pr-2 py-3 font-semibold">
