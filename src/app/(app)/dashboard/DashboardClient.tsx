@@ -3,7 +3,7 @@
 import Link from "next/link";
 import {
   FiBell,
-  FiBriefcase,
+  // FiBriefcase,
   FiCheckCircle,
   FiExternalLink,
   FiGrid,
@@ -11,13 +11,20 @@ import {
   FiRefreshCcw,
 } from "react-icons/fi";
 import { RouteEnum } from "@/enum/RouteEnum";
+import { useEffect } from "react";
+import { useTrackers } from "@/hooks/trackers/useTrackers";
+import { Spinner } from "@/components/ui/Spinner";
+import { Tooltip, Button } from "@heroui/react";
+import { TrackerStatusEnum } from "@/enum/TrackerEnum";
+import { formatDate } from "@/lib/dateFormatter";
 
 const stats = [
   {
     label: "Total Trackers",
     value: 24,
     icon: FiGrid,
-    iconClass: "bg-blue-100 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400",
+    iconClass:
+      "bg-blue-100 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400",
   },
   {
     label: "Active Trackers",
@@ -116,14 +123,14 @@ const recentAlerts = [
 ];
 
 const getStatusClass = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "new change":
+  switch (status?.toLowerCase()) {
+    case TrackerStatusEnum.ACTIVE.toLowerCase():
       return "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300";
-    case "reviewed":
+    case TrackerStatusEnum.PAUSED.toLowerCase():
       return "bg-slate-100 text-slate-700 dark:bg-slate-700/60 dark:text-slate-300";
-    case "delivered":
+    case TrackerStatusEnum.INVALID.toLowerCase():
       return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300";
-    case "failed":
+    case TrackerStatusEnum.ERROR:
       return "bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300";
     default:
       return "bg-slate-100 text-slate-700 dark:bg-slate-700/60 dark:text-slate-300";
@@ -131,17 +138,48 @@ const getStatusClass = (status: string) => {
 };
 
 export const DashboardClient = () => {
+  const { trackers, isLoading, error, fetchTrackers } = useTrackers();
+
+  useEffect(() => {
+    fetchTrackers();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  // Need something for error generally like spinner
+  if (error) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
+
+  console.log("Trackers: ", trackers);
+//   last_changed_at
+// : 
+// "2026-06-22T18:32:01.259Z"
+// last_checked_at
+// : 
+// "2026-06-25T12:30:18.621Z"
+
   return (
     <section className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] sm:text-4xl">
-            Dashboard
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)] sm:text-base">
-            Overview of your career page monitoring.
-          </p>
-        </div>
-        
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] sm:text-4xl">
+          Dashboard
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)] sm:text-base">
+          Overview of your career page monitoring.
+        </p>
+      </div>
+
       {/* Stats */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {stats.map((stat) => {
@@ -196,43 +234,52 @@ export const DashboardClient = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[650px] text-left text-sm">
+            <table className="w-full min-w-[800px] table-fixed text-left text-sm">
               <thead className="bg-[var(--surface)] text-xs uppercase tracking-wide text-[var(--muted)]">
                 <tr>
-                  <th className="px-5 py-3 font-semibold">Company</th>
-                  <th className="px-5 py-3 font-semibold">URL</th>
-                  <th className="px-5 py-3 font-semibold">Detected At</th>
-                  <th className="px-5 py-3 font-semibold">Status</th>
-                  <th className="px-5 py-3 font-semibold"></th>
+                  <th className="w-[160px] px-5 py-3 font-semibold">Company</th>
+                  <th className="w-[300px] px-5 py-3 font-semibold">URL</th>
+                  <th className="w-[140px] px-5 py-3 font-semibold">Detected At</th>
+                  <th className="w-[100px] px-5 py-3 font-semibold">Status</th>
+                  <th className="w-[40px] px-5 py-3 font-semibold"></th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-[var(--border)]">
-                {recentChanges.map((change) => (
+                {trackers.map((tracker, index) => (
                   <tr
-                    key={`${change.company}-${change.detectedAt}`}
+                    key={`${index}`}
                     className="transition hover:bg-[var(--surface-hover)]"
                   >
                     <td className="px-5 py-4 font-medium text-[var(--text)]">
-                      {change.company}
+                      {tracker.company_name}
                     </td>
                     <td className="px-5 py-4 text-[var(--muted)]">
-                      {change.url}
+                      {tracker.url}
                     </td>
                     <td className="px-5 py-4 text-[var(--muted)]">
-                      {change.detectedAt}
+                      {formatDate(tracker.last_changed_at)}
                     </td>
                     <td className="px-5 py-4">
                       <span
                         className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
-                          change.status
+                          tracker.status
                         )}`}
                       >
-                        {change.status}
+                        {tracker.status}
                       </span>
                     </td>
-                    <td className="px-5 py-4">
-                      <FiExternalLink className="text-[var(--muted)]" />
+                    <td className="px-5 py-4 cursor-pointer">
+                      {/* <FiExternalLink className="text-[var(--muted)]" /> */}
+                      <Tooltip delay={0}>
+                        {/* <Button variant="secondary"> */}
+                          <FiExternalLink className="text-[var(--muted)]" />
+                        {/* </Button> */}
+                        {/* <Button variant="secondary">Hover me</Button> */}
+                        <Tooltip.Content>
+                          <p>{tracker.url}</p>
+                        </Tooltip.Content>
+                      </Tooltip>
                     </td>
                   </tr>
                 ))}
@@ -305,4 +352,4 @@ export const DashboardClient = () => {
       </div>
     </section>
   );
-}
+};
