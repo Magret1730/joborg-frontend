@@ -3,7 +3,6 @@
 import Link from "next/link";
 import {
   FiBell,
-  // FiBriefcase,
   FiCheckCircle,
   FiExternalLink,
   FiGrid,
@@ -14,9 +13,9 @@ import { RouteEnum } from "@/enum/RouteEnum";
 import { useEffect } from "react";
 import { useTrackers } from "@/hooks/trackers/useTrackers";
 import { Spinner } from "@/components/ui/Spinner";
-import { Tooltip, Button } from "@heroui/react";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 import { formatDate } from "@/lib/dateFormatter";
+import { useAlerts } from "@/hooks/alerts/useAlerts";
 
 const stats = [
   {
@@ -105,20 +104,27 @@ const getStatusClass = (status: string) => {
 };
 
 export const DashboardClient = () => {
-  const { trackers, isLoading, error, fetchTrackers } = useTrackers();
+  const { trackers, isLoading: isTrackerLoading, error: trackerError, fetchTrackers } = useTrackers();
+  const { alerts, isLoading: isAlertsLoading, error: alertsError, fetchAlerts } = useAlerts();
 
-  const slicedTrackers = trackers.slice(0, 5).sort((a, b) => {
+  useEffect(() => {
+    fetchTrackers();
+    fetchAlerts();
+  }, []);
+
+  // Sort trackers by last_changed_at in descending order and slice the first 5
+  const slicedTrackers = trackers.slice(0, 5)
+                                 .sort((a, b) => {
     const dateA = new Date(a.last_changed_at).getTime();
     const dateB = new Date(b.last_changed_at).getTime();
 
     return dateB - dateA; // Sort in descending order
   });
 
-  useEffect(() => {
-    fetchTrackers();
-  }, []);
+  // Sort alerts by sent_at in descending order and slice the first 5
+  const slicedAlerts = alerts.slice(0, 5);
 
-  if (isLoading) {
+  if (isTrackerLoading || isAlertsLoading) {
     return (
       <div className="flex h-full w-full items-center justify-center">
         <Spinner size="lg" />
@@ -127,16 +133,16 @@ export const DashboardClient = () => {
   }
 
   // Need something for error generally like spinner
-  if (error) {
+  if (trackerError || alertsError) {
     return (
       <div className="flex h-full w-full items-center justify-center">
-        <p className="text-red-500">{error}</p>
+        <p className="text-red-500">{trackerError || alertsError}</p>
       </div>
     );
   }
 
-  console.log("Trackers: ", trackers);
-
+  // console.log("Trackers: ", trackers);
+  // console.log("Alerts: ", alerts);
 
   return (
     <section className="space-y-8">
@@ -277,32 +283,32 @@ export const DashboardClient = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[650px] text-left text-sm">
+            <table className="w-full min-w-[540px] table-fixed text-left text-sm">
               <thead className="bg-[var(--surface)] text-xs uppercase tracking-wide text-[var(--muted)]">
                 <tr>
-                  <th className="px-5 py-3 font-semibold">Company</th>
-                  <th className="px-5 py-3 font-semibold">Alert Type</th>
-                  <th className="px-5 py-3 font-semibold">Sent At</th>
-                  <th className="px-5 py-3 font-semibold">Status</th>
+                  <th className="w-[160px] pl-5 pr-2 py-3 font-semibold">Company</th>
+                  <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">Delivery Channel</th>
+                  <th className="w-[140px] pl-5 pr-2 py-3 font-semibold">Sent At</th>
+                  <th className="w-[100px] pl-2 pr-5 py-3 font-semibold">Status</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-[var(--border)]">
-                {recentAlerts.map((alert) => (
+                {slicedAlerts.map((alert, index) => (
                   <tr
-                    key={`${alert.company}-${alert.sentAt}`}
+                    key={index}
                     className="transition hover:bg-[var(--surface-hover)]"
                   >
-                    <td className="px-5 py-4 font-medium text-[var(--text)]">
-                      {alert.company}
+                    <td className="pl-5 pr-2 py-4 font-medium text-[var(--text)]">
+                      {alert.company_name}
                     </td>
-                    <td className="px-5 py-4 text-[var(--muted)]">
-                      {alert.alertType}
+                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
+                      {alert.channel.charAt(0).toUpperCase() + alert.channel.slice(1)} Alert
                     </td>
-                    <td className="px-5 py-4 text-[var(--muted)]">
-                      {alert.sentAt}
+                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
+                      {formatDate(alert.sent_at)}
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="pl-2 pr-5 py-4">
                       <span
                         className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
                           alert.status
