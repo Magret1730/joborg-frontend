@@ -25,47 +25,7 @@ import { useEffect, useState } from "react";
 import { useGetTracker } from "@/hooks/trackers/useGetTracker";
 import { useParams } from "next/navigation";
 import { useGetAlert } from "@/hooks/alerts/useGetAlert";
-
-const recentChanges = [
-  {
-    id: "1",
-    detected_at: "2026-06-25T14:00:00.000Z",
-    change_type: "Page Change",
-    message: "Career page content changed.",
-    status: "New Change",
-  },
-  {
-    id: "2",
-    detected_at: "2026-06-23T16:30:14.820Z",
-    change_type: "Page Change",
-    message: "New career page update detected.",
-    status: "Reviewed",
-  },
-  {
-    id: "3",
-    detected_at: "2026-06-21T12:15:00.000Z",
-    change_type: "Page Change",
-    message: "Tracked page content changed.",
-    status: "Reviewed",
-  },
-];
-
-const recentAlerts = [
-  {
-    id: "1",
-    channel: "Email",
-    recipient: "belloabiodun17@gmail.com",
-    sent_at: "2026-06-25T14:01:00.000Z",
-    status: "SENT",
-  },
-  {
-    id: "2",
-    channel: "Email",
-    recipient: "belloabiodun17@gmail.com",
-    sent_at: "2026-06-23T16:31:00.000Z",
-    status: "SENT",
-  },
-];
+import { useGetChange } from "@/hooks/changes/useGetChange";
 
 const PAGE_SIZE = 5;
 
@@ -97,18 +57,26 @@ export default function TrackerDetails() {
     fetchAlert,
   } = useGetAlert();
 
+  const {
+    change,
+    isLoading: isChangesLoading,
+    error: changesError,
+    fetchChange,
+  } = useGetChange();
+
   const [changesPage, setChangesPage] = useState(1);
   const [alertsPage, setAlertsPage] = useState(1);
 
-  const paginatedChanges = paginateItems(recentChanges, changesPage);
-  const paginatedAlerts = paginateItems(recentAlerts, alertsPage);
+  const paginatedChanges = paginateItems(change, changesPage);
+  const paginatedAlerts = paginateItems(alert, alertsPage);
 
-  const totalChangesPages = getTotalPages(recentChanges.length);
-  const totalAlertsPages = getTotalPages(recentAlerts.length);
+  const totalChangesPages = getTotalPages(change.length);
+  const totalAlertsPages = getTotalPages(alert.length);
 
   useEffect(() => {
     fetchTracker(trackerId);
     fetchAlert(trackerId);
+    fetchChange(trackerId);
   }, [trackerId]);
 
   if (isTrackerLoading) {
@@ -117,6 +85,10 @@ export default function TrackerDetails() {
 
   if (isAlertsLoading) {
     return <PageLoader message="Loading alert history..." />;
+  }
+
+  if (isChangesLoading) {
+    return <PageLoader message="Loading recent changes..." />;
   }
 
   if (trackerError) {
@@ -141,8 +113,29 @@ export default function TrackerDetails() {
     );
   }
 
+  if (changesError) {
+    return (
+      <PageError
+        message={changesError}
+        onRetry={() => {
+          fetchChange(trackerId);
+        }}
+      />
+    );
+  }
+
   const isPaused = tracker?.status === TrackerStatusEnum.PAUSED;
   const totalAlerts = alert?.length || 0;
+  const totalChanges = change?.length || 0;
+
+  const changesStart =
+    totalChanges === 0 ? 0 : (changesPage - 1) * PAGE_SIZE + 1;
+  const changesEnd = Math.min(changesPage * PAGE_SIZE, totalChanges);
+
+  const alertsStart = totalAlerts === 0 ? 0 : (alertsPage - 1) * PAGE_SIZE + 1;
+  const alertsEnd = Math.min(alertsPage * PAGE_SIZE, totalAlerts);
+
+  console.log("Changes:", change);
 
   return (
     <section className="space-y-6">
@@ -267,7 +260,7 @@ export default function TrackerDetails() {
           </div>
         </div>
 
-        {/* <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
+        <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300">
               <FiActivity size={20} />
@@ -275,13 +268,13 @@ export default function TrackerDetails() {
             <div>
               <p className="text-sm text-[var(--muted)]">Total Changes</p>
               <p className="mt-1 text-2xl font-bold text-[var(--text)]">
-                {tracker?.total_changes || 0}
+                {totalChanges}
               </p>
             </div>
           </div>
-        </div> */}
+        </div>
 
-         <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
+        <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-300">
               <FiBell size={20} />
@@ -325,54 +318,79 @@ export default function TrackerDetails() {
                   <th className="w-[190px] px-5 py-3 font-semibold">
                     Detected At
                   </th>
-                  <th className="w-[150px] px-5 py-3 font-semibold">Type</th>
-                  <th className="w-[320px] px-5 py-3 font-semibold">Message</th>
-                  <th className="w-[140px] px-5 py-3 font-semibold">Status</th>
+                  <th className="w-[360px] px-5 py-3 font-semibold">Change</th>
+                  <th className="w-[160px] px-5 py-3 font-semibold">
+                    Alert Status
+                  </th>
+                  <th className="w-[140px] px-5 py-3 font-semibold">
+                    Tracker Status
+                  </th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-[var(--border)]">
-                {paginatedChanges.map((change) => (
-                  <tr
-                    key={change.id}
-                    className="transition hover:bg-[var(--surface-hover)]"
-                  >
-                    <td className="px-5 py-4 align-top text-[var(--muted)]">
-                      {formatDate(change.detected_at)}
-                    </td>
-
-                    <td className="px-5 py-4 align-top">
-                      <span className="inline-flex items-center gap-2 font-medium text-[var(--text)]">
-                        <FiRefreshCcw size={15} />
-                        {change.change_type}
-                      </span>
-                    </td>
-
-                    <td className="px-5 py-4 align-top text-[var(--muted)]">
-                      <p className="[overflow-wrap:anywhere]">
-                        {change.message}
+                {paginatedChanges.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="px-5 py-10 text-center">
+                      <p className="text-sm font-medium text-[var(--text)]">
+                        No changes detected yet
+                      </p>
+                      <p className="mt-1 text-sm text-[var(--muted)]">
+                        Joborg will show detected page updates here when this
+                        tracker changes.
                       </p>
                     </td>
-
-                    <td className="px-5 py-4 align-top">
-                      <span
-                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
-                          change.status
-                        )}`}
-                      >
-                        {change.status}
-                      </span>
-                    </td>
                   </tr>
-                ))}
+                ) : (
+                  paginatedChanges.map((change) => (
+                    <tr
+                      key={change.id}
+                      className="transition hover:bg-[var(--surface-hover)]"
+                    >
+                      <td className="px-5 py-4 align-top text-[var(--muted)]">
+                        {formatDate(change.detected_at)}
+                      </td>
+
+                      <td className="px-5 py-4 align-top">
+                        <div>
+                          <p className="font-medium text-[var(--text)]">
+                            Page content changed
+                          </p>
+                          <p className="mt-1 text-xs text-[var(--muted)]">
+                            A new version of this career page was detected.
+                          </p>
+                        </div>
+                      </td>
+
+                      <td className="px-5 py-4 align-top">
+                        <span
+                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
+                            change.notification_sent
+                              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300"
+                              : "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300"
+                          }`}
+                        >
+                          {change.notification_sent
+                            ? "Alert sent"
+                            : "Alert pending"}
+                        </span>
+                      </td>
+
+                      <td className="px-5 py-4 align-top">
+                        <span className="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700 dark:bg-blue-500/15 dark:text-blue-300">
+                          {change.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
 
           <div className="flex flex-col gap-3 border-t border-[var(--border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-[var(--muted)]">
-              Showing {paginatedChanges.length} of {recentChanges.length}{" "}
-              changes
+              Showing {changesStart}–{changesEnd} of {totalChanges} changes
             </p>
 
             <div className="flex items-center gap-2">
@@ -439,55 +457,56 @@ export default function TrackerDetails() {
               </thead>
 
               <tbody className="divide-y divide-[var(--border)]">
-              {totalAlerts === 0 ? (
-                <tr>
-                  <td
-                    colSpan={4}
-                    className="px-5 py-4 text-center text-[var(--muted)]"
-                  >
-                    No alerts sent for this tracker yet.
-                  </td>
-                </tr>
-              ) : (
-                paginatedAlerts.map((alert) => (
-                  <tr
-                    key={alert.id}
-                    className="transition hover:bg-[var(--surface-hover)]"
-                  >
-                    <td className="px-5 py-4 align-top">
-                      <span className="inline-flex items-center gap-2 font-medium text-[var(--text)]">
-                        <FiMail size={15} />
-                        {alert.channel}
-                      </span>
-                    </td>
-
-                    <td className="px-5 py-4 align-top text-[var(--muted)]">
-                      <span className="break-all">{alert.recipient}</span>
-                    </td>
-
-                    <td className="px-5 py-4 align-top text-[var(--muted)]">
-                      {formatDate(alert.sent_at)}
-                    </td>
-
-                    <td className="px-5 py-4 align-top">
-                      <span
-                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
-                          alert.status
-                        )}`}
-                      >
-                        {alert.status}
-                      </span>
+                {totalAlerts === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-5 py-4 text-center text-[var(--muted)]"
+                    >
+                      No alerts sent for this tracker yet.
                     </td>
                   </tr>
-                ))
-              )}
+                ) : (
+                  paginatedAlerts.map((alert) => (
+                    <tr
+                      key={alert.id}
+                      className="transition hover:bg-[var(--surface-hover)]"
+                    >
+                      <td className="px-5 py-4 align-top">
+                        <span className="inline-flex items-center gap-2 font-medium text-[var(--text)]">
+                          <FiMail size={15} />
+                          {alert.channel.charAt(0).toUpperCase() +
+                            alert.channel.slice(1).toLowerCase()}
+                        </span>
+                      </td>
+
+                      <td className="px-5 py-4 align-top text-[var(--muted)]">
+                        <span className="break-all">{alert.recipient}</span>
+                      </td>
+
+                      <td className="px-5 py-4 align-top text-[var(--muted)]">
+                        {formatDate(alert.sent_at)}
+                      </td>
+
+                      <td className="px-5 py-4 align-top">
+                        <span
+                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
+                            alert.status
+                          )}`}
+                        >
+                          {alert.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
 
           <div className="flex flex-col gap-3 border-t border-[var(--border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-[var(--muted)]">
-              Showing {paginatedAlerts.length} of {recentAlerts.length} alerts
+              Showing {alertsStart}–{alertsEnd} of {totalAlerts} alerts
             </p>
 
             <div className="flex items-center gap-2">
