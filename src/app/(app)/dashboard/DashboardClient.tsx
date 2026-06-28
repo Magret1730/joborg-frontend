@@ -15,7 +15,7 @@ import { useGetTrackers } from "@/hooks/trackers/useGetTrackers";
 import { PageError, PageLoader } from "@/components/ui/PageState";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 import { formatDate } from "@/lib/dateFormatter";
-import { useAlerts } from "@/hooks/alerts/useAlerts";
+import { useAlerts } from "@/hooks/alerts/useGetAlerts";
 import { getStatusClass } from "@/lib/getStatusClass";
 import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";

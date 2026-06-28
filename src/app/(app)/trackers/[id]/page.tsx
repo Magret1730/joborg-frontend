@@ -23,8 +23,8 @@ import { getStatusClass } from "@/lib/getStatusClass";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 import { useEffect, useState } from "react";
 import { useGetTracker } from "@/hooks/trackers/useGetTracker";
-import { TrackerPayload } from "@/types/tracker.type.js";
 import { useParams } from "next/navigation";
+import { useGetAlert } from "@/hooks/alerts/useGetAlert";
 
 const recentChanges = [
   {
@@ -90,6 +90,13 @@ export default function TrackerDetails() {
     fetchTracker,
   } = useGetTracker();
 
+  const {
+    alert,
+    isLoading: isAlertsLoading,
+    error: alertsError,
+    fetchAlert,
+  } = useGetAlert();
+
   const [changesPage, setChangesPage] = useState(1);
   const [alertsPage, setAlertsPage] = useState(1);
 
@@ -101,10 +108,15 @@ export default function TrackerDetails() {
 
   useEffect(() => {
     fetchTracker(trackerId);
+    fetchAlert(trackerId);
   }, [trackerId]);
 
   if (isTrackerLoading) {
     return <PageLoader message="Loading tracker page..." />;
+  }
+
+  if (isAlertsLoading) {
+    return <PageLoader message="Loading alert history..." />;
   }
 
   if (trackerError) {
@@ -118,20 +130,19 @@ export default function TrackerDetails() {
     );
   }
 
+  if (alertsError) {
+    return (
+      <PageError
+        message={alertsError}
+        onRetry={() => {
+          fetchAlert(trackerId);
+        }}
+      />
+    );
+  }
+
   const isPaused = tracker?.status === TrackerStatusEnum.PAUSED;
-
-  // {id: '5deeff97-4aff-4465-bb55-fb827017816d', company_name: 'Intact', label: 'Intact - Dan', url: 'https://careers.intactfc.com/jobs', status: 'ACTIVE', …}
-  // company_name: "Intact"
-  // id: "5deeff97-4aff-4465-bb55-fb827017816d"
-  // label: "Intact - Dan"
-  // last_changed_at: "2026-06-25T16:30:30.692Z"
-  // last_checked_at: "2026-06-25T16:30:30.692Z"
-  // last_hash: "efc194abbbc7405d088d1c2e158d3b9e634c95c9d0cf73f3ecf387d7f28aa318"
-  // scraper_type: "AUTO"
-  // status: "ACTIVE"
-  // url: "https://careers.intactfc.com/jobs"
-
-  // console.log("tracker", tracker);
+  const totalAlerts = alert?.length || 0;
 
   return (
     <section className="space-y-6">
@@ -264,13 +275,13 @@ export default function TrackerDetails() {
             <div>
               <p className="text-sm text-[var(--muted)]">Total Changes</p>
               <p className="mt-1 text-2xl font-bold text-[var(--text)]">
-                {tracker?.total_changes}
+                {tracker?.total_changes || 0}
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
+         <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-300">
               <FiBell size={20} />
@@ -278,11 +289,11 @@ export default function TrackerDetails() {
             <div>
               <p className="text-sm text-[var(--muted)]">Alerts Sent</p>
               <p className="mt-1 text-2xl font-bold text-[var(--text)]">
-                {tracker.total_alerts}
+                {totalAlerts}
               </p>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
 
       {/* Activity Sections */}
@@ -428,7 +439,17 @@ export default function TrackerDetails() {
               </thead>
 
               <tbody className="divide-y divide-[var(--border)]">
-                {paginatedAlerts.map((alert) => (
+              {totalAlerts === 0 ? (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="px-5 py-4 text-center text-[var(--muted)]"
+                  >
+                    No alerts sent for this tracker yet.
+                  </td>
+                </tr>
+              ) : (
+                paginatedAlerts.map((alert) => (
                   <tr
                     key={alert.id}
                     className="transition hover:bg-[var(--surface-hover)]"
@@ -458,7 +479,8 @@ export default function TrackerDetails() {
                       </span>
                     </td>
                   </tr>
-                ))}
+                ))
+              )}
               </tbody>
             </table>
           </div>
