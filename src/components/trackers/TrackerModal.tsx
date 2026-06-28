@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@heroui/react";
 import { FiBriefcase, FiLink, FiPlus, FiEdit2, FiX } from "react-icons/fi";
 import { TrackerPayload } from "@/types/tracker.type";
+import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 
 type TrackerModalMode = "add" | "edit";
 
@@ -32,7 +33,7 @@ export const TrackerModal = ({
   const [companyName, setCompanyName] = useState("");
   const [url, setUrl] = useState("");
   const [label, setLabel] = useState("");
-  const [status, setStatus] = useState("ACTIVE");
+  const [status, setStatus] = useState(TrackerStatusEnum.ACTIVE);
 
   const isEditMode = mode === "edit";
 
@@ -43,12 +44,12 @@ export const TrackerModal = ({
       setCompanyName(tracker.company_name || "");
       setUrl(tracker.url || "");
       setLabel(tracker.label || "");
-      setStatus(tracker.status || "ACTIVE");
+      setStatus(tracker.status as TrackerStatusEnum || TrackerStatusEnum.ACTIVE);
     } else {
       setCompanyName("");
       setUrl("");
       setLabel("");
-      setStatus("ACTIVE");
+      setStatus(TrackerStatusEnum.ACTIVE);
     }
   }, [isOpen, isEditMode, tracker]);
 
@@ -136,7 +137,7 @@ export const TrackerModal = ({
               </label>
               <select
                 value={status}
-                onChange={(event) => setStatus(event.target.value)}
+                onChange={(event) => setStatus(event.target.value as TrackerStatusEnum)}
                 className="w-full rounded-[var(--radius-md)] border border-[var(--input-border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--primary)]"
               >
                 <option value="ACTIVE">Active</option>
@@ -169,7 +170,7 @@ export const TrackerModal = ({
             <Button
               type="submit"
               isDisabled={isLoading}
-              className="rounded-[var(--radius-md)] bg-[var(--primary)] px-5 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-[var(--radius-md)] bg-[var(--primary)] px-5 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
               {isLoading
                 ? "Saving..."

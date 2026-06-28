@@ -15,8 +15,6 @@ import {
   FiPlusCircle,
 } from "react-icons/fi";
 import { Button, Tooltip } from "@heroui/react";
-// import { RouteEnum } from "@/enum/RouteEnum";
-// import { useRouter } from "next/navigation";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 import { usePauseTracker } from "@/hooks/trackers/usePauseTracker";
 import { useResumeTracker } from "@/hooks/trackers/useResumeTracker";
@@ -27,15 +25,18 @@ import { usePostTracker } from "@/hooks/trackers/usePostTracker";
 import { useUpdateTracker } from "@/hooks/trackers/useUpdateTracker";
 import { TrackerPayload } from "@/types/tracker.type";
 import { TrackerModalMode } from "@/enum/TrackerModalEnum";
+import { DeleteTrackerModal } from "@/components/trackers/DeleteTrackerModal";
 
 export const TrackersClient = () => {
-  // const router = useRouter();
-
   const [isTrackerModalOpen, setIsTrackerModalOpen] = useState(false);
-  const [trackerModalMode, setTrackerModalMode] = useState<TrackerModalMode.ADD | TrackerModalMode.EDIT>(
-  TrackerModalMode.ADD
-  );
+  const [trackerModalMode, setTrackerModalMode] = useState<
+    TrackerModalMode.ADD | TrackerModalMode.EDIT
+  >(TrackerModalMode.ADD);
   const [selectedTracker, setSelectedTracker] = useState<TrackerPayload | null>(
+    null
+  );
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [trackerToDelete, setTrackerToDelete] = useState<TrackerPayload | null>(
     null
   );
 
@@ -58,11 +59,11 @@ export const TrackersClient = () => {
     error: resumeError,
   } = useResumeTracker();
 
-  // const {
-  //   deleteTracker,
-  //   isLoading: isDeleteLoading,
-  //   error: deleteError,
-  // } = useDeleteTracker();
+  const {
+    removeTracker,
+    isLoading: isDeleteLoading,
+    error: deleteError,
+  } = useDeleteTracker();
 
   const {
     createTracker,
@@ -141,6 +142,24 @@ export const TrackersClient = () => {
     setSelectedTracker(null);
   };
 
+  const openDeleteModal = (tracker: TrackerPayload) => {
+    setTrackerToDelete(tracker);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setTrackerToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleConfirmDeleteTracker = async () => {
+    if (!trackerToDelete) return;
+
+    await removeTracker(trackerToDelete.id);
+    await fetchTrackers();
+    closeDeleteModal();
+  };
+
   const handleSaveTracker = async (payload: {
     company_name: string;
     url: string;
@@ -173,7 +192,7 @@ export const TrackersClient = () => {
 
         <Button
           type="button"
-          className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+          className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] cursor-pointer"
           onClick={openAddTrackerModal}
         >
           <FiPlusCircle size={16} className="mr-2" />
@@ -343,6 +362,7 @@ export const TrackersClient = () => {
                             isIconOnly
                             aria-label="Delete tracker"
                             className="h-9 w-9 min-w-0 p-0 text-red-500 transition hover:text-red-600"
+                            onClick={() => openDeleteModal(tracker)}
                           >
                             <FiTrash2 size={16} />
                           </Button>
@@ -369,6 +389,14 @@ export const TrackersClient = () => {
         isLoading={isSavingTracker}
         onClose={closeTrackerModal}
         onSubmit={handleSaveTracker}
+      />
+
+      <DeleteTrackerModal
+        isOpen={isDeleteModalOpen}
+        trackerName={trackerToDelete?.company_name}
+        isLoading={isDeleteLoading}
+        onClose={closeDeleteModal}
+        onConfirm={handleConfirmDeleteTracker}
       />
     </section>
   );
