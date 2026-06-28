@@ -135,8 +135,6 @@ export default function TrackerDetails() {
   const alertsStart = totalAlerts === 0 ? 0 : (alertsPage - 1) * PAGE_SIZE + 1;
   const alertsEnd = Math.min(alertsPage * PAGE_SIZE, totalAlerts);
 
-  console.log("Changes:", change);
-
   return (
     <section className="space-y-6">
       {/* Back link */}

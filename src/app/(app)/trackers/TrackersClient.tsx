@@ -18,6 +18,8 @@ import { Button, Tooltip } from "@heroui/react";
 import { RouteEnum } from "@/enum/RouteEnum";
 import { useRouter } from "next/navigation";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
+import { usePauseTracker } from "@/hooks/trackers/usePauseTracker";
+import { useResumeTracker } from "@/hooks/trackers/useResumeTracker";
 
 export const TrackersClient = () => {
   const router = useRouter();
@@ -29,12 +31,27 @@ export const TrackersClient = () => {
     fetchTrackers,
   } = useGetTrackers();
 
+  const {
+    pause,
+    isLoading: isPauseLoading,
+    error: pauseError,
+  } = usePauseTracker();
+  const {
+    resume,
+    isLoading: isResumeLoading,
+    error: resumeError,
+  } = useResumeTracker();
+
   useEffect(() => {
     fetchTrackers();
   }, []);
 
   if (isTrackerLoading) {
     return <PageLoader message="Loading trackers page..." />;
+  }
+
+  if (isPauseLoading || isResumeLoading) {
+    return <PageLoader message="Updating tracker status..." />;
   }
 
   if (trackerError) {
@@ -48,10 +65,30 @@ export const TrackersClient = () => {
     );
   }
 
+  if (pauseError) {
+    return (
+      <PageError
+        message={pauseError}
+        onRetry={() => {
+          fetchTrackers();
+        }}
+      />
+    );
+  }
+
+  if (resumeError) {
+    return (
+      <PageError
+        message={resumeError}
+        onRetry={() => {
+          fetchTrackers();
+        }}
+      />
+    );
+  }
+
   const tooltipClass =
     "rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--text)] shadow-lg";
-
-  // console.log("trackers", trackers);
 
   return (
     <section className="space-y-8">
@@ -103,7 +140,7 @@ export const TrackersClient = () => {
             </thead>
 
             <tbody className="divide-y divide-[var(--border)]">
-              { trackers.length === 0 ? (
+              {trackers.length === 0 ? (
                 <tr>
                   <td
                     colSpan={7}
@@ -113,133 +150,142 @@ export const TrackersClient = () => {
                   </td>
                 </tr>
               ) : (
+                trackers.map((tracker, index) => (
+                  <tr
+                    key={`${index}`}
+                    className="transition hover:bg-[var(--surface-hover)]"
+                  >
+                    <td className="pl-5 pr-2 py-4 font-medium text-[var(--text)]">
+                      {tracker.company_name}
+                    </td>
+                    <td className="pl-5 pr-2 py-4 font-medium text-[var(--muted)]">
+                      {tracker.label}
+                    </td>
+                    <td className="pl-5 pr-2 py-4 font-medium text-[var(--muted)]">
+                      <p className="max-w-[320px] [overflow-wrap:anywhere]">
+                        {tracker.url}
+                      </p>
+                    </td>
+                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
+                      {formatDate(tracker.last_checked_at)}
+                    </td>
 
-              trackers.map((tracker, index) => (
-                <tr
-                  key={`${index}`}
-                  className="transition hover:bg-[var(--surface-hover)]"
-                >
-                  <td className="pl-5 pr-2 py-4 font-medium text-[var(--text)]">
-                    {tracker.company_name}
-                  </td>
-                  <td className="pl-5 pr-2 py-4 font-medium text-[var(--muted)]">
-                    {tracker.label}
-                  </td>
-                  <td className="pl-5 pr-2 py-4 font-medium text-[var(--muted)]">
-                    <p className="max-w-[320px] [overflow-wrap:anywhere]">
-                      {tracker.url}
-                    </p>
-                  </td>
-                  <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
-                    {formatDate(tracker.last_changed_at)}
-                  </td>
-                  <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
-                    {formatDate(tracker.last_checked_at)}
-                  </td>
-                  <td className="pl-5 pr-2 py-4">
-                    <span
-                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
-                        tracker.status
-                      )}`}
-                    >
-                      {tracker.status}
-                    </span>
-                  </td>
-                  <td className="pl-2 pr-5 py-4">
-                    <div className="flex items-center gap-2">
-                      <Tooltip delay={0}>
-                        <Button
-                          type="button"
-                          isIconOnly
-                          aria-label={
-                            tracker.status === TrackerStatusEnum.PAUSED
-                              ? "Resume tracker"
-                              : "Pause tracker"
-                          }
-                          className="h-9 w-9 min-w-0 p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
-                        >
-                          {tracker.status === TrackerStatusEnum.PAUSED ? (
-                            <FiPlayCircle size={16} />
-                          ) : (
-                            <FiPauseCircle size={16} />
-                          )}
-                        </Button>
+                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
+                      {formatDate(tracker.last_changed_at)}
+                    </td>
+                    <td className="pl-5 pr-2 py-4">
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
+                          tracker.status
+                        )}`}
+                      >
+                        {tracker.status}
+                      </span>
+                    </td>
+                    <td className="pl-2 pr-5 py-4">
+                      <div className="flex items-center gap-2">
+                        <Tooltip delay={0}>
+                          <Button
+                            type="button"
+                            isIconOnly
+                            aria-label={
+                              tracker.status === TrackerStatusEnum.PAUSED
+                                ? "Resume tracker"
+                                : "Pause tracker"
+                            }
+                            className="h-9 w-9 min-w-0 p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
+                            onClick={async () => {
+                              if (tracker.status === TrackerStatusEnum.PAUSED) {
+                                await resume(tracker.id);
+                              } else {
+                                await pause(tracker.id);
+                              }
+                              fetchTrackers();
+                            }}
+                          >
+                            {tracker.status === TrackerStatusEnum.PAUSED ? (
+                              <FiPlayCircle size={16} />
+                            ) : (
+                              <FiPauseCircle size={16} />
+                            )}
+                          </Button>
 
-                        <Tooltip.Content className={tooltipClass}>
-                          <p>
-                            {tracker.status === TrackerStatusEnum.PAUSED
-                              ? "Resume tracker"
-                              : "Pause tracker"}
-                          </p>
-                        </Tooltip.Content>
-                      </Tooltip>
+                          <Tooltip.Content className={tooltipClass}>
+                            <p>
+                              {tracker.status === TrackerStatusEnum.PAUSED
+                                ? "Resume tracker"
+                                : "Pause tracker"}
+                            </p>
+                          </Tooltip.Content>
+                        </Tooltip>
 
-                      <Tooltip delay={0}>
-                        <Link
-                          href={`/trackers/${tracker.id}`}
-                          type="button"
-                          // isIconOnly
-                          aria-label="View tracker"
-                          className="h-9 w-9 min-w-0 flex items-center justify-center p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
-                        >
-                          <FiEye size={16} />
-                        </Link>
+                        <Tooltip delay={0}>
+                          <Link
+                            href={`/trackers/${tracker.id}`}
+                            type="button"
+                            // isIconOnly
+                            aria-label="View tracker"
+                            className="h-9 w-9 min-w-0 flex items-center justify-center p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
+                          >
+                            <FiEye size={16} />
+                          </Link>
 
-                        <Tooltip.Content className={tooltipClass}>
-                          <p>View tracker</p>
-                        </Tooltip.Content>
-                      </Tooltip>
+                          <Tooltip.Content className={tooltipClass}>
+                            <p>View tracker</p>
+                          </Tooltip.Content>
+                        </Tooltip>
 
-                      <Tooltip delay={0}>
-                        <Button
-                          type="button"
-                          isIconOnly
-                          aria-label="Edit tracker"
-                          className="h-9 w-9 min-w-0 p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
-                        >
-                          <FiEdit2 size={16} />
-                        </Button>
+                        <Tooltip delay={0}>
+                          <Button
+                            type="button"
+                            isIconOnly
+                            aria-label="Edit tracker"
+                            className="h-9 w-9 min-w-0 p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
+                          >
+                            <FiEdit2 size={16} />
+                          </Button>
 
-                        <Tooltip.Content className={tooltipClass}>
-                          <p>Edit tracker</p>
-                        </Tooltip.Content>
-                      </Tooltip>
+                          <Tooltip.Content className={tooltipClass}>
+                            <p>Edit tracker</p>
+                          </Tooltip.Content>
+                        </Tooltip>
 
-                      {/* // Fix this not showing */}
-                      <Tooltip delay={0}>
-                        <Link
-                          href={tracker.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="Open tracker URL"
-                          className="h-9 w-9 min-w-0 flex items-center justify-center p-0 text-[var(--muted)] transition hover:text-[var(--primary)]"
-                        >
-                          <FiExternalLink size={16} />
-                        </Link>
+                        {/* // Fix this not showing */}
+                        <Tooltip delay={0}>
+                          <Link
+                            href={tracker.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Open tracker URL"
+                            className="h-9 w-9 min-w-0 flex items-center justify-center p-0 text-[var(--muted)] transition hover:text-[var(--primary)]"
+                          >
+                            <FiExternalLink size={16} />
+                          </Link>
 
-                        <Tooltip.Content className="z-50 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--text)] shadow-lg">
-                          Open career page
-                        </Tooltip.Content>
-                      </Tooltip>
+                          <Tooltip.Content className="z-50 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--text)] shadow-lg">
+                            Open career page
+                          </Tooltip.Content>
+                        </Tooltip>
 
-                      <Tooltip delay={0}>
-                        <Button
-                          type="button"
-                          isIconOnly
-                          aria-label="Delete tracker"
-                          className="h-9 w-9 min-w-0 p-0 text-red-500 transition hover:text-red-600"
-                        >
-                          <FiTrash2 size={16} />
-                        </Button>
+                        <Tooltip delay={0}>
+                          <Button
+                            type="button"
+                            isIconOnly
+                            aria-label="Delete tracker"
+                            className="h-9 w-9 min-w-0 p-0 text-red-500 transition hover:text-red-600"
+                          >
+                            <FiTrash2 size={16} />
+                          </Button>
 
-                        <Tooltip.Content className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--text)] shadow-lg">
-                          Delete tracker
-                        </Tooltip.Content>
-                      </Tooltip>
-                    </div>
-                  </td>
-                </tr>
-              )))}
+                          <Tooltip.Content className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--text)] shadow-lg">
+                            Delete tracker
+                          </Tooltip.Content>
+                        </Tooltip>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

@@ -102,7 +102,7 @@ export const updateTracker = async (id: string): Promise<TrackerResponse> => {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
 
-    const response = await fetch(`${BACKEND_URL}/trackers/:id`, {
+    const response = await fetch(`${BACKEND_URL}/trackers/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -131,7 +131,9 @@ export const pauseTracker = async (id: string): Promise<TrackerResponse> => {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
 
-    const response = await fetch(`${BACKEND_URL}/trackers/:id/pause`, {
+    const url = `${BACKEND_URL}/trackers/${id}/pause`;
+
+    const response = await fetch(url, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -160,7 +162,7 @@ export const resumeTracker = async (id: string): Promise<TrackerResponse> => {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
 
-    const response = await fetch(`${BACKEND_URL}/trackers/:id/resume`, {
+    const response = await fetch(`${BACKEND_URL}/trackers/${id}/resume`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
