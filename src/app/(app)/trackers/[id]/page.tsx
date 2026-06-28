@@ -26,6 +26,8 @@ import { useGetTracker } from "@/hooks/trackers/useGetTracker";
 import { useParams } from "next/navigation";
 import { useGetAlert } from "@/hooks/alerts/useGetAlert";
 import { useGetChange } from "@/hooks/changes/useGetChange";
+import { usePauseTracker } from "@/hooks/trackers/usePauseTracker";
+import { useResumeTracker } from "@/hooks/trackers/useResumeTracker";
 
 const PAGE_SIZE = 5;
 
@@ -51,6 +53,18 @@ export default function TrackerDetails() {
   } = useGetTracker();
 
   const {
+    pause,
+    isLoading: isPauseLoading,
+    error: pauseError,
+  } = usePauseTracker();
+
+  const {
+    resume,
+    isLoading: isResumeLoading,
+    error: resumeError,
+  } = useResumeTracker();
+
+  const {
     alert,
     isLoading: isAlertsLoading,
     error: alertsError,
@@ -74,10 +88,24 @@ export default function TrackerDetails() {
   const totalAlertsPages = getTotalPages(alert.length);
 
   useEffect(() => {
+    if (!trackerId) return;
+
     fetchTracker(trackerId);
     fetchAlert(trackerId);
     fetchChange(trackerId);
   }, [trackerId]);
+
+  const handleToggleTrackerStatus = async () => {
+    if (!tracker?.id) return;
+  
+    if (tracker.status === TrackerStatusEnum.PAUSED) {
+      await resume(tracker.id);
+    } else {
+      await pause(tracker.id);
+    }
+  
+    await fetchTracker(tracker.id);
+  };
 
   if (isTrackerLoading) {
     return <PageLoader message="Loading tracker page..." />;
@@ -90,6 +118,10 @@ export default function TrackerDetails() {
   if (isChangesLoading) {
     return <PageLoader message="Loading recent changes..." />;
   }
+
+  // if (isPauseLoading || isResumeLoading) {
+  //   return <PageLoader message="Updating tracker status..." />;
+  // }
 
   if (trackerError) {
     return (
@@ -108,6 +140,28 @@ export default function TrackerDetails() {
         message={alertsError}
         onRetry={() => {
           fetchAlert(trackerId);
+        }}
+      />
+    );
+  }
+
+  if (pauseError) {
+    return (
+      <PageError
+        message={pauseError}
+        onRetry={() => {
+          fetchChange(trackerId)
+        }}
+      />
+    );
+  }
+
+  if (resumeError) {
+    return (
+      <PageError
+        message={resumeError}
+        onRetry={() => {
+          fetchChange(trackerId)
         }}
       />
     );
@@ -208,13 +262,14 @@ export default function TrackerDetails() {
             <Button
               type="button"
               className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)]"
+              onClick={handleToggleTrackerStatus}
             >
-              {isPaused ? (
+              {tracker?.status === TrackerStatusEnum.PAUSED ? (
                 <FiPlayCircle size={16} />
               ) : (
                 <FiPauseCircle size={16} />
               )}
-              {isPaused ? "Resume" : "Pause"}
+              {tracker?.status === TrackerStatusEnum.PAUSED ? "Resume" : "Pause"}
             </Button>
 
             <Button

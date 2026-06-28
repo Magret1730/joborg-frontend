@@ -36,6 +36,7 @@ export const TrackersClient = () => {
     isLoading: isPauseLoading,
     error: pauseError,
   } = usePauseTracker();
+
   const {
     resume,
     isLoading: isResumeLoading,
@@ -200,7 +201,7 @@ export const TrackersClient = () => {
                               } else {
                                 await pause(tracker.id);
                               }
-                              fetchTrackers();
+                              await fetchTrackers();
                             }}
                           >
                             {tracker.status === TrackerStatusEnum.PAUSED ? (
