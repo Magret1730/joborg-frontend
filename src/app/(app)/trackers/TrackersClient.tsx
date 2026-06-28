@@ -15,14 +15,29 @@ import {
   FiPlusCircle,
 } from "react-icons/fi";
 import { Button, Tooltip } from "@heroui/react";
-import { RouteEnum } from "@/enum/RouteEnum";
-import { useRouter } from "next/navigation";
+// import { RouteEnum } from "@/enum/RouteEnum";
+// import { useRouter } from "next/navigation";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 import { usePauseTracker } from "@/hooks/trackers/usePauseTracker";
 import { useResumeTracker } from "@/hooks/trackers/useResumeTracker";
+import { useState } from "react";
+import { TrackerModal } from "@/components/trackers/TrackerModal";
+import { useDeleteTracker } from "@/hooks/trackers/useDeleteTracker";
+import { usePostTracker } from "@/hooks/trackers/usePostTracker";
+import { useUpdateTracker } from "@/hooks/trackers/useUpdateTracker";
+import { TrackerPayload } from "@/types/tracker.type";
+import { TrackerModalMode } from "@/enum/TrackerModalEnum";
 
 export const TrackersClient = () => {
-  const router = useRouter();
+  // const router = useRouter();
+
+  const [isTrackerModalOpen, setIsTrackerModalOpen] = useState(false);
+  const [trackerModalMode, setTrackerModalMode] = useState<TrackerModalMode.ADD | TrackerModalMode.EDIT>(
+  TrackerModalMode.ADD
+  );
+  const [selectedTracker, setSelectedTracker] = useState<TrackerPayload | null>(
+    null
+  );
 
   const {
     trackers,
@@ -42,6 +57,24 @@ export const TrackersClient = () => {
     isLoading: isResumeLoading,
     error: resumeError,
   } = useResumeTracker();
+
+  // const {
+  //   deleteTracker,
+  //   isLoading: isDeleteLoading,
+  //   error: deleteError,
+  // } = useDeleteTracker();
+
+  const {
+    createTracker,
+    isLoading: isCreateLoading,
+    error: createError,
+  } = usePostTracker();
+
+  const {
+    modifyTracker,
+    isLoading: isUpdateLoading,
+    error: updateError,
+  } = useUpdateTracker();
 
   useEffect(() => {
     fetchTrackers();
@@ -91,6 +124,41 @@ export const TrackersClient = () => {
   const tooltipClass =
     "rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--text)] shadow-lg";
 
+  const openAddTrackerModal = () => {
+    setTrackerModalMode(TrackerModalMode.ADD);
+    setSelectedTracker(null);
+    setIsTrackerModalOpen(true);
+  };
+
+  const openEditTrackerModal = (tracker: TrackerPayload) => {
+    setTrackerModalMode(TrackerModalMode.EDIT);
+    setSelectedTracker(tracker);
+    setIsTrackerModalOpen(true);
+  };
+
+  const closeTrackerModal = () => {
+    setIsTrackerModalOpen(false);
+    setSelectedTracker(null);
+  };
+
+  const handleSaveTracker = async (payload: {
+    company_name: string;
+    url: string;
+    label?: string;
+    status: string;
+  }) => {
+    if (trackerModalMode === TrackerModalMode.EDIT && selectedTracker) {
+      await modifyTracker(selectedTracker.id, payload);
+    } else {
+      await createTracker(payload);
+    }
+
+    await fetchTrackers();
+    closeTrackerModal();
+  };
+
+  const isSavingTracker = isCreateLoading || isUpdateLoading;
+
   return (
     <section className="space-y-8">
       <div className="flex items-center justify-between ">
@@ -105,8 +173,8 @@ export const TrackersClient = () => {
 
         <Button
           type="button"
-          onClick={() => router.push(RouteEnum.ADD_TRACKER)}
           className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+          onClick={openAddTrackerModal}
         >
           <FiPlusCircle size={16} className="mr-2" />
           Add Tracker
@@ -242,6 +310,7 @@ export const TrackersClient = () => {
                             isIconOnly
                             aria-label="Edit tracker"
                             className="h-9 w-9 min-w-0 p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
+                            onClick={() => openEditTrackerModal(tracker)}
                           >
                             <FiEdit2 size={16} />
                           </Button>
@@ -291,6 +360,16 @@ export const TrackersClient = () => {
           </table>
         </div>
       </div>
+
+      {/* *************************************************************** */}
+      <TrackerModal
+        isOpen={isTrackerModalOpen}
+        mode={trackerModalMode}
+        tracker={selectedTracker}
+        isLoading={isSavingTracker}
+        onClose={closeTrackerModal}
+        onSubmit={handleSaveTracker}
+      />
     </section>
   );
 };

@@ -1,4 +1,8 @@
-import { TrackersResponse, TrackerResponse } from "@/types/tracker.type";
+import {
+  TrackersResponse,
+  TrackerResponse,
+  UpdateTrackerPayload,
+} from "@/types/tracker.type";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 if (!BACKEND_URL) {
@@ -97,7 +101,10 @@ export const deleteTracker = async (id: string): Promise<TrackerResponse> => {
 };
 
 // update tracker by id
-export const updateTracker = async (id: string): Promise<TrackerResponse> => {
+export const updateTracker = async (
+  id: string,
+  payload: UpdateTrackerPayload
+): Promise<TrackerResponse> => {
   try {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
@@ -110,6 +117,7 @@ export const updateTracker = async (id: string): Promise<TrackerResponse> => {
           Authorization: `Bearer ${token}`,
         }),
       },
+      body: JSON.stringify(payload),
     });
 
     const data = await response.json();

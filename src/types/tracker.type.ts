@@ -23,3 +23,17 @@ export type TrackerResponse = {
   message: string;
   data: TrackerPayload;
 };
+
+export type CreateTrackerPayload = {
+  company_name: string;
+  url: string;
+  label?: string;
+  status?: string;
+};
+
+export type UpdateTrackerPayload = {
+  company_name?: string;
+  url?: string;
+  label?: string;
+  status?: string;
+};
