@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { TrackerClient } from "@/app/(app)/trackers/TrackerClient";
+import { TrackersClient } from "@/app/(app)/trackers/TrackersClient";
 
 export const metadata: Metadata = {
-  title: "Tracker",
-  description: "Overview of your career tracker page monitoring.",
+  title: "Trackers",
+  description: "Overview of your career trackers page monitoring.",
 };
 
 export default function TrackerPage() {
-  return <TrackerClient />;
+  return <TrackersClient />;
 }

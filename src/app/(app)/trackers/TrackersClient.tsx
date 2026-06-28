@@ -17,8 +17,9 @@ import {
 import { Button, Tooltip } from "@heroui/react";
 import { RouteEnum } from "@/enum/RouteEnum";
 import { useRouter } from "next/navigation";
+import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 
-export const TrackerClient = () => {
+export const TrackersClient = () => {
   const router = useRouter();
 
   const {
@@ -50,7 +51,7 @@ export const TrackerClient = () => {
   const tooltipClass =
     "rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--text)] shadow-lg";
 
-  console.log("trackers", trackers);
+  // console.log("trackers", trackers);
 
   return (
     <section className="space-y-8">
@@ -151,13 +152,13 @@ export const TrackerClient = () => {
                           type="button"
                           isIconOnly
                           aria-label={
-                            tracker.status === "PAUSED"
+                            tracker.status === TrackerStatusEnum.PAUSED
                               ? "Resume tracker"
                               : "Pause tracker"
                           }
                           className="h-9 w-9 min-w-0 p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
                         >
-                          {tracker.status === "PAUSED" ? (
+                          {tracker.status === TrackerStatusEnum.PAUSED ? (
                             <FiPlayCircle size={16} />
                           ) : (
                             <FiPauseCircle size={16} />
@@ -166,7 +167,7 @@ export const TrackerClient = () => {
 
                         <Tooltip.Content className={tooltipClass}>
                           <p>
-                            {tracker.status === "PAUSED"
+                            {tracker.status === TrackerStatusEnum.PAUSED
                               ? "Resume tracker"
                               : "Pause tracker"}
                           </p>
@@ -174,14 +175,15 @@ export const TrackerClient = () => {
                       </Tooltip>
 
                       <Tooltip delay={0}>
-                        <Button
+                        <Link
+                          href={`/trackers/${tracker.id}`}
                           type="button"
-                          isIconOnly
+                          // isIconOnly
                           aria-label="View tracker"
-                          className="h-9 w-9 min-w-0 p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
+                          className="h-9 w-9 min-w-0 flex items-center justify-center p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
                         >
                           <FiEye size={16} />
-                        </Button>
+                        </Link>
 
                         <Tooltip.Content className={tooltipClass}>
                           <p>View tracker</p>

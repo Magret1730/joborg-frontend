@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { getTracker } from "@/api/trackersApi";
 import { TrackerPayload } from "@/types/tracker.type.js";
 
-export const useGetTracker = (id: string) => {
-  const [tracker, setTracker] = useState<TrackerPayload[]>([]);
+export const useGetTracker = () => {
+  const [tracker, setTracker] = useState<TrackerPayload>();
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchTracker = async () => {
+  const fetchTracker = async (id: string) => {
     try {
       setIsLoading(true);
       setError("");
@@ -26,9 +26,9 @@ export const useGetTracker = (id: string) => {
     }
   };
 
-  useEffect(() => {
-    fetchTracker();
-  }, [id]);
+  // useEffect(() => {
+  //   fetchTracker();
+  // }, [id]);
 
   return {
     tracker,
