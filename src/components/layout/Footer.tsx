@@ -20,7 +20,7 @@ const FOOTER_LINKS: {
     links: [
       { label: "FAQ", href: "#faq" },
       { label: "Help Center", href: "#help-center" },
-      { label: "Guides", href: "#guides" },
+      { label: "Feedback", href: "#feedback" },
       { label: "API", href: "#api" },
     ],
   },

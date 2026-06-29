@@ -295,7 +295,7 @@ export const DashboardClient = () => {
                         <p>No trackers added yet.</p>
                         <Button
                           type="button"
-                          onClick={() => router.push(RouteEnum.ADD_TRACKER)}
+                          onClick={openAddTrackerModal}
                           className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
                         >
                           <FiPlusCircle size={16} className="mr-2" />
@@ -392,7 +392,7 @@ export const DashboardClient = () => {
                         <p>No alerts sent yet.</p>
                         <Button
                           type="button"
-                          onClick={() => router.push(RouteEnum.ADD_TRACKER)}
+                          onClick={openAddTrackerModal}
                           className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
                         >
                           <FiPlusCircle size={16} className="mr-2" />
