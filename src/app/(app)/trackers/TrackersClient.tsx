@@ -48,35 +48,15 @@ export const TrackersClient = () => {
     fetchTrackers,
   } = useGetTrackers();
 
-  const {
-    pause,
-    isLoading: isPauseLoading,
-    error: pauseError,
-  } = usePauseTracker();
+  const { pause } = usePauseTracker();
 
-  const {
-    resume,
-    isLoading: isResumeLoading,
-    error: resumeError,
-  } = useResumeTracker();
+  const { resume } = useResumeTracker();
 
-  const {
-    removeTracker,
-    isLoading: isDeleteLoading,
-    error: deleteError,
-  } = useDeleteTracker();
+  const { removeTracker, isLoading: isDeleteLoading } = useDeleteTracker();
 
-  const {
-    createTracker,
-    isLoading: isCreateLoading,
-    error: createError,
-  } = usePostTracker();
+  const { createTracker, isLoading: isCreateLoading } = usePostTracker();
 
-  const {
-    modifyTracker,
-    isLoading: isUpdateLoading,
-    error: updateError,
-  } = useUpdateTracker();
+  const { modifyTracker, isLoading: isUpdateLoading } = useUpdateTracker();
 
   useEffect(() => {
     fetchTrackers();
@@ -86,69 +66,10 @@ export const TrackersClient = () => {
     return <PageLoader message="Loading trackers page..." />;
   }
 
-  if (isPauseLoading || isResumeLoading) {
-    return <PageLoader message="Updating tracker status..." />;
-  }
-
   if (trackerError) {
     return (
       <PageError
         message={trackerError}
-        onRetry={() => {
-          fetchTrackers();
-        }}
-      />
-    );
-  }
-
-  if (pauseError) {
-    return (
-      <PageError
-        message={pauseError}
-        onRetry={() => {
-          fetchTrackers();
-        }}
-      />
-    );
-  }
-
-  if (resumeError) {
-    return (
-      <PageError
-        message={resumeError}
-        onRetry={() => {
-          fetchTrackers();
-        }}
-      />
-    );
-  }
-
-  if (deleteError) {
-    return (
-      <PageError
-        message={deleteError}
-        onRetry={() => {
-          fetchTrackers();
-        }}
-      />
-    );
-  }
-
-  if (createError) {
-    return (
-      <PageError
-        message={createError}
-        onRetry={() => {
-          fetchTrackers();
-        }}
-      />
-    );
-  }
-
-  if (updateError) {
-    return (
-      <PageError
-        message={updateError}
         onRetry={() => {
           fetchTrackers();
         }}
@@ -189,16 +110,27 @@ export const TrackersClient = () => {
   const handleConfirmDeleteTracker = async () => {
     if (!trackerToDelete) return;
 
-    const response = await removeTracker(trackerToDelete.id);
-    if (response?.success === false) {
-      toast.error(response.message || "Failed to delete tracker.");
-      setIsTrackerModalOpen(false);
-      return;
-    }
+    try {
+      const response = await removeTracker(trackerToDelete.id);
 
-    await fetchTrackers();
-    closeDeleteModal();
-    toast.success(response?.message || `Tracker "${trackerToDelete.company_name}" deleted successfully.`);
+      if (!response?.success) {
+        toast.error(response?.message || "Failed to delete tracker.");
+        return;
+      }
+
+      await fetchTrackers();
+      closeDeleteModal();
+
+      toast.success(
+        response?.message ||
+          `Tracker "${trackerToDelete.company_name}" deleted successfully.`
+      );
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to delete tracker.";
+
+      toast.error(message);
+    }
   };
 
   const handleSaveTracker = async (payload: {
@@ -207,27 +139,44 @@ export const TrackersClient = () => {
     label?: string;
     status: string;
   }) => {
-    if (trackerModalMode === TrackerModalMode.EDIT && selectedTracker) {
-      const response = await modifyTracker(selectedTracker.id, payload);
-      if (response?.success === false) {
-        toast.error(response.message || "Failed to update tracker.");
-        return;
+    try {
+      if (trackerModalMode === TrackerModalMode.EDIT && selectedTracker) {
+        const response = await modifyTracker(selectedTracker.id, payload);
+
+        if (!response?.success) {
+          toast.error(response?.message || "Failed to update tracker.");
+          return;
+        }
+
+        toast.success(
+          `Tracker "${payload.company_name}" updated successfully.`
+        );
+      } else {
+        const response = await createTracker(payload);
+
+        if (!response?.success) {
+          toast.error(response?.message || "Failed to create tracker.");
+          return;
+        }
+
+        toast.success(
+          response?.message ||
+            `Tracker "${payload.company_name}" created successfully.`
+        );
       }
 
-      toast.success(`Tracker "${payload.company_name}" updated successfully.`);
-    } else {
-      const response = await createTracker(payload);
-      if (response?.success === false) {
-        toast.error(response.message || "Failed to create tracker.");
-        setIsTrackerModalOpen(false);
-        return;
-      }
+      await fetchTrackers();
 
-      toast.success(response?.message || `Tracker "${payload.company_name}" created successfully.`);
+      // close only after success
+      closeTrackerModal();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to save tracker.";
+
+      toast.error(message);
+
+      // do not close modal
     }
-
-    await fetchTrackers();
-    closeTrackerModal();
   };
 
   const isSavingTracker = isCreateLoading || isUpdateLoading;

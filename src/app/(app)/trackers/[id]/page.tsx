@@ -23,7 +23,7 @@ import { getStatusClass } from "@/lib/getStatusClass";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 import { useEffect, useState } from "react";
 import { useGetTracker } from "@/hooks/trackers/useGetTracker";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useGetAlert } from "@/hooks/alerts/useGetAlert";
 import { useGetChange } from "@/hooks/changes/useGetChange";
 import { usePauseTracker } from "@/hooks/trackers/usePauseTracker";
@@ -33,6 +33,8 @@ import { TrackerModalMode } from "@/enum/TrackerModalEnum";
 import { TrackerPayload } from "@/types/tracker.type";
 import { toast } from "react-toastify";
 import { TrackerModal } from "@/components/trackers/TrackerModal";
+import { DeleteTrackerModal } from "@/components/trackers/DeleteTrackerModal";
+import { useDeleteTracker } from "@/hooks/trackers/useDeleteTracker";
 
 const PAGE_SIZE = 5;
 
@@ -53,8 +55,13 @@ export default function TrackerDetails() {
   const [selectedTracker, setSelectedTracker] = useState<TrackerPayload | null>(
     null
   );
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [trackerToDelete, setTrackerToDelete] = useState<TrackerPayload | null>(
+    null
+  );
 
   const params = useParams();
+  const router = useRouter();
 
   const trackerId = params?.id as string;
 
@@ -65,17 +72,9 @@ export default function TrackerDetails() {
     fetchTracker,
   } = useGetTracker();
 
-  const {
-    pause,
-    isLoading: isPauseLoading,
-    error: pauseError,
-  } = usePauseTracker();
+  const { pause, isLoading: isPauseLoading } = usePauseTracker();
 
-  const {
-    resume,
-    isLoading: isResumeLoading,
-    error: resumeError,
-  } = useResumeTracker();
+  const { resume, isLoading: isResumeLoading } = useResumeTracker();
 
   const {
     alert,
@@ -91,11 +90,9 @@ export default function TrackerDetails() {
     fetchChange,
   } = useGetChange();
 
-  const {
-    modifyTracker,
-    isLoading: isUpdateLoading,
-    error: updateError,
-  } = useUpdateTracker();
+  const { modifyTracker, isLoading: isUpdateLoading } = useUpdateTracker();
+
+  const { removeTracker, isLoading: isDeleteLoading } = useDeleteTracker();
 
   const [changesPage, setChangesPage] = useState(1);
   const [alertsPage, setAlertsPage] = useState(1);
@@ -117,13 +114,36 @@ export default function TrackerDetails() {
   const handleToggleTrackerStatus = async () => {
     if (!tracker?.id) return;
 
-    if (tracker.status === TrackerStatusEnum.PAUSED) {
-      await resume(tracker.id);
-    } else {
-      await pause(tracker.id);
-    }
+    try {
+      if (tracker.status === TrackerStatusEnum.PAUSED) {
+        const response = await resume(tracker.id);
 
-    await fetchTracker(tracker.id);
+        if (!response?.success) {
+          toast.error(response?.message || "Failed to resume tracker.");
+          return;
+        }
+
+        toast.success(response?.message || "Tracker resumed successfully.");
+      } else {
+        const response = await pause(tracker.id);
+
+        if (!response?.success) {
+          toast.error(response?.message || "Failed to pause tracker.");
+          return;
+        }
+
+        toast.success(response?.message || "Tracker paused successfully.");
+      }
+
+      await fetchTracker(tracker.id);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to update tracker status.";
+
+      toast.error(message);
+    }
   };
 
   if (isTrackerLoading) {
@@ -136,21 +156,6 @@ export default function TrackerDetails() {
 
   if (isChangesLoading) {
     return <PageLoader message="Loading recent changes..." />;
-  }
-
-  if (isPauseLoading) {
-    return <PageLoader message="Pausing tracker..." />;
-  }
-
-  if (updateError) {
-    return (
-      <PageError
-        message={updateError}
-        onRetry={() => {
-          fetchTracker(trackerId);
-        }}
-      />
-    );
   }
 
   if (trackerError) {
@@ -170,28 +175,6 @@ export default function TrackerDetails() {
         message={alertsError}
         onRetry={() => {
           fetchAlert(trackerId);
-        }}
-      />
-    );
-  }
-
-  if (pauseError) {
-    return (
-      <PageError
-        message={pauseError}
-        onRetry={() => {
-          fetchChange(trackerId);
-        }}
-      />
-    );
-  }
-
-  if (resumeError) {
-    return (
-      <PageError
-        message={resumeError}
-        onRetry={() => {
-          fetchChange(trackerId);
         }}
       />
     );
@@ -219,7 +202,16 @@ export default function TrackerDetails() {
     setSelectedTracker(null);
   };
 
-  const isPaused = tracker?.status === TrackerStatusEnum.PAUSED;
+  const openDeleteModal = (tracker: TrackerPayload) => {
+    setTrackerToDelete(tracker);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setTrackerToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
+
   const totalAlerts = alert?.length || 0;
   const totalChanges = change?.length || 0;
 
@@ -236,18 +228,62 @@ export default function TrackerDetails() {
     label?: string;
     status: string;
   }) => {
-    if (trackerModalMode === TrackerModalMode.EDIT && selectedTracker) {
-      const response = await modifyTracker(selectedTracker.id, payload);
-      if (response?.success === false) {
-        toast.error(response.message || "Failed to update tracker.");
+    try {
+      if (trackerModalMode === TrackerModalMode.EDIT && selectedTracker) {
+        const response = await modifyTracker(selectedTracker.id, payload);
+
+        if (!response?.success) {
+          toast.error(response?.message || "Failed to update tracker.");
+          return;
+        }
+
+        toast.success(
+          response?.message ||
+            `Tracker "${payload.company_name}" updated successfully.`
+        );
+
+        await fetchTracker(trackerId);
+
+        // close only after success
+        closeTrackerModal();
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to update tracker.";
+
+      toast.error(message);
+
+      // do not close modal
+    }
+  };
+
+  const handleConfirmDeleteTracker = async () => {
+    if (!trackerToDelete) return;
+
+    try {
+      const response = await removeTracker(trackerToDelete.id);
+
+      if (!response?.success) {
+        toast.error(response?.message || "Failed to delete tracker.");
         return;
       }
 
-      toast.success(`Tracker "${payload.company_name}" updated successfully.`);
-    }
+      toast.success(
+        response?.message ||
+          `Tracker "${trackerToDelete.company_name}" deleted successfully.`
+      );
 
-    await fetchTracker(trackerId);
-    closeTrackerModal();
+      closeDeleteModal();
+
+      router.push(RouteEnum.TRACKERS);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to delete tracker.";
+
+      toast.error(message);
+
+      // keep delete modal open
+    }
   };
 
   return (
@@ -323,7 +359,8 @@ export default function TrackerDetails() {
 
             <Button
               type="button"
-              className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)] cursor-pointer"
+              isDisabled={isPauseLoading || isResumeLoading}
+              className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)] disabled:cursor-not-allowed disabled:opacity-60"
               onClick={handleToggleTrackerStatus}
             >
               {tracker?.status === TrackerStatusEnum.PAUSED ? (
@@ -331,7 +368,10 @@ export default function TrackerDetails() {
               ) : (
                 <FiPauseCircle size={16} />
               )}
-              {tracker?.status === TrackerStatusEnum.PAUSED
+
+              {isPauseLoading || isResumeLoading
+                ? "Updating..."
+                : tracker?.status === TrackerStatusEnum.PAUSED
                 ? "Resume"
                 : "Pause"}
             </Button>
@@ -339,6 +379,7 @@ export default function TrackerDetails() {
             <Button
               type="button"
               className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-red-200 bg-transparent px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50 dark:border-red-500/30 dark:hover:bg-red-500/10"
+              onClick={() => tracker && openDeleteModal(tracker)}
             >
               <FiTrash2 size={16} />
               Delete
@@ -669,15 +710,23 @@ export default function TrackerDetails() {
         </div>
       </div>
 
-            {/* *************************************************************** */}
-            <TrackerModal
-              isOpen={isTrackerModalOpen}
-              mode={trackerModalMode}
-              tracker={selectedTracker}
-              isLoading={isUpdateLoading}
-              onClose={closeTrackerModal}
-              onSubmit={handleUpdateTracker}
-            />
+      {/* *************************************************************** */}
+      <TrackerModal
+        isOpen={isTrackerModalOpen}
+        mode={trackerModalMode}
+        tracker={selectedTracker}
+        isLoading={isUpdateLoading}
+        onClose={closeTrackerModal}
+        onSubmit={handleUpdateTracker}
+      />
+
+      <DeleteTrackerModal
+        isOpen={isDeleteModalOpen}
+        trackerName={trackerToDelete?.company_name}
+        isLoading={isDeleteLoading}
+        onClose={closeDeleteModal}
+        onConfirm={handleConfirmDeleteTracker}
+      />
     </section>
   );
 }
