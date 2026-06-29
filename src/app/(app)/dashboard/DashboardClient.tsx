@@ -76,42 +76,6 @@ export const DashboardClient = () => {
     fetchAlerts();
   }, []);
 
-  // const handleSaveTracker = async (payload: {
-  //   company_name: string;
-  //   url: string;
-  //   label?: string;
-  //   status: string;
-  // }) => {
-  //   try {
-  //       const response = await createTracker(payload);
-
-  //       if (!response?.success) {
-  //         toast.error(response?.message || "Failed to create tracker.");
-  //         return;
-  //       }
-
-  //       toast.success(
-  //         response?.message ||
-  //           `Tracker "${payload.company_name}" created successfully.`
-  //       );
-  //     }
-
-  //     await fetchTrackers();
-
-  //     // close only after success
-  //     closeTrackerModal();
-  //   } catch (error) {
-  //     const message =
-  //       error instanceof Error ? error.message : "Failed to save tracker.";
-
-  //     toast.error(message);
-
-  //     // do not close modal
-  //   } finally {
-  //     // do not close modal
-  //   }
-  // };
-
   const handleSaveTracker = async (payload: {
     company_name: string;
     url: string;
@@ -227,14 +191,6 @@ export const DashboardClient = () => {
 
   return (
     <section className="space-y-8">
-      {/* <div>
-        <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] sm:text-4xl">
-          Dashboard
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)] sm:text-base">
-          Overview of your career page monitoring.
-        </p>
-      </div> */}
       <div className="flex items-center justify-between ">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] sm:text-4xl">
@@ -350,7 +306,8 @@ export const DashboardClient = () => {
                   slicedTrackers.map((tracker, index) => (
                     <tr
                       key={`${index}`}
-                      className="transition hover:bg-[var(--surface-hover)]"
+                      className="transition hover:bg-[var(--surface-hover)] cursor-pointer"
+                      onClick={() => router.push(`/trackers/${tracker.id}`)}
                     >
                       <td className="pl-5 pr-2 py-4 font-medium text-[var(--text)]">
                         {tracker.company_name}
