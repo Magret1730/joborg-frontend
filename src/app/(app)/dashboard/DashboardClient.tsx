@@ -249,7 +249,7 @@ export const DashboardClient = () => {
           <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
             <div>
               <h2 className="text-base font-semibold text-[var(--text)]">
-                Recent Page Changes
+                Recent Tracker Changes
               </h2>
               <p className="mt-1 text-xs text-[var(--muted)]">
                 Latest detected updates from tracked career pages.
@@ -291,15 +291,17 @@ export const DashboardClient = () => {
                       colSpan={5}
                       className="text-center py-4 text-[var(--muted)]"
                     >
-                      No trackers added yet.
-                      <Button
-                        type="button"
-                        onClick={() => router.push(RouteEnum.ADD_TRACKER)}
-                        className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
-                      >
-                        <FiPlusCircle size={16} className="mr-2" />
-                        Add Tracker
-                      </Button>
+                      <div className="flex flex-col items-center justify-center gap-2">
+                        <p>No trackers added yet.</p>
+                        <Button
+                          type="button"
+                          onClick={() => router.push(RouteEnum.ADD_TRACKER)}
+                          className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+                        >
+                          <FiPlusCircle size={16} className="mr-2" />
+                          Add Tracker
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ) : (
@@ -386,15 +388,17 @@ export const DashboardClient = () => {
                       colSpan={4}
                       className="text-center py-4 text-[var(--muted)]"
                     >
-                      No alerts sent yet.
-                      <Button
-                        type="button"
-                        onClick={() => router.push(RouteEnum.ADD_TRACKER)}
-                        className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
-                      >
-                        <FiPlusCircle size={16} className="mr-2" />
-                        Add Tracker
-                      </Button>
+                      <div className="flex flex-col items-center justify-center gap-2">
+                        <p>No alerts sent yet.</p>
+                        <Button
+                          type="button"
+                          onClick={() => router.push(RouteEnum.ADD_TRACKER)}
+                          className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+                        >
+                          <FiPlusCircle size={16} className="mr-2" />
+                          Add Tracker
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ) : (
