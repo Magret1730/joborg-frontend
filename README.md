@@ -112,3 +112,8 @@ Some features may currently use placeholder content or mock UI while backend int
     Alert Page
     Settings Page
  -->
+
+ <!-- 
+ 1. Let users add as much trackers as they want to add
+ 2. But limit trackers to just 10 trackers.. put message to avoid ...
+  -->

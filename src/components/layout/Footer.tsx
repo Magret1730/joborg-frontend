@@ -18,7 +18,7 @@ const FOOTER_LINKS: {
   {
     title: "Resources",
     links: [
-      { label: "Blog", href: "#blog" },
+      { label: "FAQ", href: "#faq" },
       { label: "Help Center", href: "#help-center" },
       { label: "Guides", href: "#guides" },
       { label: "API", href: "#api" },
