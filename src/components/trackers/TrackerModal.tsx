@@ -144,7 +144,7 @@ export const TrackerModal = ({
               </div>
             </div>
 
-            {isEditMode && (
+            {/* {isEditMode && (
               <div>
                 <label className="mb-2 block text-sm font-semibold text-[var(--text)]">
                   Status
@@ -160,7 +160,7 @@ export const TrackerModal = ({
                   <option value="PAUSED">Paused</option>
                 </select>
               </div>
-            )}
+            )} */}
 
             <div>
               <label className="mb-2 block text-sm font-semibold text-[var(--text)]">

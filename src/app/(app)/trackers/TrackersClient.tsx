@@ -232,8 +232,6 @@ export const TrackersClient = () => {
 
   const isSavingTracker = isCreateLoading || isUpdateLoading;
 
-  console.log("trackers", trackers);
-
   return (
     <section className="space-y-8">
       <div className="flex items-center justify-between ">

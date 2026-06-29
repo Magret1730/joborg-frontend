@@ -28,6 +28,11 @@ import { useGetAlert } from "@/hooks/alerts/useGetAlert";
 import { useGetChange } from "@/hooks/changes/useGetChange";
 import { usePauseTracker } from "@/hooks/trackers/usePauseTracker";
 import { useResumeTracker } from "@/hooks/trackers/useResumeTracker";
+import { useUpdateTracker } from "@/hooks/trackers/useUpdateTracker";
+import { TrackerModalMode } from "@/enum/TrackerModalEnum";
+import { TrackerPayload } from "@/types/tracker.type";
+import { toast } from "react-toastify";
+import { TrackerModal } from "@/components/trackers/TrackerModal";
 
 const PAGE_SIZE = 5;
 
@@ -41,6 +46,14 @@ const getTotalPages = (itemsLength: number) => {
 };
 
 export default function TrackerDetails() {
+  const [isTrackerModalOpen, setIsTrackerModalOpen] = useState(false);
+  const [trackerModalMode, setTrackerModalMode] = useState(
+    TrackerModalMode.EDIT
+  );
+  const [selectedTracker, setSelectedTracker] = useState<TrackerPayload | null>(
+    null
+  );
+
   const params = useParams();
 
   const trackerId = params?.id as string;
@@ -78,6 +91,12 @@ export default function TrackerDetails() {
     fetchChange,
   } = useGetChange();
 
+  const {
+    modifyTracker,
+    isLoading: isUpdateLoading,
+    error: updateError,
+  } = useUpdateTracker();
+
   const [changesPage, setChangesPage] = useState(1);
   const [alertsPage, setAlertsPage] = useState(1);
 
@@ -97,13 +116,13 @@ export default function TrackerDetails() {
 
   const handleToggleTrackerStatus = async () => {
     if (!tracker?.id) return;
-  
+
     if (tracker.status === TrackerStatusEnum.PAUSED) {
       await resume(tracker.id);
     } else {
       await pause(tracker.id);
     }
-  
+
     await fetchTracker(tracker.id);
   };
 
@@ -119,9 +138,20 @@ export default function TrackerDetails() {
     return <PageLoader message="Loading recent changes..." />;
   }
 
-  // if (isPauseLoading || isResumeLoading) {
-  //   return <PageLoader message="Updating tracker status..." />;
-  // }
+  if (isPauseLoading) {
+    return <PageLoader message="Pausing tracker..." />;
+  }
+
+  if (updateError) {
+    return (
+      <PageError
+        message={updateError}
+        onRetry={() => {
+          fetchTracker(trackerId);
+        }}
+      />
+    );
+  }
 
   if (trackerError) {
     return (
@@ -150,7 +180,7 @@ export default function TrackerDetails() {
       <PageError
         message={pauseError}
         onRetry={() => {
-          fetchChange(trackerId)
+          fetchChange(trackerId);
         }}
       />
     );
@@ -161,7 +191,7 @@ export default function TrackerDetails() {
       <PageError
         message={resumeError}
         onRetry={() => {
-          fetchChange(trackerId)
+          fetchChange(trackerId);
         }}
       />
     );
@@ -178,6 +208,17 @@ export default function TrackerDetails() {
     );
   }
 
+  const openEditTrackerModal = (tracker: TrackerPayload) => {
+    setTrackerModalMode(TrackerModalMode.EDIT);
+    setSelectedTracker(tracker);
+    setIsTrackerModalOpen(true);
+  };
+
+  const closeTrackerModal = () => {
+    setIsTrackerModalOpen(false);
+    setSelectedTracker(null);
+  };
+
   const isPaused = tracker?.status === TrackerStatusEnum.PAUSED;
   const totalAlerts = alert?.length || 0;
   const totalChanges = change?.length || 0;
@@ -188,6 +229,26 @@ export default function TrackerDetails() {
 
   const alertsStart = totalAlerts === 0 ? 0 : (alertsPage - 1) * PAGE_SIZE + 1;
   const alertsEnd = Math.min(alertsPage * PAGE_SIZE, totalAlerts);
+
+  const handleUpdateTracker = async (payload: {
+    company_name: string;
+    url: string;
+    label?: string;
+    status: string;
+  }) => {
+    if (trackerModalMode === TrackerModalMode.EDIT && selectedTracker) {
+      const response = await modifyTracker(selectedTracker.id, payload);
+      if (response?.success === false) {
+        toast.error(response.message || "Failed to update tracker.");
+        return;
+      }
+
+      toast.success(`Tracker "${payload.company_name}" updated successfully.`);
+    }
+
+    await fetchTracker(trackerId);
+    closeTrackerModal();
+  };
 
   return (
     <section className="space-y-6">
@@ -245,7 +306,7 @@ export default function TrackerDetails() {
               onClick={() =>
                 window.open(tracker?.url, "_blank", "noopener,noreferrer")
               }
-              className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)]"
+              className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)] cursor-pointer"
             >
               <FiExternalLink size={16} />
               Open URL
@@ -253,7 +314,8 @@ export default function TrackerDetails() {
 
             <Button
               type="button"
-              className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)]"
+              className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)] cursor-pointer"
+              onClick={() => tracker && openEditTrackerModal(tracker)}
             >
               <FiEdit2 size={16} />
               Edit
@@ -261,7 +323,7 @@ export default function TrackerDetails() {
 
             <Button
               type="button"
-              className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)]"
+              className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)] cursor-pointer"
               onClick={handleToggleTrackerStatus}
             >
               {tracker?.status === TrackerStatusEnum.PAUSED ? (
@@ -269,7 +331,9 @@ export default function TrackerDetails() {
               ) : (
                 <FiPauseCircle size={16} />
               )}
-              {tracker?.status === TrackerStatusEnum.PAUSED ? "Resume" : "Pause"}
+              {tracker?.status === TrackerStatusEnum.PAUSED
+                ? "Resume"
+                : "Pause"}
             </Button>
 
             <Button
@@ -604,6 +668,16 @@ export default function TrackerDetails() {
           </div>
         </div>
       </div>
+
+            {/* *************************************************************** */}
+            <TrackerModal
+              isOpen={isTrackerModalOpen}
+              mode={trackerModalMode}
+              tracker={selectedTracker}
+              isLoading={isUpdateLoading}
+              onClose={closeTrackerModal}
+              onSubmit={handleUpdateTracker}
+            />
     </section>
   );
 }
