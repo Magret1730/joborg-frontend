@@ -1,4 +1,4 @@
-import { AlertResponse } from "@/types/alert.type";
+import { ChangeResponse, ChangePayload, ChangesResponse } from "@/types/change.type";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 if (!BACKEND_URL) {
@@ -7,12 +7,12 @@ if (!BACKEND_URL) {
   );
 }
 
-export const getAlerts = async (): Promise<AlertResponse> => {
+export const getChanges = async (): Promise<ChangesResponse> => {
   try {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
 
-    const response = await fetch(`${BACKEND_URL}/alerts/`, {
+    const response = await fetch(`${BACKEND_URL}/changes/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -25,22 +25,22 @@ export const getAlerts = async (): Promise<AlertResponse> => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || data.error || "Failed to fetch alerts");
+      throw new Error(data.message || data.error || "Failed to fetch changes");
     }
 
     return data;
   } catch (error) {
-    console.error("Error in Get Alerts API:", error);
+    console.error("Error in Get Changes API:", error);
     throw error;
   }
 };
 
-export const getAlert = async (trackerId: string): Promise<AlertResponse> => {
+export const getChange = async (trackerId: string): Promise<ChangeResponse> => {
   try {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
 
-    const response = await fetch(`${BACKEND_URL}/alerts/tracker/${trackerId}`, {
+    const response = await fetch(`${BACKEND_URL}/changes/tracker/${trackerId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -52,13 +52,13 @@ export const getAlert = async (trackerId: string): Promise<AlertResponse> => {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.message || data.error || "Failed to fetch alerts");
-    }
+    // if (!response.ok) {
+    //   throw new Error(data.message || data.error || "Failed to fetch changes");
+    // }
 
     return data;
   } catch (error) {
-    console.error("Error in Get Tracker Alerts API:", error);
+    console.error("Error in Get Tracker Changes API:", error);
     throw error;
   }
 };

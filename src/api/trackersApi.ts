@@ -1,4 +1,8 @@
-import { TrackerResponse } from "@/types/tracker.type";
+import {
+  TrackersResponse,
+  TrackerResponse,
+  UpdateTrackerPayload,
+} from "@/types/tracker.type";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 if (!BACKEND_URL) {
@@ -8,7 +12,7 @@ if (!BACKEND_URL) {
 }
 
 // get all trackers
-export const getTrackers = async (): Promise<TrackerResponse> => {
+export const getTrackers = async (): Promise<TrackersResponse> => {
   try {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
@@ -37,14 +41,14 @@ export const getTrackers = async (): Promise<TrackerResponse> => {
 };
 
 // get tracker by id
-export const getTracker = async (
-  id: string
-): Promise<TrackerResponse> => {
+export const getTracker = async (id: string): Promise<TrackerResponse> => {
   try {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
 
-    const response = await fetch(`${BACKEND_URL}/trackers/:id`, {
+    const url = `${BACKEND_URL}/trackers/${id}`;
+
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -68,14 +72,12 @@ export const getTracker = async (
 };
 
 // get tracker by id
-export const deleteTracker = async (
-  id: string
-): Promise<TrackerResponse> => {
+export const deleteTracker = async (id: string): Promise<TrackerResponse> => {
   try {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
 
-    const response = await fetch(`${BACKEND_URL}/trackers/:id`, {
+    const response = await fetch(`${BACKEND_URL}/trackers/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -100,13 +102,14 @@ export const deleteTracker = async (
 
 // update tracker by id
 export const updateTracker = async (
-  id: string
+  id: string,
+  payload: UpdateTrackerPayload
 ): Promise<TrackerResponse> => {
   try {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
 
-    const response = await fetch(`${BACKEND_URL}/trackers/:id`, {
+    const response = await fetch(`${BACKEND_URL}/trackers/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -114,13 +117,14 @@ export const updateTracker = async (
           Authorization: `Bearer ${token}`,
         }),
       },
+      body: JSON.stringify(payload),
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.message || data.error || "Update Tracker failed");
-    }
+    // if (!response.ok) {
+    //   throw new Error(data.message || data.error || "Update Tracker failed");
+    // }
 
     return data;
   } catch (error) {
@@ -130,14 +134,14 @@ export const updateTracker = async (
 };
 
 // pause tracker by id
-export const pauseTracker = async (
-  id: string
-): Promise<TrackerResponse> => {
+export const pauseTracker = async (id: string): Promise<TrackerResponse> => {
   try {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
 
-    const response = await fetch(`${BACKEND_URL}/trackers/:id/pause`, {
+    const url = `${BACKEND_URL}/trackers/${id}/pause`;
+
+    const response = await fetch(url, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -161,14 +165,12 @@ export const pauseTracker = async (
 };
 
 // resume tracker by id
-export const resumeTracker = async (
-  id: string
-): Promise<TrackerResponse> => {
+export const resumeTracker = async (id: string): Promise<TrackerResponse> => {
   try {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
 
-    const response = await fetch(`${BACKEND_URL}/trackers/:id/resume`, {
+    const response = await fetch(`${BACKEND_URL}/trackers/${id}/resume`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -192,9 +194,7 @@ export const resumeTracker = async (
 };
 
 // check-now
-export const checkNowTracker = async (
-  id: string
-): Promise<TrackerResponse> => {
+export const checkNowTracker = async (id: string): Promise<TrackerResponse> => {
   try {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
@@ -220,12 +220,10 @@ export const checkNowTracker = async (
     console.error("Error in get tracker:", error);
     throw error;
   }
-}
+};
 
 //post tracker
-export const postTracker = async (
-  payload: any
-): Promise<TrackerResponse> => {
+export const postTracker = async (payload: any): Promise<TrackerResponse> => {
   try {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
@@ -243,9 +241,9 @@ export const postTracker = async (
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.message || data.error || "Post Tracker failed");
-    }
+    // if (!response.ok) {
+    //   throw new Error(data.message || data.error || "Post Tracker failed");
+    // }
 
     return data;
   } catch (error) {
