@@ -144,24 +144,6 @@ export const TrackerModal = ({
               </div>
             </div>
 
-            {/* {isEditMode && (
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-[var(--text)]">
-                  Status
-                </label>
-                <select
-                  value={status}
-                  onChange={(event) =>
-                    setStatus(event.target.value as TrackerStatusEnum)
-                  }
-                  className="w-full rounded-[var(--radius-md)] border border-[var(--input-border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--primary)]"
-                >
-                  <option value="ACTIVE">Active</option>
-                  <option value="PAUSED">Paused</option>
-                </select>
-              </div>
-            )} */}
-
             <div>
               <label className="mb-2 block text-sm font-semibold text-[var(--text)]">
                 Label Optional

@@ -10,7 +10,7 @@ import {
   FiPlusCircle,
 } from "react-icons/fi";
 import { RouteEnum } from "@/enum/RouteEnum";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useGetTrackers } from "@/hooks/trackers/useGetTrackers";
 import { PageError, PageLoader } from "@/components/ui/PageState";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
@@ -19,15 +19,30 @@ import { useAlerts } from "@/hooks/alerts/useGetAlerts";
 import { getStatusClass } from "@/lib/getStatusClass";
 import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { usePostTracker } from "@/hooks/trackers/usePostTracker";
+import { TrackerModalMode } from "@/enum/TrackerModalEnum";
+import { TrackerPayload } from "@/types/tracker.type";
+import { toast } from "react-toastify";
+import { TrackerModal } from "@/components/trackers/TrackerModal";
 
 export const DashboardClient = () => {
   const router = useRouter();
+
+  const [isTrackerModalOpen, setIsTrackerModalOpen] = useState(false);
+  const [trackerModalMode, setTrackerModalMode] = useState<TrackerModalMode>(
+    TrackerModalMode.ADD
+  );
+  const [selectedTracker, setSelectedTracker] = useState<TrackerPayload | null>(
+    null
+  );
+
   const {
     trackers,
     isLoading: isTrackerLoading,
     error: trackerError,
     fetchTrackers,
   } = useGetTrackers();
+
   const {
     alerts,
     isLoading: isAlertsLoading,
@@ -35,10 +50,101 @@ export const DashboardClient = () => {
     fetchAlerts,
   } = useAlerts();
 
+  const {
+    createTracker,
+    isLoading: isCreateLoading,
+    error: isCreateError,
+  } = usePostTracker();
+
+  const openAddTrackerModal = () => {
+    setTrackerModalMode(TrackerModalMode.ADD);
+    setSelectedTracker(null);
+    setIsTrackerModalOpen(true);
+  };
+
+  const closeTrackerModal = () => {
+    setIsTrackerModalOpen(false);
+    setSelectedTracker(null);
+  };
+
+  const dontCloseTrackerModal = () => {
+    setIsTrackerModalOpen(true);
+  };
+
   useEffect(() => {
     fetchTrackers();
     fetchAlerts();
   }, []);
+
+  // const handleSaveTracker = async (payload: {
+  //   company_name: string;
+  //   url: string;
+  //   label?: string;
+  //   status: string;
+  // }) => {
+  //   try {
+  //       const response = await createTracker(payload);
+
+  //       if (!response?.success) {
+  //         toast.error(response?.message || "Failed to create tracker.");
+  //         return;
+  //       }
+
+  //       toast.success(
+  //         response?.message ||
+  //           `Tracker "${payload.company_name}" created successfully.`
+  //       );
+  //     }
+
+  //     await fetchTrackers();
+
+  //     // close only after success
+  //     closeTrackerModal();
+  //   } catch (error) {
+  //     const message =
+  //       error instanceof Error ? error.message : "Failed to save tracker.";
+
+  //     toast.error(message);
+
+  //     // do not close modal
+  //   } finally {
+  //     // do not close modal
+  //   }
+  // };
+
+  const handleSaveTracker = async (payload: {
+    company_name: string;
+    url: string;
+    label?: string;
+    status: string;
+  }) => {
+    try {
+      const response = await createTracker(payload);
+
+      if (!response?.success) {
+        toast.error(response?.message || "Failed to create tracker.");
+        return;
+      }
+
+      toast.success(
+        response?.message ||
+          `Tracker "${payload.company_name}" created successfully.`
+      );
+
+      await fetchTrackers();
+
+      // close only after success
+      closeTrackerModal();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to save tracker.";
+
+      toast.error(message);
+
+      // do not close modal
+      dontCloseTrackerModal();
+    }
+  };
 
   // Sort trackers by last_changed_at in descending order and slice the first 5
   const slicedTrackers = trackers.slice(0, 5).sort((a, b) => {
@@ -121,13 +227,32 @@ export const DashboardClient = () => {
 
   return (
     <section className="space-y-8">
-      <div>
+      {/* <div>
         <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] sm:text-4xl">
           Dashboard
         </h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)] sm:text-base">
           Overview of your career page monitoring.
         </p>
+      </div> */}
+      <div className="flex items-center justify-between ">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] sm:text-4xl">
+            Dashboard
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)] sm:text-base">
+            Overview of your career page monitoring.
+          </p>
+        </div>
+
+        <Button
+          type="button"
+          className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] cursor-pointer"
+          onClick={openAddTrackerModal}
+        >
+          <FiPlusCircle size={16} className="mr-2" />
+          Add Tracker
+        </Button>
       </div>
 
       {/* Stats */}
@@ -349,6 +474,16 @@ export const DashboardClient = () => {
           </div>
         </div>
       </div>
+
+      {/* *************************************************************** */}
+      <TrackerModal
+        isOpen={isTrackerModalOpen}
+        mode={trackerModalMode}
+        tracker={selectedTracker}
+        isLoading={isCreateLoading}
+        onClose={closeTrackerModal}
+        onSubmit={handleSaveTracker}
+      />
     </section>
   );
 };
