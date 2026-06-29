@@ -69,7 +69,7 @@ Runs the app in development mode.
 `npm run build  `
 Builds the app for production.
 
-`npm run start ` 
+`npm run start `
 Runs the production build.
 
 `npm run lint  `
@@ -99,3 +99,16 @@ This project is still in progress.
 The frontend is being structured to support real authentication, protected pages, API integration, reusable components, and future product expansion.
 
 Some features may currently use placeholder content or mock UI while backend integration is being completed.
+
+<!--
+    To do
+
+    Public Pages - Build
+    Posthog
+    Changes page  - Build
+    AWS hosting - This will hasten my learning on AWS deployment - Ask Babe to give me task
+    Pagination for tracker page
+    Search bar for all pages
+    Alert Page
+    Settings Page
+ -->

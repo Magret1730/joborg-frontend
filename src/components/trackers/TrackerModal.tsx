@@ -13,8 +13,9 @@ import {
 import { TrackerPayload } from "@/types/tracker.type";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 import { Spinner } from "../ui/Spinner";
+import { TrackerModalMode } from "@/enum/TrackerModalEnum";
 
-type TrackerModalMode = "add" | "edit";
+// type TrackerModalMode = "add" | "edit";
 
 type TrackerModalProps = {
   isOpen: boolean;
@@ -43,7 +44,7 @@ export const TrackerModal = ({
   const [label, setLabel] = useState("");
   const [status, setStatus] = useState(TrackerStatusEnum.ACTIVE);
 
-  const isEditMode = mode === "edit";
+  const isEditMode = mode === TrackerModalMode.EDIT;
 
   useEffect(() => {
     if (!isOpen) return;

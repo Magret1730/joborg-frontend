@@ -249,7 +249,7 @@ export const DashboardClient = () => {
           <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
             <div>
               <h2 className="text-base font-semibold text-[var(--text)]">
-                Recent Page Changes
+                Recent Tracker Changes
               </h2>
               <p className="mt-1 text-xs text-[var(--muted)]">
                 Latest detected updates from tracked career pages.
