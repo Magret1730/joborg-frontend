@@ -103,8 +103,8 @@ Some features may currently use placeholder content or mock UI while backend int
 <!--
     To do
 
-    Public Pages - Build
     Posthog
+    Public Pages - Build
     Changes page  - Build
     AWS hosting - This will hasten my learning on AWS deployment - Ask Babe to give me task
     Pagination for tracker page
