@@ -10,6 +10,7 @@ export type TrackerPayload = {
   last_checked_at: string;
   last_changed_at: string;
   scraper_type: string;
+  created_at: string;
 };
 
 export type TrackersResponse = {

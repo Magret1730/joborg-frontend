@@ -2,9 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@heroui/react";
-import { FiBriefcase, FiLink, FiPlus, FiEdit2, FiX } from "react-icons/fi";
+import {
+  FiBriefcase,
+  FiLink,
+  FiPlus,
+  FiEdit2,
+  FiX,
+  FiPlusCircle,
+} from "react-icons/fi";
 import { TrackerPayload } from "@/types/tracker.type";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
+import { Spinner } from "../ui/Spinner";
 
 type TrackerModalMode = "add" | "edit";
 
@@ -44,7 +52,9 @@ export const TrackerModal = ({
       setCompanyName(tracker.company_name || "");
       setUrl(tracker.url || "");
       setLabel(tracker.label || "");
-      setStatus(tracker.status as TrackerStatusEnum || TrackerStatusEnum.ACTIVE);
+      setStatus(
+        (tracker.status as TrackerStatusEnum) || TrackerStatusEnum.ACTIVE
+      );
     } else {
       setCompanyName("");
       setUrl("");
@@ -104,7 +114,10 @@ export const TrackerModal = ({
                 Company Name
               </label>
               <div className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--input-border)] bg-[var(--card)] px-3 py-2 focus-within:border-[var(--primary)]">
-                <FiBriefcase className="shrink-0 text-[var(--muted)]" size={16} />
+                <FiBriefcase
+                  className="shrink-0 text-[var(--muted)]"
+                  size={16}
+                />
                 <input
                   value={companyName}
                   onChange={(event) => setCompanyName(event.target.value)}
@@ -131,19 +144,23 @@ export const TrackerModal = ({
               </div>
             </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-[var(--text)]">
-                Status
-              </label>
-              <select
-                value={status}
-                onChange={(event) => setStatus(event.target.value as TrackerStatusEnum)}
-                className="w-full rounded-[var(--radius-md)] border border-[var(--input-border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--primary)]"
-              >
-                <option value="ACTIVE">Active</option>
-                <option value="PAUSED">Paused</option>
-              </select>
-            </div>
+            {isEditMode && (
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-[var(--text)]">
+                  Status
+                </label>
+                <select
+                  value={status}
+                  onChange={(event) =>
+                    setStatus(event.target.value as TrackerStatusEnum)
+                  }
+                  className="w-full rounded-[var(--radius-md)] border border-[var(--input-border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--primary)]"
+                >
+                  <option value="ACTIVE">Active</option>
+                  <option value="PAUSED">Paused</option>
+                </select>
+              </div>
+            )}
 
             <div>
               <label className="mb-2 block text-sm font-semibold text-[var(--text)]">
@@ -170,13 +187,20 @@ export const TrackerModal = ({
             <Button
               type="submit"
               isDisabled={isLoading}
-              className="rounded-[var(--radius-md)] bg-[var(--primary)] px-5 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-5 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
-              {isLoading
-                ? "Saving..."
-                : isEditMode
-                  ? "Save Changes"
-                  : "Add Tracker"}
+              {isEditMode ? (
+                <FiEdit2 size={16} className="mr-2" />
+              ) : (
+                <FiPlusCircle size={16} className="mr-2" />
+              )}
+              {isLoading ? (
+                <Spinner size="sm" label={isEditMode ? "Updating..." : "Adding..."} />
+              ) : isEditMode ? (
+                "Update Tracker"
+              ) : (
+                "Add Tracker"
+              )}
             </Button>
           </div>
         </form>

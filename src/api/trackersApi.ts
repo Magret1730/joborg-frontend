@@ -77,7 +77,7 @@ export const deleteTracker = async (id: string): Promise<TrackerResponse> => {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
 
-    const response = await fetch(`${BACKEND_URL}/trackers/:id`, {
+    const response = await fetch(`${BACKEND_URL}/trackers/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -122,9 +122,9 @@ export const updateTracker = async (
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.message || data.error || "Update Tracker failed");
-    }
+    // if (!response.ok) {
+    //   throw new Error(data.message || data.error || "Update Tracker failed");
+    // }
 
     return data;
   } catch (error) {
@@ -241,9 +241,9 @@ export const postTracker = async (payload: any): Promise<TrackerResponse> => {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.message || data.error || "Post Tracker failed");
-    }
+    // if (!response.ok) {
+    //   throw new Error(data.message || data.error || "Post Tracker failed");
+    // }
 
     return data;
   } catch (error) {

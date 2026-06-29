@@ -26,6 +26,7 @@ import { useUpdateTracker } from "@/hooks/trackers/useUpdateTracker";
 import { TrackerPayload } from "@/types/tracker.type";
 import { TrackerModalMode } from "@/enum/TrackerModalEnum";
 import { DeleteTrackerModal } from "@/components/trackers/DeleteTrackerModal";
+import { toast } from "react-toastify";
 
 export const TrackersClient = () => {
   const [isTrackerModalOpen, setIsTrackerModalOpen] = useState(false);
@@ -122,6 +123,39 @@ export const TrackersClient = () => {
     );
   }
 
+  if (deleteError) {
+    return (
+      <PageError
+        message={deleteError}
+        onRetry={() => {
+          fetchTrackers();
+        }}
+      />
+    );
+  }
+
+  if (createError) {
+    return (
+      <PageError
+        message={createError}
+        onRetry={() => {
+          fetchTrackers();
+        }}
+      />
+    );
+  }
+
+  if (updateError) {
+    return (
+      <PageError
+        message={updateError}
+        onRetry={() => {
+          fetchTrackers();
+        }}
+      />
+    );
+  }
+
   const tooltipClass =
     "rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--text)] shadow-lg";
 
@@ -155,9 +189,16 @@ export const TrackersClient = () => {
   const handleConfirmDeleteTracker = async () => {
     if (!trackerToDelete) return;
 
-    await removeTracker(trackerToDelete.id);
+    const response = await removeTracker(trackerToDelete.id);
+    if (response?.success === false) {
+      toast.error(response.message || "Failed to delete tracker.");
+      setIsTrackerModalOpen(false);
+      return;
+    }
+
     await fetchTrackers();
     closeDeleteModal();
+    toast.success(response?.message || `Tracker "${trackerToDelete.company_name}" deleted successfully.`);
   };
 
   const handleSaveTracker = async (payload: {
@@ -167,9 +208,22 @@ export const TrackersClient = () => {
     status: string;
   }) => {
     if (trackerModalMode === TrackerModalMode.EDIT && selectedTracker) {
-      await modifyTracker(selectedTracker.id, payload);
+      const response = await modifyTracker(selectedTracker.id, payload);
+      if (response?.success === false) {
+        toast.error(response.message || "Failed to update tracker.");
+        return;
+      }
+
+      toast.success(`Tracker "${payload.company_name}" updated successfully.`);
     } else {
-      await createTracker(payload);
+      const response = await createTracker(payload);
+      if (response?.success === false) {
+        toast.error(response.message || "Failed to create tracker.");
+        setIsTrackerModalOpen(false);
+        return;
+      }
+
+      toast.success(response?.message || `Tracker "${payload.company_name}" created successfully.`);
     }
 
     await fetchTrackers();
@@ -177,6 +231,8 @@ export const TrackersClient = () => {
   };
 
   const isSavingTracker = isCreateLoading || isUpdateLoading;
+
+  console.log("trackers", trackers);
 
   return (
     <section className="space-y-8">
