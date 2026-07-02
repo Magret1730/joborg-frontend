@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import posthog from "posthog-js";
 
 type User = {
   id: string;
@@ -30,6 +31,12 @@ export const useAuthStore = create<AuthStore>((set) => ({
     localStorage.setItem("jotoken", token);
     localStorage.setItem("jouser", JSON.stringify(user));
 
+    posthog.identify(user.email, {
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+    });
+
     // Update the Zustand's store state
     set({
       user,
@@ -58,6 +65,12 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
     const user = JSON.parse(storedUser) as User;
 
+    posthog.identify(user.email, {
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+    });
+
     set({
       user,
       token,
@@ -67,6 +80,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
 
   logout: () => {
+    posthog.capture("user_logged_out");
+    posthog.reset();
+
     localStorage.removeItem("jotoken");
     localStorage.removeItem("jouser");
 

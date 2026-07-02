@@ -4,6 +4,7 @@ import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { RouteEnum } from "@/enum/RouteEnum";
 import { FaArrowRight } from "react-icons/fa6";
+import posthog from "posthog-js";
 
 export const Hero = () => {
   const router = useRouter();
@@ -30,6 +31,9 @@ export const Hero = () => {
           className="flex items-center mt-6 rounded-[var(--radius-md)] bg-[var(--primary)] px-6 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] cursor-pointer"
           onPress={() => {
             router.push(RouteEnum.REGISTER);
+            posthog.capture("Clicked Start Tracking Free CTA", {
+              location: "Hero Section",
+            })
           }}
         >
           Start Tracking Free <FaArrowRight className="ml-2" />
@@ -40,6 +44,9 @@ export const Hero = () => {
           className="ml-4 mt-6 rounded-[var(--radius-md)] border border-[var(--input-border)] px-6 py-3 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] cursor-pointer"
           onPress={() => {
             router.push(RouteEnum.LOGIN);
+            posthog.capture("Clicked Sign In CTA", {
+              location: "Hero Section",
+            })
           }}
         >
           Sign In

@@ -19,6 +19,7 @@ import { useRegister } from "@/hooks/auth/useRegister";
 import { RegisterPayload } from "@/types/auth.type";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Spinner } from "@/components/ui/Spinner";
+import posthog from "posthog-js";
 
 export default function Register() {
   const router = useRouter();
@@ -141,6 +142,12 @@ export default function Register() {
       };
 
       const response = await register(newUser);
+
+      posthog.capture("user_signed_up", {
+        email,
+        first_name,
+        last_name,
+      });
 
       toast.success(
         response.message ||

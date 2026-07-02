@@ -24,6 +24,7 @@ import { TrackerModalMode } from "@/enum/TrackerModalEnum";
 import { TrackerPayload } from "@/types/tracker.type";
 import { toast } from "react-toastify";
 import { TrackerModal } from "@/components/trackers/TrackerModal";
+import posthog from "posthog-js";
 
 export const DashboardClient = () => {
   const router = useRouter();
@@ -89,6 +90,13 @@ export const DashboardClient = () => {
         toast.error(response?.message || "Failed to create tracker.");
         return;
       }
+
+      posthog.capture("tracker_created", {
+        company_name: payload.company_name,
+        url: payload.url,
+        label: payload.label,
+        source: "dashboard",
+      });
 
       toast.success(
         response?.message ||
@@ -296,7 +304,7 @@ export const DashboardClient = () => {
                         <Button
                           type="button"
                           onClick={openAddTrackerModal}
-                          className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+                          className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] cursor-pointer"
                         >
                           <FiPlusCircle size={16} className="mr-2" />
                           Add Tracker
@@ -393,7 +401,7 @@ export const DashboardClient = () => {
                         <Button
                           type="button"
                           onClick={openAddTrackerModal}
-                          className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+                          className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] cursor-pointer"
                         >
                           <FiPlusCircle size={16} className="mr-2" />
                           Add Tracker
