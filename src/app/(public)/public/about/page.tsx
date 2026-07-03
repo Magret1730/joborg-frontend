@@ -53,7 +53,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="my-8 flex items-center max-w-lg rounded-lg p-8 bg-[var(--card)]">
+          <div className="my-8 flex items-center max-w-lg rounded-lg p-8 bg-[var(--info-softer)]">
             <div className="bg-[var(--info-soft)] rounded-full p-3 mr-4">
               <FiTarget size={40} className="text-blue-600" />
             </div>
@@ -107,7 +107,7 @@ export default function About() {
         ))}
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between rounded-[var(--radius-lg)] bg-[var(--card)] p-8">
+      <div className="flex flex-col md:flex-row justify-between rounded-[var(--radius-lg)] bg-[var(--info-softer)] p-8">
         <div className="flex gap-8 items-center">
           <div className="bg-[var(--info-soft)] rounded-full p-3">
             <FiRefreshCcw size={28} className="text-blue-600" />
