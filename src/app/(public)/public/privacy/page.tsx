@@ -64,8 +64,14 @@ export default function Privacy() {
   return (
     <section className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-6">Privacy Policy</h1>
+
+      <p className="text-sm text-[var(--muted)] mb-6">
+        Last updated: July 3, 2026
+      </p>
+
       <p className="mb-6">
-        Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your information when you use Joborg.
+        Your privacy is important to us. This Privacy Policy explains how we collect, use,
+        and protect your information when you use Joborg.
       </p>
       <div className="space-y-8">
         {PrivacyItems.map((item, index) => (
