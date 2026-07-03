@@ -16,6 +16,7 @@ import { FaArrowRight } from "react-icons/fa6";
 import { useForgotPassword } from "@/hooks/auth/useForgotPassword";
 import { ForgotPasswordPayload } from "@/types/auth.type";
 import { Spinner } from "@/components/ui/Spinner";
+import posthog from "posthog-js";
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -66,6 +67,8 @@ export default function ResetPassword() {
       };
 
       const response = await forgotPassword(newUser);
+
+      posthog.capture("password_reset_requested", { email });
 
       toast.success(response.message || "Forgot password successful..");
 

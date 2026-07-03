@@ -9,6 +9,7 @@ import { Button } from "@heroui/react";
 import { AppLogo } from "@/components/ui/AppLogo";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import posthog from "posthog-js";
 
 type HeaderProps = {
   variant?: LayoutVariantEnum;
@@ -45,28 +46,52 @@ export const PublicHeader = ({
             <>
               <Link
                 href={RouteEnum.ABOUT}
-                className="text-sm font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
+                className="text-md font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
+                onClick={() => {
+                  posthog.capture("public_header_about_clicked", {
+                    link_text: "About",
+                    href: RouteEnum.ABOUT,
+                  });
+                }}
               >
                 About
               </Link>
 
               <Link
                 href={RouteEnum.CONTACT}
-                className="text-sm font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
+                className="text-md font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
+                onClick={() => {
+                  posthog.capture("public_header_contact_clicked", {
+                    link_text: "Contact",
+                    href: RouteEnum.CONTACT,
+                  });
+                }}
               >
                 Contact
               </Link>
 
               <Link
                 href={RouteEnum.LOGIN}
-                className="text-sm font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
+                className="text-md font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
+                onClick={() => {
+                  posthog.capture("public_header_login_clicked", {
+                    link_text: "Sign In",
+                    href: RouteEnum.LOGIN,
+                  });
+                }}
               >
                 Sign In
               </Link>
 
               <Link
                 href={RouteEnum.REGISTER}
-                className="rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+                className="rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-2 text-md font-medium text-white transition hover:bg-[var(--primary-hover)]"
+                onClick={() => {
+                  posthog.capture("public_header_register_clicked", {
+                    link_text: "Sign Up",
+                    href: RouteEnum.REGISTER,
+                  });
+                }}
               >
                 Sign Up
               </Link>
@@ -77,6 +102,12 @@ export const PublicHeader = ({
             <Link
               href={RouteEnum.HOME}
               className="text-sm font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
+              onClick={() => {
+                posthog.capture("auth_header_back_to_home_clicked", {
+                  link_text: "Back to home",
+                  href: RouteEnum.HOME,
+                });
+              }}
             >
               Back to home
             </Link>
@@ -131,7 +162,13 @@ export const PublicHeader = ({
                 <>
                   <Link
                     href={RouteEnum.ABOUT}
-                    onClick={closeMobileMenu}
+                    onClick={() => {
+                        closeMobileMenu();
+                        posthog.capture("public_header_mobile_menu_about_clicked", {
+                          link_text: "About",
+                          href: RouteEnum.ABOUT,
+                        });
+                      }}
                     className="rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium text-[var(--muted)] transition hover:bg-[var(--surface-hover)] hover:text-[var(--text)]"
                   >
                     About
@@ -139,7 +176,13 @@ export const PublicHeader = ({
 
                   <Link
                     href={RouteEnum.CONTACT}
-                    onClick={closeMobileMenu}
+                    onClick={() => {
+                        closeMobileMenu();
+                        posthog.capture("public_header_mobile_menu_contact_clicked", {
+                          link_text: "Contact",
+                          href: RouteEnum.CONTACT,
+                        });
+                      }}
                     className="rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium text-[var(--muted)] transition hover:bg-[var(--surface-hover)] hover:text-[var(--text)]"
                   >
                     Contact
@@ -147,15 +190,28 @@ export const PublicHeader = ({
 
                   <Link
                     href={RouteEnum.LOGIN}
-                    onClick={closeMobileMenu}
                     className="rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium text-[var(--muted)] transition hover:bg-[var(--surface-hover)] hover:text-[var(--text)]"
+                    onClick={() => {
+                        closeMobileMenu();
+                        posthog.capture("public_header_mobile_menu_login_clicked", {
+                          link_text: "Sign In",
+                          href: RouteEnum.LOGIN,
+                        });
+                      }
+                    }
                   >
                     Sign In
                   </Link>
 
                   <Link
                     href={RouteEnum.REGISTER}
-                    onClick={closeMobileMenu}
+                    onClick={() => {
+                        closeMobileMenu();
+                        posthog.capture("public_header_mobile_menu_register_clicked", {
+                          link_text: "Sign Up",
+                          href: RouteEnum.REGISTER,
+                        });
+                      }}
                     className="mt-2 rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
                   >
                     Sign Up
@@ -166,7 +222,13 @@ export const PublicHeader = ({
               {isAuth && (
                 <Link
                   href={RouteEnum.HOME}
-                  onClick={closeMobileMenu}
+                  onClick={() => {
+                    closeMobileMenu();
+                    posthog.capture("auth_header_mobile_menu_back_to_home_clicked", {
+                      link_text: "Back to home",
+                      href: RouteEnum.HOME,
+                    })
+                  }}
                   className="rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium text-[var(--muted)] transition hover:bg-[var(--surface-hover)] hover:text-[var(--text)]"
                 >
                   Back to home

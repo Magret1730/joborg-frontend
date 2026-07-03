@@ -103,12 +103,18 @@ Some features may currently use placeholder content or mock UI while backend int
 <!--
     To do
 
-    Public Pages - Build
     Posthog
+    Public Pages - Build
     Changes page  - Build
     AWS hosting - This will hasten my learning on AWS deployment - Ask Babe to give me task
     Pagination for tracker page
     Search bar for all pages
     Alert Page
     Settings Page
+    Admin Pages
  -->
+
+ <!-- 
+ 1. Let users add as much trackers as they want to add
+ 2. But limit trackers to just 10 trackers.. put message to avoid ...
+  -->

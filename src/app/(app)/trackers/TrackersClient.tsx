@@ -27,6 +27,7 @@ import { TrackerPayload } from "@/types/tracker.type";
 import { TrackerModalMode } from "@/enum/TrackerModalEnum";
 import { DeleteTrackerModal } from "@/components/trackers/DeleteTrackerModal";
 import { toast } from "react-toastify";
+import posthog from "posthog-js";
 
 export const TrackersClient = () => {
   const [isTrackerModalOpen, setIsTrackerModalOpen] = useState(false);
@@ -118,6 +119,11 @@ export const TrackersClient = () => {
         return;
       }
 
+      posthog.capture("tracker_deleted", {
+        tracker_id: trackerToDelete.id,
+        company_name: trackerToDelete.company_name,
+      });
+
       await fetchTrackers();
       closeDeleteModal();
 
@@ -148,6 +154,13 @@ export const TrackersClient = () => {
           return;
         }
 
+        posthog.capture("tracker_updated", {
+          tracker_id: selectedTracker.id,
+          company_name: payload.company_name,
+          url: payload.url,
+          label: payload.label,
+        });
+
         toast.success(
           `Tracker "${payload.company_name}" updated successfully.`
         );
@@ -158,6 +171,12 @@ export const TrackersClient = () => {
           toast.error(response?.message || "Failed to create tracker.");
           return;
         }
+
+        posthog.capture("tracker_created", {
+          company_name: payload.company_name,
+          url: payload.url,
+          label: payload.label,
+        });
 
         toast.success(
           response?.message ||
@@ -288,8 +307,16 @@ export const TrackersClient = () => {
                             onClick={async () => {
                               if (tracker.status === TrackerStatusEnum.PAUSED) {
                                 await resume(tracker.id);
+                                posthog.capture("tracker_resumed", {
+                                  tracker_id: tracker.id,
+                                  company_name: tracker.company_name,
+                                });
                               } else {
                                 await pause(tracker.id);
+                                posthog.capture("tracker_paused", {
+                                  tracker_id: tracker.id,
+                                  company_name: tracker.company_name,
+                                });
                               }
                               await fetchTrackers();
                             }}

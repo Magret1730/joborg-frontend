@@ -26,7 +26,7 @@ const sizeClasses = {
   },
 };
 
-export const AppLogo = ({ showText = true, size = "md" }: AppLogoProps) => {
+export const AppLogo = ({ showText = true, size = "lg" }: AppLogoProps) => {
   const styles = sizeClasses[size];
 
   return (

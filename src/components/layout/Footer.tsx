@@ -12,15 +12,15 @@ const FOOTER_LINKS: {
       { label: "Features", href: "#features" },
       { label: "How it Works", href: "#how-it-works" },
       { label: "Pricing", href: "#pricing" },
-      { label: "Roadmap", href: "#roadmap" },
+      { label: "Integrations", href: "#integrations" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "Blog", href: "#blog" },
+      { label: "FAQ", href: "#faq" },
       { label: "Help Center", href: "#help-center" },
-      { label: "Guides", href: "#guides" },
+      { label: "Feedback", href: "#feedback" },
       { label: "API", href: "#api" },
     ],
   },

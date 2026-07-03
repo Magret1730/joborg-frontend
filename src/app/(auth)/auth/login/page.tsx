@@ -11,6 +11,7 @@ import { LoginPayload } from "@/types/auth.type";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Spinner } from "@/components/ui/Spinner";
 import { useResendVerification } from "@/hooks/auth/useResendVerification";
+import posthog from "posthog-js";
 
 export default function Login() {
   const router = useRouter();
@@ -96,6 +97,8 @@ export default function Login() {
 
       const response = await login(newUser);
 
+      posthog.capture("user_logged_in", { email });
+
       toast.success(response.message || "Login successful..");
 
       router.push(RouteEnum.DASHBOARD);
@@ -114,6 +117,7 @@ export default function Login() {
       const result = await resendVerification(email);
       if (result.success) {
         setVerificationEmailSent(true);
+        posthog.capture("verification_email_resent", { email });
       }
       toast.success(result.message || "Verification email resent successfully");
       setIsResendingVerification(false);

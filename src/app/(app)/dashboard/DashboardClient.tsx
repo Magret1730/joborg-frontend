@@ -24,6 +24,7 @@ import { TrackerModalMode } from "@/enum/TrackerModalEnum";
 import { TrackerPayload } from "@/types/tracker.type";
 import { toast } from "react-toastify";
 import { TrackerModal } from "@/components/trackers/TrackerModal";
+import posthog from "posthog-js";
 
 export const DashboardClient = () => {
   const router = useRouter();
@@ -89,6 +90,13 @@ export const DashboardClient = () => {
         toast.error(response?.message || "Failed to create tracker.");
         return;
       }
+
+      posthog.capture("tracker_created", {
+        company_name: payload.company_name,
+        url: payload.url,
+        label: payload.label,
+        source: "dashboard",
+      });
 
       toast.success(
         response?.message ||
@@ -295,8 +303,8 @@ export const DashboardClient = () => {
                         <p>No trackers added yet.</p>
                         <Button
                           type="button"
-                          onClick={() => router.push(RouteEnum.ADD_TRACKER)}
-                          className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+                          onClick={openAddTrackerModal}
+                          className="my-4 inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] cursor-pointer"
                         >
                           <FiPlusCircle size={16} className="mr-2" />
                           Add Tracker
@@ -392,8 +400,8 @@ export const DashboardClient = () => {
                         <p>No alerts sent yet.</p>
                         <Button
                           type="button"
-                          onClick={() => router.push(RouteEnum.ADD_TRACKER)}
-                          className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+                          onClick={openAddTrackerModal}
+                          className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-3 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] cursor-pointer"
                         >
                           <FiPlusCircle size={16} className="mr-2" />
                           Add Tracker
