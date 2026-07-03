@@ -11,14 +11,14 @@ const FOOTER_LINKS: {
     links: [
       { label: "Features", href: "#features" },
       { label: "How it Works", href: "#how-it-works" },
-      { label: "Pricing", href: "#pricing" },
+      { label: "Pricing", href: RouteEnum.PRICING },
       { label: "Integrations", href: "#integrations" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "FAQ", href: "#faq" },
+      { label: "FAQ", href: RouteEnum.FAQ },
       { label: "Help Center", href: "#help-center" },
       { label: "Feedback", href: "#feedback" },
       { label: "API", href: "#api" },

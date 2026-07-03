@@ -5,6 +5,8 @@ export enum RouteEnum {
   TERMS = "/public/terms",
   PRIVACY = "/public/privacy",
   UNDER_CONSTRUCTION = "/under-construction",
+  PRICING= "/public/pricing",
+  FAQ = "/public/faq",
   
   // Auth Routes
   AUTH = "/auth",
