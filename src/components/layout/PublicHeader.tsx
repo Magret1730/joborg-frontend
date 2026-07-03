@@ -46,7 +46,7 @@ export const PublicHeader = ({
             <>
               <Link
                 href={RouteEnum.ABOUT}
-                className="text-sm font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
+                className="text-md font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
                 onClick={() => {
                   posthog.capture("public_header_about_clicked", {
                     link_text: "About",
@@ -59,7 +59,7 @@ export const PublicHeader = ({
 
               <Link
                 href={RouteEnum.CONTACT}
-                className="text-sm font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
+                className="text-md font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
                 onClick={() => {
                   posthog.capture("public_header_contact_clicked", {
                     link_text: "Contact",
@@ -72,7 +72,7 @@ export const PublicHeader = ({
 
               <Link
                 href={RouteEnum.LOGIN}
-                className="text-sm font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
+                className="text-md font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
                 onClick={() => {
                   posthog.capture("public_header_login_clicked", {
                     link_text: "Sign In",
@@ -85,7 +85,7 @@ export const PublicHeader = ({
 
               <Link
                 href={RouteEnum.REGISTER}
-                className="rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)]"
+                className="rounded-[var(--radius-md)] bg-[var(--primary)] px-4 py-2 text-md font-medium text-white transition hover:bg-[var(--primary-hover)]"
                 onClick={() => {
                   posthog.capture("public_header_register_clicked", {
                     link_text: "Sign Up",
