@@ -106,11 +106,11 @@ export default function FAQ() {
         </Accordion>
       </div>
 
-      <div className="mt-12 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm sm:p-8">
+      <div className="mt-12 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--info-softer)] p-6 shadow-sm sm:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--surface)] text-[var(--primary)]">
-              <FiMail size={24} />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--info-soft)] text-[var(--primary)]">
+              <FiMail size={24} className="text-blue-600" />
             </div>
 
             <div>

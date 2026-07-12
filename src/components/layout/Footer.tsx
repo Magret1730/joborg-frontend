@@ -10,7 +10,7 @@ const FOOTER_LINKS: {
     title: "Product",
     links: [
       { label: "Pricing", href: RouteEnum.PRICING },
-      { label: "Contact", href: RouteEnum.CONTACT },
+      { label: "Contact Us", href: RouteEnum.CONTACT },
     ],
   },
   {
