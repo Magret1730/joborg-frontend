@@ -54,7 +54,7 @@ export const PublicHeader = ({
                   });
                 }}
               >
-                About
+                About Us
               </Link>
 
               <Link
@@ -67,7 +67,7 @@ export const PublicHeader = ({
                   });
                 }}
               >
-                Contact
+                Contact Us
               </Link>
 
               <Link
@@ -171,7 +171,7 @@ export const PublicHeader = ({
                       }}
                     className="rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium text-[var(--muted)] transition hover:bg-[var(--surface-hover)] hover:text-[var(--text)]"
                   >
-                    About
+                    About Us
                   </Link>
 
                   <Link
@@ -185,7 +185,7 @@ export const PublicHeader = ({
                       }}
                     className="rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium text-[var(--muted)] transition hover:bg-[var(--surface-hover)] hover:text-[var(--text)]"
                   >
-                    Contact
+                    Contact Us
                   </Link>
 
                   <Link
