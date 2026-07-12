@@ -170,7 +170,7 @@ export const TrackerModal = ({
             <Button
               type="submit"
               isDisabled={isLoading}
-              className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-5 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="inline-flex justify-center items-center rounded-[var(--radius-md)] bg-[var(--primary)] px-5 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-hover)] disabled:cursor-not-allowed disabled:opacity-10 cursor-pointer"
             >
               {isEditMode ? (
                 <FiEdit2 size={16} className="mr-2" />
