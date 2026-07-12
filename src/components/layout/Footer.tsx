@@ -9,19 +9,14 @@ const FOOTER_LINKS: {
   {
     title: "Product",
     links: [
-      { label: "Features", href: "#features" },
-      { label: "How it Works", href: "#how-it-works" },
       { label: "Pricing", href: RouteEnum.PRICING },
-      { label: "Integrations", href: "#integrations" },
+      { label: "Contact", href: RouteEnum.CONTACT },
     ],
   },
   {
     title: "Resources",
     links: [
       { label: "FAQ", href: RouteEnum.FAQ },
-      { label: "Help Center", href: "#help-center" },
-      { label: "Feedback", href: "#feedback" },
-      { label: "API", href: "#api" },
     ],
   },
   {
@@ -30,7 +25,6 @@ const FOOTER_LINKS: {
       { label: "About Us", href: RouteEnum.ABOUT },
       { label: "Privacy Policy", href: RouteEnum.PRIVACY },
       { label: "Terms of Service", href: RouteEnum.TERMS },
-      { label: "Contact", href: RouteEnum.CONTACT },
     ],
   },
 ];
@@ -45,7 +39,7 @@ export const Footer = () => {
               <AppLogo />
             </Link>
 
-            <p className="mt-5 max-w-xs text-base leading-7 text-[var(--muted)]">
+            <p className="mt-2 max-w-xs text-base leading-6 text-[var(--muted)]">
               Track career pages. <br />
               Catch changes early.
             </p>
