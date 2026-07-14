@@ -1,16 +1,26 @@
 "use client";
 import { useGetChanges } from "@/hooks/changes/useGetChanges";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { formatDate } from "@/lib/dateFormatter";
 import Link from "next/link";
-import { getStatusClass } from "@/lib/getStatusClass";
 import { PageError, PageLoader } from "@/components/ui/PageState";
 import { FiEye, FiExternalLink } from "react-icons/fi";
 import { Button, Tooltip } from "@heroui/react";
-import { toast } from "react-toastify";
-import posthog from "posthog-js";
+
+const PAGE_SIZE = 10;
+
+const paginateItems = <T,>(items: T[], page: number) => {
+  const start = (page - 1) * PAGE_SIZE;
+  return items.slice(start, start + PAGE_SIZE);
+};
+
+const getTotalPages = (itemsLength: number) => {
+  return Math.max(1, Math.ceil(itemsLength / PAGE_SIZE));
+};
 
 export const ChangesClient = () => {
+  const [changesPage, setChangesPage] = useState(1);
+
   const {
     changes,
     isLoading: isChangesLoading,
@@ -18,7 +28,14 @@ export const ChangesClient = () => {
     fetchChanges,
   } = useGetChanges();
 
-  console.log("ChangesClient changes:", changes);
+  const paginatedChanges = paginateItems(changes, changesPage);
+  const totalChangesPages = getTotalPages(changes.length);
+
+  const totalChanges = changes?.length || 0;
+
+  const changesStart =
+    totalChanges === 0 ? 0 : (changesPage - 1) * PAGE_SIZE + 1;
+  const changesEnd = Math.min(changesPage * PAGE_SIZE, totalChanges);
 
   useEffect(() => {
     fetchChanges();
@@ -82,7 +99,7 @@ export const ChangesClient = () => {
             </thead>
 
             <tbody className="divide-y divide-[var(--border)]">
-              {changes.length === 0 ? (
+              {paginatedChanges.length === 0 ? (
                 <tr>
                   <td
                     colSpan={7}
@@ -92,7 +109,7 @@ export const ChangesClient = () => {
                   </td>
                 </tr>
               ) : (
-                changes.map((change, index) => (
+                paginatedChanges.map((change, index) => (
                   <tr
                     key={`${index}`}
                     className="transition hover:bg-[var(--surface-hover)]"
@@ -156,6 +173,39 @@ export const ChangesClient = () => {
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-[var(--muted)]">
+          Showing {changesStart}-{changesEnd} of {totalChanges} changes.
+        </p>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            isDisabled={changesPage === 1}
+            onClick={() => setChangesPage((prev) => Math.max(1, prev - 1))}
+            className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--text)] transition hover:bg-[var(--surface-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Previous
+          </Button>
+          <span className="text-sm text-[var(--muted)]">
+            Page {changesPage} of {totalChangesPages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            isDisabled={changesPage === totalChangesPages}
+            onClick={() =>
+              setChangesPage((prev) =>
+                Math.min(totalChangesPages, prev + 1)
+              )
+            }
+            className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--text)] transition hover:bg-[var(--surface-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Next
+          </Button>
         </div>
       </div>
     </section>
