@@ -337,7 +337,6 @@ export const TrackersClient = () => {
                           <Link
                             href={`/trackers/${tracker.id}`}
                             type="button"
-                            // isIconOnly
                             aria-label="View tracker"
                             className="h-9 w-9 min-w-0 flex items-center justify-center p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
                           >

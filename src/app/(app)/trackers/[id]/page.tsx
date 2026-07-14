@@ -560,6 +560,7 @@ export default function TrackerDetails() {
             </table>
           </div>
 
+          {/* Pagination bar */}
           <div className="flex flex-col gap-3 border-t border-[var(--border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-[var(--muted)]">
               Showing {changesStart}–{changesEnd} of {totalChanges} changes

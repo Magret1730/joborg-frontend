@@ -1,11 +1,12 @@
 "use client";
 import { useGetChanges } from "@/hooks/changes/useGetChanges";
+import { useGetChange } from "@/hooks/changes/useGetChange";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/lib/dateFormatter";
 import Link from "next/link";
 import { PageError, PageLoader } from "@/components/ui/PageState";
-import { FiEye, FiExternalLink } from "react-icons/fi";
-import { Button, Tooltip } from "@heroui/react";
+import { FiEye, FiExternalLink, FiMoreVertical } from "react-icons/fi";
+import { Button, Tooltip, Dropdown, Kbd, Label } from "@heroui/react";
 
 const PAGE_SIZE = 10;
 
@@ -27,6 +28,13 @@ export const ChangesClient = () => {
     error: changesError,
     fetchChanges,
   } = useGetChanges();
+
+  const {
+    change,
+    isLoading: isChangeLoading,
+    error: changeError,
+    fetchChange,
+  } = useGetChange();
 
   const paginatedChanges = paginateItems(changes, changesPage);
   const totalChangesPages = getTotalPages(changes.length);
@@ -77,10 +85,10 @@ export const ChangesClient = () => {
           <table className="w-full min-w-[1000px] table-fixed text-left text-sm">
             <thead className="bg-[var(--surface)]  border-b border-[var(--border)] text-xs uppercase tracking-wide text-[var(--muted)]">
               <tr>
-                <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">
+                <th className="w-[140px] pl-5 pr-2 py-3 font-semibold">
                   Company
                 </th>
-                <th className="w-[200px] pl-5 pr-2 py-3 font-semibold">
+                <th className="w-[240px] pl-5 pr-2 py-3 font-semibold">
                   Tracker URL
                 </th>
                 <th className="w-[130px] pl-5 pr-2 py-3 font-semibold">
@@ -92,7 +100,7 @@ export const ChangesClient = () => {
                 <th className="w-[80px] pl-5 pr-2 py-3 font-semibold">
                   Notification Sent
                 </th>
-                <th className="w-[120px] pl-2 pr-5 py-3 font-semibold">
+                <th className="w-[60px] pl-2 pr-5 py-3 font-semibold text-right">
                   Actions
                 </th>
               </tr>
@@ -133,40 +141,56 @@ export const ChangesClient = () => {
                       {change.notification_sent ? "Yes" : "No"}
                     </td>
                     <td className="pl-2 pr-5 py-4">
-                      <div className="flex items-center gap-2">
-                       
-                        <Tooltip delay={0}>
-                          <Link
-                            href={`/changes/${change.id}`}
-                            type="button"
-                            aria-label="View change"
-                            className="h-9 w-9 min-w-0 flex items-center justify-center p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
+                      <Dropdown>
+                        <Button
+                          type="button"
+                          isIconOnly
+                          aria-label="Open change actions"
+                          className="ml-auto flex h-9 w-9 min-w-0 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--card)] p-0 text-[var(--muted)] shadow-sm transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)]"
+                        >
+                          <FiMoreVertical size={16} />
+                        </Button>
+                        <Dropdown.Popover>
+                          <Dropdown.Menu
+                            // onAction={(key) => console.log(`Selected: ${key}`)}
+                            className="p-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col gap-2"
                           >
-                            <FiEye size={16} />
-                          </Link>
-
-                          <Tooltip.Content className={tooltipClass}>
-                            <p>View changes</p>
-                          </Tooltip.Content>
-                        </Tooltip>
-
-                     
-                        <Tooltip delay={0}>
-                          <Link
-                            href={change.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label="Open tracker URL"
-                            className="h-9 w-9 min-w-0 flex items-center justify-center p-0 text-[var(--muted)] transition hover:text-[var(--primary)]"
-                          >
-                            <FiExternalLink size={16} />
-                          </Link>
-
-                          <Tooltip.Content className="z-50 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--text)] shadow-lg">
-                            Open career page
-                          </Tooltip.Content>
-                        </Tooltip>
-                      </div>
+                            <Dropdown.Item
+                              id="view-changes"
+                              textValue="View changes"
+                              className="flex items-center gap-2 cursor-pointer"
+                              href={`/changes/${change.id}`}
+                            >
+                              <FiEye className="size-4 shrink-0 text-muted" />
+                              <Label className="text-sm">
+                                View Change
+                              </Label>
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              id="open-career-page"
+                              textValue="Open Career Page"
+                              className="flex items-center gap-2 cursor-pointer"
+                              href={change.url}
+                              target="_blank"
+                            >
+                              <FiExternalLink className="size-4 shrink-0 text-muted" />
+                              <Label className="text-sm">
+                                Open URL
+                              </Label>
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              id="open-career-page"
+                              textValue="Open Career Page"
+                              className="flex items-center gap-2 cursor-pointer"
+                              href={`/changes/change/${change.id}`}
+                              target="_blank"
+                            >
+                              <FiExternalLink className="size-4 shrink-0 text-muted" />
+                              <Label>View Tracker Changes</Label>
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown.Popover>
+                      </Dropdown>
                     </td>
                   </tr>
                 ))
@@ -176,6 +200,7 @@ export const ChangesClient = () => {
         </div>
       </div>
 
+      {/* Pagination bar */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-[var(--muted)]">
           Showing {changesStart}-{changesEnd} of {totalChanges} changes.
@@ -198,9 +223,7 @@ export const ChangesClient = () => {
             size="sm"
             isDisabled={changesPage === totalChangesPages}
             onClick={() =>
-              setChangesPage((prev) =>
-                Math.min(totalChangesPages, prev + 1)
-              )
+              setChangesPage((prev) => Math.min(totalChangesPages, prev + 1))
             }
             className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--text)] transition hover:bg-[var(--surface-hover)] disabled:cursor-not-allowed disabled:opacity-50"
           >
