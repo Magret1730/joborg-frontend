@@ -1,12 +1,12 @@
 "use client";
+
 import { useGetChanges } from "@/hooks/changes/useGetChanges";
 import { useGetChange } from "@/hooks/changes/useGetChange";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/lib/dateFormatter";
-import Link from "next/link";
 import { PageError, PageLoader } from "@/components/ui/PageState";
 import { FiEye, FiExternalLink, FiMoreVertical } from "react-icons/fi";
-import { Button, Tooltip, Dropdown, Kbd, Label } from "@heroui/react";
+import { Button, Dropdown, Label } from "@heroui/react";
 
 const PAGE_SIZE = 10;
 
@@ -97,9 +97,7 @@ export const ChangesClient = () => {
                 <th className="w-[130px] pl-5 pr-2 py-3 font-semibold">
                   Detected At
                 </th>
-                <th className="w-[80px] pl-5 pr-2 py-3 font-semibold">
-                  Notification Sent
-                </th>
+                <th className="w-[80px] pl-5 pr-2 py-3 font-semibold">Alert</th>
                 <th className="w-[60px] pl-2 pr-5 py-3 font-semibold text-right">
                   Actions
                 </th>
@@ -138,7 +136,7 @@ export const ChangesClient = () => {
                       {formatDate(change.detected_at)}
                     </td>
                     <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
-                      {change.notification_sent ? "Yes" : "No"}
+                      {change.notification_sent ? "Sent" : "Not Sent"}
                     </td>
                     <td className="pl-2 pr-5 py-4">
                       <Dropdown>
@@ -151,10 +149,7 @@ export const ChangesClient = () => {
                           <FiMoreVertical size={16} />
                         </Button>
                         <Dropdown.Popover>
-                          <Dropdown.Menu
-                            // onAction={(key) => console.log(`Selected: ${key}`)}
-                            className="p-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col gap-2"
-                          >
+                          <Dropdown.Menu className="p-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col gap-2">
                             <Dropdown.Item
                               id="view-changes"
                               textValue="View changes"
@@ -162,13 +157,12 @@ export const ChangesClient = () => {
                               href={`/changes/${change.id}`}
                             >
                               <FiEye className="size-4 shrink-0 text-muted" />
-                              <Label className="text-sm">
-                                View Change
-                              </Label>
+                              <Label className="text-sm">View Change</Label>
                             </Dropdown.Item>
+
                             <Dropdown.Item
-                              id="open-career-page"
-                              textValue="Open Career Page"
+                              id="open-url"
+                              textValue="Open URL"
                               className="flex items-center gap-2 cursor-pointer"
                               href={change.url}
                               target="_blank"
@@ -178,6 +172,7 @@ export const ChangesClient = () => {
                                 Open URL
                               </Label>
                             </Dropdown.Item>
+
                             <Dropdown.Item
                               id="open-career-page"
                               textValue="Open Career Page"
@@ -185,8 +180,10 @@ export const ChangesClient = () => {
                               href={`/changes/change/${change.id}`}
                               target="_blank"
                             >
-                              <FiExternalLink className="size-4 shrink-0 text-muted" />
-                              <Label>View Tracker Changes</Label>
+                              <FiEye className="size-4 shrink-0 text-muted" />
+                              <Label className="text-sm">
+                                View Tracker
+                              </Label>
                             </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown.Popover>
