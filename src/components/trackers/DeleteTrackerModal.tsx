@@ -39,7 +39,15 @@ export const DeleteTrackerModal = ({
                 <span className="font-semibold text-[var(--text)]">
                   {trackerName || "this tracker"}
                 </span>
-                ? This action cannot be undone.
+                {" "}tracker? This action will also delete all
+                <span className="font-semibold text-[var(--text)]">
+                  {" "} changes and alerts
+                </span>{" "}associated with {" "}
+                <span className="font-semibold text-[var(--text)]">
+                  {trackerName || "this tracker"}
+                </span>
+                {" "}tracker.
+                This action cannot be undone.
               </p>
             </div>
           </div>

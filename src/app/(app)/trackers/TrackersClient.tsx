@@ -50,13 +50,9 @@ export const TrackersClient = () => {
   } = useGetTrackers();
 
   const { pause } = usePauseTracker();
-
   const { resume } = useResumeTracker();
-
   const { removeTracker, isLoading: isDeleteLoading } = useDeleteTracker();
-
   const { createTracker, isLoading: isCreateLoading } = usePostTracker();
-
   const { modifyTracker, isLoading: isUpdateLoading } = useUpdateTracker();
 
   useEffect(() => {
@@ -369,7 +365,7 @@ export const TrackersClient = () => {
                           </Tooltip.Content>
                         </Tooltip>
 
-                        {/* // Fix this not showing */}
+                        {/* // Fix this tooltip not showing */}
                         <Tooltip delay={0}>
                           <Link
                             href={tracker.url}

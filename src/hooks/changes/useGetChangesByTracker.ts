@@ -1,26 +1,26 @@
 "use client";
-// manages loading, error, and response state for alerts
+// manages loading, error, and response state for changes
 import { useState } from "react";
-import { getChanges } from "@/api/changesApi";
+import { getChangesByTracker } from "@/api/changesApi";
 import { ChangePayload } from "@/types/change.type.js";
 
-export const useGetChanges = () => {
+export const useGetChangesByTracker = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [changes, setChanges] = useState<ChangePayload[]>([]);
+  const [change, setChange] = useState<ChangePayload[]>([]);
 
-  const fetchChanges = async () => {
+  const fetchChange = async (id: string) => {
     try {
       setIsLoading(true);
       setError("");
 
-      const response = await getChanges();
-      setChanges(response.data || []); 
+      const response = await getChangesByTracker(id);
+      setChange(response.data || []); 
 
       return response;
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "Failed to fetch changes";
+        err instanceof Error ? err.message : "Failed to fetch changes by tracker";
 
         setError(message);
 
@@ -31,11 +31,11 @@ export const useGetChanges = () => {
   };
 
   return {
-    changes,
-    setChanges,
+    change,
+    setChange,
     error,
     isLoading,
     setIsLoading,
-    fetchChanges,
+    fetchChange,
   };
 };

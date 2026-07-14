@@ -62,3 +62,31 @@ export const getChange = async (trackerId: string): Promise<ChangeResponse> => {
     throw error;
   }
 };
+
+export const getChangesByTracker = async (trackerId: string): Promise<ChangeResponse> => {
+  try {
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
+
+    const response = await fetch(`${BACKEND_URL}/changes/tracker/${trackerId}/change-by-tracker`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && {
+          Authorization: `Bearer ${token}`,
+        }),
+      },
+    });
+
+    const data = await response.json();
+
+    // if (!response.ok) {
+    //   throw new Error(data.message || data.error || "Failed to fetch changes");
+    // }
+
+    return data;
+  } catch (error) {
+    console.error("Error in Get Changes By Tracker API:", error);
+    throw error;
+  }
+};
