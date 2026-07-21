@@ -44,7 +44,7 @@ export const getChange = async (trackerId: string): Promise<ChangeResponse> => {
       throw new Error("Tracker ID is required to fetch changes.");
     }
 
-    const response = await fetch(`${BACKEND_URL}/tracker/${trackerId}`, {
+    const response = await fetch(`${BACKEND_URL}/changes/tracker/${trackerId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -55,6 +55,8 @@ export const getChange = async (trackerId: string): Promise<ChangeResponse> => {
     });
 
     const data = await response.json();
+
+    console.log("Get Change API response:", data);
 
     return data;
   } catch (error) {

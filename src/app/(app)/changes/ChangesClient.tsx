@@ -147,7 +147,7 @@ export const ChangesClient = () => {
                               id="view-changes"
                               textValue="View changes"
                               className="flex items-center gap-2 cursor-pointer"
-                              href={`/changes/${change.id}`}
+                              href={RouteEnum.CHANGES + `/${change.tracker_id}`}
                             >
                               <FiEye className="size-4 shrink-0 text-muted" />
                               <Label className="text-sm">View Change</Label>
