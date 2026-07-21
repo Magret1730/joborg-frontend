@@ -503,7 +503,6 @@ export default function TrackerDetails() {
               className="text-sm font-medium text-[var(--primary)] hover:underline"
             >
               View all changes
-              {RouteEnum.CHANGES + `/${trackerId}/trackerChanges`}
             </Link>
           </div>
 

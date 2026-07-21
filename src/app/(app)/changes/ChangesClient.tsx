@@ -180,13 +180,13 @@ export const ChangesClient = () => {
 
                             <Dropdown.Item
                               id="view-changes-by-tracker"
-                              textValue="View Changes By Tracker"
+                              textValue="View Tracker Changes"
                               className="flex items-center gap-2 cursor-pointer"
                               href={RouteEnum.CHANGES + `/${change.tracker_id}/trackerChanges`}
                             >
                               <FiEye className="size-4 shrink-0 text-muted" />
                               <Label className="text-sm">
-                                View Changes By Tracker
+                                View Tracker Changes
                               </Label>
                             </Dropdown.Item>
                           </Dropdown.Menu>
