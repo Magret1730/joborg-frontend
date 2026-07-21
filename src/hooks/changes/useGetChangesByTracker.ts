@@ -23,8 +23,6 @@ export const useGetChangesByTracker = () => {
         err instanceof Error ? err.message : "Failed to fetch changes by tracker";
 
         setError(message);
-
-      // throw err;
     } finally {
       setIsLoading(false);
     }

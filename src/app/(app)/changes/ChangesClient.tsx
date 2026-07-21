@@ -1,12 +1,12 @@
 "use client";
 
 import { useGetChanges } from "@/hooks/changes/useGetChanges";
-import { useGetChange } from "@/hooks/changes/useGetChange";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/lib/dateFormatter";
 import { PageError, PageLoader } from "@/components/ui/PageState";
 import { FiEye, FiExternalLink, FiMoreVertical } from "react-icons/fi";
 import { Button, Dropdown, Label } from "@heroui/react";
+import { RouteEnum } from "@/enum/RouteEnum";
 
 const PAGE_SIZE = 10;
 
@@ -28,13 +28,6 @@ export const ChangesClient = () => {
     error: changesError,
     fetchChanges,
   } = useGetChanges();
-
-  const {
-    change,
-    isLoading: isChangeLoading,
-    error: changeError,
-    fetchChange,
-  } = useGetChange();
 
   const paginatedChanges = paginateItems(changes, changesPage);
   const totalChangesPages = getTotalPages(changes.length);
@@ -174,15 +167,26 @@ export const ChangesClient = () => {
                             </Dropdown.Item>
 
                             <Dropdown.Item
-                              id="open-career-page"
-                              textValue="Open Career Page"
+                              id="view-tracker"
+                              textValue="View Tracker"
                               className="flex items-center gap-2 cursor-pointer"
-                              href={`/changes/change/${change.id}`}
-                              target="_blank"
+                              href={`/trackers/${change.tracker_id}`}
                             >
                               <FiEye className="size-4 shrink-0 text-muted" />
                               <Label className="text-sm">
                                 View Tracker
+                              </Label>
+                            </Dropdown.Item>
+
+                            <Dropdown.Item
+                              id="view-changes-by-tracker"
+                              textValue="View Changes By Tracker"
+                              className="flex items-center gap-2 cursor-pointer"
+                              href={RouteEnum.CHANGES + `/${change.tracker_id}/trackerChanges`}
+                            >
+                              <FiEye className="size-4 shrink-0 text-muted" />
+                              <Label className="text-sm">
+                                View Changes By Tracker
                               </Label>
                             </Dropdown.Item>
                           </Dropdown.Menu>

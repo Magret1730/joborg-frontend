@@ -357,10 +357,9 @@ export const TrackersClient = () => {
                               textValue="View Tracker"
                               className="flex items-center gap-2 cursor-pointer"
                               href={`/trackers/${tracker.id}`}
-                              target="_blank"
                             >
                               <FiEye size={16} />
-                              <Label className="text-sm">View tracker</Label>
+                              <Label className="text-sm">View Tracker</Label>
                             </Dropdown.Item>
                             <Dropdown.Item
                               id="edit-tracker"
@@ -371,7 +370,7 @@ export const TrackersClient = () => {
                               aria-label="Edit Tracker"
                             >
                               <FiEdit2 size={16} />
-                              <Label>Edit Tracker</Label>
+                              <Label className="text-sm">Edit Tracker</Label>
                             </Dropdown.Item>
                             <Dropdown.Item
                               id="open-career-page"
@@ -383,7 +382,7 @@ export const TrackersClient = () => {
                               aria-label="Open Tracker URL"
                             >
                               <FiExternalLink size={16} />
-                              <Label>Open URL</Label>
+                              <Label className="text-sm">Open URL</Label>
                             </Dropdown.Item>
                             <Dropdown.Item
                               id="delete-tracker"
@@ -394,7 +393,7 @@ export const TrackersClient = () => {
                               aria-label="Delete Tracker"
                             >
                               <FiTrash2 size={16} />
-                              <Label>Delete Tracker</Label>
+                              <Label className="text-sm">Delete Tracker</Label>
                             </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown.Popover>

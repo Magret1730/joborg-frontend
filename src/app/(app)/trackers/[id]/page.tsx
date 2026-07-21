@@ -35,6 +35,8 @@ import { toast } from "react-toastify";
 import { TrackerModal } from "@/components/trackers/TrackerModal";
 import { DeleteTrackerModal } from "@/components/trackers/DeleteTrackerModal";
 import { useDeleteTracker } from "@/hooks/trackers/useDeleteTracker";
+import TrackerChanges from "../../changes/[id]/trackerChanges/page";
+import { useGetChangesByTracker } from "@/hooks/changes/useGetChangesByTracker";
 
 const PAGE_SIZE = 5;
 
@@ -90,6 +92,13 @@ export default function TrackerDetails() {
     fetchChange,
   } = useGetChange();
 
+  const {
+    change: trackerChanges,
+    isLoading: isTrackerChangesLoading,
+    error: trackerChangesError,
+    fetchChange: fetchTrackerChanges,
+  } = useGetChangesByTracker();
+
   const { modifyTracker, isLoading: isUpdateLoading } = useUpdateTracker();
 
   const { removeTracker, isLoading: isDeleteLoading } = useDeleteTracker();
@@ -97,11 +106,13 @@ export default function TrackerDetails() {
   const [changesPage, setChangesPage] = useState(1);
   const [alertsPage, setAlertsPage] = useState(1);
 
-  const paginatedChanges = paginateItems(change, changesPage);
+  // const paginatedChanges = paginateItems(change, changesPage);
   const paginatedAlerts = paginateItems(alert, alertsPage);
+  const paginatedTrackerChanges = paginateItems(trackerChanges, changesPage);
 
-  const totalChangesPages = getTotalPages(change.length);
+  // const totalChangesPages = getTotalPages(change.length);
   const totalAlertsPages = getTotalPages(alert.length);
+  const totalTrackerChangesPages = getTotalPages(trackerChanges.length);
 
   useEffect(() => {
     if (!trackerId) return;
@@ -109,6 +120,7 @@ export default function TrackerDetails() {
     fetchTracker(trackerId);
     fetchAlert(trackerId);
     fetchChange(trackerId);
+    fetchTrackerChanges(trackerId);
   }, [trackerId]);
 
   const handleToggleTrackerStatus = async () => {
@@ -154,42 +166,46 @@ export default function TrackerDetails() {
     return <PageLoader message="Loading alert history..." />;
   }
 
-  if (isChangesLoading) {
+  // if (isChangesLoading) {
+  //   return <PageLoader message="Loading recent changes..." />;
+  // }
+
+  if (isTrackerChangesLoading) {
     return <PageLoader message="Loading recent changes..." />;
   }
 
-  if (trackerError) {
-    return (
-      <PageError
-        message={trackerError}
-        onRetry={() => {
-          fetchTracker(trackerId);
-        }}
-      />
-    );
-  }
+  // if (trackerError) {
+  //   return (
+  //     <PageError
+  //       message={trackerError}
+  //       onRetry={() => {
+  //         fetchTracker(trackerId);
+  //       }}
+  //     />
+  //   );
+  // }
 
-  if (alertsError) {
-    return (
-      <PageError
-        message={alertsError}
-        onRetry={() => {
-          fetchAlert(trackerId);
-        }}
-      />
-    );
-  }
+  // if (alertsError) {
+  //   return (
+  //     <PageError
+  //       message={alertsError}
+  //       onRetry={() => {
+  //         fetchAlert(trackerId);
+  //       }}
+  //     />
+  //   );
+  // }
 
-  if (changesError) {
-    return (
-      <PageError
-        message={changesError}
-        onRetry={() => {
-          fetchChange(trackerId);
-        }}
-      />
-    );
-  }
+  // if (changesError) {
+  //   return (
+  //     <PageError
+  //       message={changesError}
+  //       onRetry={() => {
+  //         fetchChange(trackerId);
+  //       }}
+  //     />
+  //   );
+  // }
 
   const openEditTrackerModal = (tracker: TrackerPayload) => {
     setTrackerModalMode(TrackerModalMode.EDIT);
@@ -213,14 +229,19 @@ export default function TrackerDetails() {
   };
 
   const totalAlerts = alert?.length || 0;
-  const totalChanges = change?.length || 0;
+  // const totalChanges = change?.length || 0;
+  const totalTrackerChanges = trackerChanges?.length || 0;
 
-  const changesStart =
-    totalChanges === 0 ? 0 : (changesPage - 1) * PAGE_SIZE + 1;
-  const changesEnd = Math.min(changesPage * PAGE_SIZE, totalChanges);
+  // const changesStart =
+  //   totalChanges === 0 ? 0 : (changesPage - 1) * PAGE_SIZE + 1;
+  // const changesEnd = Math.min(changesPage * PAGE_SIZE, totalChanges);
 
   const alertsStart = totalAlerts === 0 ? 0 : (alertsPage - 1) * PAGE_SIZE + 1;
   const alertsEnd = Math.min(alertsPage * PAGE_SIZE, totalAlerts);
+
+  const trackerChangesStart =
+    totalTrackerChanges === 0 ? 0 : (changesPage - 1) * PAGE_SIZE + 1;
+  const trackerChangesEnd = Math.min(changesPage * PAGE_SIZE, totalTrackerChanges);
 
   const handleUpdateTracker = async (payload: {
     company_name: string;
@@ -440,7 +461,8 @@ export default function TrackerDetails() {
             <div>
               <p className="text-sm text-[var(--muted)]">Total Changes</p>
               <p className="mt-1 text-2xl font-bold text-[var(--text)]">
-                {totalChanges}
+                {/* {totalChanges} */}
+                {totalTrackerChanges}
               </p>
             </div>
           </div>
@@ -476,10 +498,12 @@ export default function TrackerDetails() {
             </div>
 
             <Link
-              href={RouteEnum.CHANGES}
+              href={RouteEnum.CHANGES + `/${trackerId}/trackerChanges`}
+              // href={RouteEnum.CHANGES}
               className="text-sm font-medium text-[var(--primary)] hover:underline"
             >
               View all changes
+              {RouteEnum.CHANGES + `/${trackerId}/trackerChanges`}
             </Link>
           </div>
 
@@ -501,7 +525,7 @@ export default function TrackerDetails() {
               </thead>
 
               <tbody className="divide-y divide-[var(--border)]">
-                {paginatedChanges.length === 0 ? (
+                {paginatedTrackerChanges.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="px-5 py-10 text-center">
                       <p className="text-sm font-medium text-[var(--text)]">
@@ -514,7 +538,7 @@ export default function TrackerDetails() {
                     </td>
                   </tr>
                 ) : (
-                  paginatedChanges.map((change) => (
+                  paginatedTrackerChanges.map((change) => (
                     <tr
                       key={change.id}
                       className="transition hover:bg-[var(--surface-hover)]"
@@ -563,13 +587,15 @@ export default function TrackerDetails() {
           {/* Pagination bar */}
           <div className="flex flex-col gap-3 border-t border-[var(--border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-[var(--muted)]">
-              Showing {changesStart}–{changesEnd} of {totalChanges} changes
+              {/* Showing {changesStart}–{changesEnd} of {totalChanges} changes */}
+              Showing {trackerChangesStart}–{trackerChangesEnd} of{" "}{totalTrackerChanges} changes
             </p>
 
             <div className="flex items-center gap-2">
               <Button
                 type="button"
                 isDisabled={changesPage === 1}
+                // isDisabled={trackerChangesPage === 1}
                 onClick={() => setChangesPage((prev) => Math.max(1, prev - 1))}
                 className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--text)] transition hover:bg-[var(--surface-hover)] disabled:cursor-not-allowed disabled:opacity-50"
               >
@@ -577,15 +603,18 @@ export default function TrackerDetails() {
               </Button>
 
               <span className="text-sm text-[var(--muted)]">
-                Page {changesPage} of {totalChangesPages}
+                {/* Page {changesPage} of {totalChangesPages} */}
+                Page {changesPage} of {totalTrackerChangesPages}
               </span>
 
               <Button
                 type="button"
-                isDisabled={changesPage === totalChangesPages}
+                // isDisabled={changesPage === totalChangesPages}
+                isDisabled={changesPage === totalTrackerChangesPages}
                 onClick={() =>
                   setChangesPage((prev) =>
-                    Math.min(totalChangesPages, prev + 1)
+                    // Math.min(totalChangesPages, prev + 1)
+                    Math.min(totalTrackerChangesPages, prev + 1)
                   )
                 }
                 className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--text)] transition hover:bg-[var(--surface-hover)] disabled:cursor-not-allowed disabled:opacity-50"
