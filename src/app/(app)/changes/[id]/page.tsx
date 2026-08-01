@@ -68,10 +68,6 @@ export default function ChangeDetails() {
     );
   }
 
-  const alertStatus = selectedChange.notification_sent
-    ? "Alert sent"
-    : "Alert pending";
-
   return (
     <section className="space-y-6">
       {/* Back link */}
@@ -146,7 +142,7 @@ export default function ChangeDetails() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-2">
         <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-blue-100 text-blue-600 dark:bg-blue-500/15 dark:text-blue-300">
@@ -163,26 +159,6 @@ export default function ChangeDetails() {
 
         <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div
-              className={`flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] ${
-                selectedChange.notification_sent
-                  ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300"
-                  : "bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-300"
-              }`}
-            >
-              <FiBell size={20} />
-            </div>
-            <div>
-              <p className="text-sm text-[var(--muted)]">Alert Status</p>
-              <p className="mt-1 text-sm font-semibold text-[var(--text)]">
-                {alertStatus}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
-          <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-purple-100 text-purple-600 dark:bg-purple-500/15 dark:text-purple-300">
               <FiActivity size={20} />
             </div>
@@ -190,20 +166,6 @@ export default function ChangeDetails() {
               <p className="text-sm text-[var(--muted)]">Tracker Status</p>
               <p className="mt-1 text-sm font-semibold text-[var(--text)]">
                 {selectedChange.status}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300">
-              <FiRefreshCcw size={20} />
-            </div>
-            <div>
-              <p className="text-sm text-[var(--muted)]">Record Created</p>
-              <p className="mt-1 text-sm font-semibold text-[var(--text)]">
-                {formatDate(selectedChange.created_at)}
               </p>
             </div>
           </div>
@@ -259,15 +221,6 @@ export default function ChangeDetails() {
             </div>
 
             <div className="rounded-[var(--radius-md)] border border-[var(--border)] p-4">
-              <p className="text-sm font-medium text-[var(--muted)]">
-                Notification
-              </p>
-              <p className="mt-1 text-sm font-semibold text-[var(--text)]">
-                {alertStatus}
-              </p>
-            </div>
-
-            <div className="rounded-[var(--radius-md)] border border-[var(--border)] p-4 md:col-span-2">
               <p className="text-sm font-medium text-[var(--muted)]">
                 Tracked URL
               </p>

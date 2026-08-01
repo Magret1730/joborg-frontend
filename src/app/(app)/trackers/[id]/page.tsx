@@ -166,46 +166,9 @@ export default function TrackerDetails() {
     return <PageLoader message="Loading alert history..." />;
   }
 
-  // if (isChangesLoading) {
-  //   return <PageLoader message="Loading recent changes..." />;
-  // }
-
   if (isTrackerChangesLoading) {
     return <PageLoader message="Loading recent changes..." />;
   }
-
-  // if (trackerError) {
-  //   return (
-  //     <PageError
-  //       message={trackerError}
-  //       onRetry={() => {
-  //         fetchTracker(trackerId);
-  //       }}
-  //     />
-  //   );
-  // }
-
-  // if (alertsError) {
-  //   return (
-  //     <PageError
-  //       message={alertsError}
-  //       onRetry={() => {
-  //         fetchAlert(trackerId);
-  //       }}
-  //     />
-  //   );
-  // }
-
-  // if (changesError) {
-  //   return (
-  //     <PageError
-  //       message={changesError}
-  //       onRetry={() => {
-  //         fetchChange(trackerId);
-  //       }}
-  //     />
-  //   );
-  // }
 
   const openEditTrackerModal = (tracker: TrackerPayload) => {
     setTrackerModalMode(TrackerModalMode.EDIT);
@@ -302,8 +265,6 @@ export default function TrackerDetails() {
         error instanceof Error ? error.message : "Failed to delete tracker.";
 
       toast.error(message);
-
-      // keep delete modal open
     }
   };
 
@@ -510,14 +471,11 @@ export default function TrackerDetails() {
             <table className="w-full min-w-[760px] table-fixed text-left text-sm">
               <thead className="bg-[var(--surface)] text-xs uppercase tracking-wide text-[var(--muted)]">
                 <tr>
-                  <th className="w-[190px] px-5 py-3 font-semibold">
+                  <th className="w-[250px] px-5 py-3 font-semibold">
                     Detected At
                   </th>
-                  <th className="w-[360px] px-5 py-3 font-semibold">Change</th>
-                  <th className="w-[160px] px-5 py-3 font-semibold">
-                    Alert Status
-                  </th>
-                  <th className="w-[140px] px-5 py-3 font-semibold">
+                  <th className="w-[250px] px-5 py-3 font-semibold">Change</th>
+                  <th className="w-[200px] px-5 py-3 font-semibold">
                     Tracker Status
                   </th>
                 </tr>
@@ -555,20 +513,6 @@ export default function TrackerDetails() {
                             A new version of this career page was detected.
                           </p>
                         </div>
-                      </td>
-
-                      <td className="px-5 py-4 align-top">
-                        <span
-                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
-                            change.notification_sent
-                              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300"
-                              : "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300"
-                          }`}
-                        >
-                          {change.notification_sent
-                            ? "Alert sent"
-                            : "Alert pending"}
-                        </span>
                       </td>
 
                       <td className="px-5 py-4 align-top">

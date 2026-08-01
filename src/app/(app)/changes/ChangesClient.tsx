@@ -85,12 +85,8 @@ export const ChangesClient = () => {
                   Tracker URL
                 </th>
                 <th className="w-[130px] pl-5 pr-2 py-3 font-semibold">
-                  Created At
-                </th>
-                <th className="w-[130px] pl-5 pr-2 py-3 font-semibold">
                   Detected At
                 </th>
-                <th className="w-[80px] pl-5 pr-2 py-3 font-semibold">Alert</th>
                 <th className="w-[60px] pl-2 pr-5 py-3 font-semibold text-right">
                   Actions
                 </th>
@@ -122,14 +118,7 @@ export const ChangesClient = () => {
                       </p>
                     </td>
                     <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
-                      {formatDate(change.created_at)}
-                    </td>
-
-                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
                       {formatDate(change.detected_at)}
-                    </td>
-                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
-                      {change.notification_sent ? "Sent" : "Not Sent"}
                     </td>
                     <td className="pl-2 pr-5 py-4">
                       <Dropdown>
