@@ -88,14 +88,14 @@ export const AlertsClient = () => {
                 <th className="w-[130px] pl-5 pr-2 py-3 font-semibold">
                   Detected At
                 </th>
+                <th className="w-[130px] pl-5 pr-2 py-3 font-semibold">
+                  Sent At
+                </th>
                 <th className="w-[100px] pl-5 pr-2 py-3 font-semibold">
                   Status
                 </th>
                 <th className="w-[100px] pl-5 pr-2 py-3 font-semibold">
                   Channel
-                </th>
-                <th className="w-[130px] pl-5 pr-2 py-3 font-semibold">
-                  Sent At
                 </th>
                 <th className="w-[60px] pl-2 pr-5 py-3 font-semibold text-right">
                   Actions
@@ -131,13 +131,13 @@ export const AlertsClient = () => {
                       {formatDate(alert.detected_at)}
                     </td>
                     <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
+                      {formatDate(alert.sent_at)}
+                    </td>
+                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
                       {alert.status.toUpperCase()}
                     </td>
                     <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
                       {alert.channel.toUpperCase()}
-                    </td>
-                    <td className="pl-5 pr-2 py-4 text-[var(--muted)]">
-                      {formatDate(alert.sent_at)}
                     </td>
                     <td className="pl-2 pr-5 py-4">
                       <Dropdown>
@@ -158,7 +158,7 @@ export const AlertsClient = () => {
                               href={RouteEnum.ALERTS + `/${alert.tracker_id}`}
                             >
                               <FiEye className="size-4 shrink-0 text-muted" />
-                              <Label className="text-sm">View Change</Label>
+                              <Label className="text-sm">View Alert</Label>
                             </Dropdown.Item>
 
                             <Dropdown.Item
