@@ -11,6 +11,7 @@ export type AlertPayload = {
   company_name: string;
   label: string;
   url: string;
+  detected_at: string;
 };
 
 export type AlertResponse = {
