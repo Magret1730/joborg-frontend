@@ -4,12 +4,12 @@ import { useState } from "react";
 import { getChanges } from "@/api/changesApi";
 import { ChangePayload } from "@/types/change.type.js";
 
-export const usechanges = () => {
+export const useGetChanges = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [changes, setChanges] = useState<ChangePayload[]>([]);
 
-  const fetchchanges = async () => {
+  const fetchChanges = async () => {
     try {
       setIsLoading(true);
       setError("");
@@ -36,6 +36,6 @@ export const usechanges = () => {
     error,
     isLoading,
     setIsLoading,
-    fetchchanges,
+    fetchChanges,
   };
 };

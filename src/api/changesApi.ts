@@ -40,7 +40,37 @@ export const getChange = async (trackerId: string): Promise<ChangeResponse> => {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
 
+    if (!trackerId) {
+      throw new Error("Tracker ID is required to fetch changes.");
+    }
+
     const response = await fetch(`${BACKEND_URL}/changes/tracker/${trackerId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && {
+          Authorization: `Bearer ${token}`,
+        }),
+      },
+    });
+
+    const data = await response.json();
+
+    console.log("Get Change API response:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Error in Get Tracker Change API:", error);
+    throw error;
+  }
+};
+
+export const getChangesByTracker = async (trackerId: string): Promise<ChangeResponse> => {
+  try {
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
+
+    const response = await fetch(`${BACKEND_URL}/changes/tracker/${trackerId}/changes-by-tracker`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -58,7 +88,7 @@ export const getChange = async (trackerId: string): Promise<ChangeResponse> => {
 
     return data;
   } catch (error) {
-    console.error("Error in Get Tracker Changes API:", error);
+    console.error("Error in Get Changes By Tracker API:", error);
     throw error;
   }
 };

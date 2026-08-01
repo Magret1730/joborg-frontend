@@ -16,7 +16,6 @@ import { RouteEnum } from "@/enum/RouteEnum";
 import { FaArrowRight } from "react-icons/fa6";
 import { useContactEmail } from "@/hooks/public/useContactEmail";
 import { ContactPayload } from "@/types/contact.type";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Spinner } from "@/components/ui/Spinner";
 import posthog from "posthog-js";
 
@@ -155,7 +154,7 @@ export default function Contact() {
 
       toast.success(response.message || "Message sent successful..");
 
-      router.push(RouteEnum.CONTACT);
+      router.push(RouteEnum.HOME);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Send Contact Email failed";

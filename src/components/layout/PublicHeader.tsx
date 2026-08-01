@@ -98,7 +98,7 @@ export const PublicHeader = ({
             </>
           )}
 
-          {isAuth && (
+          {/* {isAuth && (
             <Link
               href={RouteEnum.HOME}
               className="text-sm font-medium text-[var(--muted)] transition hover:text-[var(--text)]"
@@ -111,9 +111,9 @@ export const PublicHeader = ({
             >
               Back to home
             </Link>
-          )}
+          )} */}
 
-          {isApp && (
+          {/* {isApp && (
             <div className="flex items-center gap-3">
               <span className="text-sm text-[var(--muted)]">John Doe</span>
 
@@ -121,7 +121,7 @@ export const PublicHeader = ({
                 JD
               </div>
             </div>
-          )}
+          )} */}
 
           <Button
             type="button"
@@ -219,7 +219,7 @@ export const PublicHeader = ({
                 </>
               )}
 
-              {isAuth && (
+              {/* {isAuth && (
                 <Link
                   href={RouteEnum.HOME}
                   onClick={() => {
@@ -233,9 +233,9 @@ export const PublicHeader = ({
                 >
                   Back to home
                 </Link>
-              )}
+              )} */}
 
-              {isApp && (
+              {/* {isApp && (
                 <div className="flex items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2">
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--primary)] text-sm font-semibold text-white">
                     JD
@@ -250,7 +250,7 @@ export const PublicHeader = ({
                     </p>
                   </div>
                 </div>
-              )}
+              )} */}
             </nav>
           </div>
         )}

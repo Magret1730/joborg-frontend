@@ -13,8 +13,9 @@ import {
   FiTrash2,
   FiExternalLink,
   FiPlusCircle,
+  FiMoreVertical,
 } from "react-icons/fi";
-import { Button, Tooltip } from "@heroui/react";
+import { Button, Tooltip, Dropdown, Label } from "@heroui/react";
 import { TrackerStatusEnum } from "@/enum/TrackerEnum";
 import { usePauseTracker } from "@/hooks/trackers/usePauseTracker";
 import { useResumeTracker } from "@/hooks/trackers/useResumeTracker";
@@ -50,13 +51,9 @@ export const TrackersClient = () => {
   } = useGetTrackers();
 
   const { pause } = usePauseTracker();
-
   const { resume } = useResumeTracker();
-
   const { removeTracker, isLoading: isDeleteLoading } = useDeleteTracker();
-
   const { createTracker, isLoading: isCreateLoading } = usePostTracker();
-
   const { modifyTracker, isLoading: isUpdateLoading } = useUpdateTracker();
 
   useEffect(() => {
@@ -198,6 +195,33 @@ export const TrackersClient = () => {
     }
   };
 
+  const handlePauseResumeTracker = async (tracker: TrackerPayload) => {
+    try {
+      if (tracker.status === TrackerStatusEnum.PAUSED) {
+        await resume(tracker.id);
+        posthog.capture("tracker_resumed", {
+          tracker_id: tracker.id,
+          company_name: tracker.company_name,
+        });
+        toast.success(`Tracker "${tracker.company_name}" resumed successfully.`);
+      } else {
+        await pause(tracker.id);
+        posthog.capture("tracker_paused", {
+          tracker_id: tracker.id,
+          company_name: tracker.company_name,
+        });
+        toast.success(`Tracker "${tracker.company_name}" paused successfully.`);
+      }
+
+      await fetchTrackers();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to update tracker.";
+
+      toast.error(message);
+    }
+  };
+
   const isSavingTracker = isCreateLoading || isUpdateLoading;
 
   return (
@@ -233,17 +257,17 @@ export const TrackersClient = () => {
                 <th className="w-[140px] pl-5 pr-2 py-3 font-semibold">
                   Label
                 </th>
-                <th className="w-[200px] pl-5 pr-2 py-3 font-semibold">URL</th>
-                <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">
+                <th className="w-[220px] pl-5 pr-2 py-3 font-semibold">URL</th>
+                <th className="w-[130px] pl-5 pr-2 py-3 font-semibold">
                   Last Checked
                 </th>
-                <th className="w-[120px] pl-5 pr-2 py-3 font-semibold">
+                <th className="w-[130px] pl-5 pr-2 py-3 font-semibold">
                   Last Changed
                 </th>
                 <th className="w-[100px] pl-5 pr-2 py-3 font-semibold">
                   Status
                 </th>
-                <th className="w-[140px] pl-2 pr-5 py-3 font-semibold">
+                <th className="w-[80px] pl-2 pr-5 py-3 font-semibold text-right">
                   Actions
                 </th>
               </tr>
@@ -293,115 +317,87 @@ export const TrackersClient = () => {
                       </span>
                     </td>
                     <td className="pl-2 pr-5 py-4">
-                      <div className="flex items-center gap-2">
-                        <Tooltip delay={0}>
-                          <Button
-                            type="button"
-                            isIconOnly
-                            aria-label={
-                              tracker.status === TrackerStatusEnum.PAUSED
-                                ? "Resume tracker"
-                                : "Pause tracker"
-                            }
-                            className="h-9 w-9 min-w-0 p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
-                            onClick={async () => {
-                              if (tracker.status === TrackerStatusEnum.PAUSED) {
-                                await resume(tracker.id);
-                                posthog.capture("tracker_resumed", {
-                                  tracker_id: tracker.id,
-                                  company_name: tracker.company_name,
-                                });
-                              } else {
-                                await pause(tracker.id);
-                                posthog.capture("tracker_paused", {
-                                  tracker_id: tracker.id,
-                                  company_name: tracker.company_name,
-                                });
+                      <Dropdown>
+                        <Button
+                          type="button"
+                          isIconOnly
+                          aria-label="Open change actions"
+                          className="ml-auto flex h-9 w-9 min-w-0 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--card)] p-0 text-[var(--muted)] shadow-sm transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)]"
+                        >
+                          <FiMoreVertical size={16} />
+                        </Button>
+                        <Dropdown.Popover>
+                          <Dropdown.Menu
+                            className="p-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col gap-2"
+                          >
+                            <Dropdown.Item
+                              id="pause-resume-tracker"
+                              textValue="Pause/Resume Tracker"
+                              className="flex items-center gap-2 cursor-pointer"
+                              aria-label={
+                                tracker.status === TrackerStatusEnum.PAUSED
+                                  ? "Resume tracker"
+                                  : "Pause tracker"
                               }
-                              await fetchTrackers();
-                            }}
-                          >
-                            {tracker.status === TrackerStatusEnum.PAUSED ? (
-                              <FiPlayCircle size={16} />
-                            ) : (
-                              <FiPauseCircle size={16} />
-                            )}
-                          </Button>
-
-                          <Tooltip.Content className={tooltipClass}>
-                            <p>
-                              {tracker.status === TrackerStatusEnum.PAUSED
-                                ? "Resume tracker"
-                                : "Pause tracker"}
-                            </p>
-                          </Tooltip.Content>
-                        </Tooltip>
-
-                        <Tooltip delay={0}>
-                          <Link
-                            href={`/trackers/${tracker.id}`}
-                            type="button"
-                            // isIconOnly
-                            aria-label="View tracker"
-                            className="h-9 w-9 min-w-0 flex items-center justify-center p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
-                          >
-                            <FiEye size={16} />
-                          </Link>
-
-                          <Tooltip.Content className={tooltipClass}>
-                            <p>View tracker</p>
-                          </Tooltip.Content>
-                        </Tooltip>
-
-                        <Tooltip delay={0}>
-                          <Button
-                            type="button"
-                            isIconOnly
-                            aria-label="Edit tracker"
-                            className="h-9 w-9 min-w-0 p-0 text-[var(--muted)] transition hover:text-[var(--primary)] cursor-pointer"
-                            onClick={() => openEditTrackerModal(tracker)}
-                          >
-                            <FiEdit2 size={16} />
-                          </Button>
-
-                          <Tooltip.Content className={tooltipClass}>
-                            <p>Edit tracker</p>
-                          </Tooltip.Content>
-                        </Tooltip>
-
-                        {/* // Fix this not showing */}
-                        <Tooltip delay={0}>
-                          <Link
-                            href={tracker.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label="Open tracker URL"
-                            className="h-9 w-9 min-w-0 flex items-center justify-center p-0 text-[var(--muted)] transition hover:text-[var(--primary)]"
-                          >
-                            <FiExternalLink size={16} />
-                          </Link>
-
-                          <Tooltip.Content className="z-50 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--text)] shadow-lg">
-                            Open career page
-                          </Tooltip.Content>
-                        </Tooltip>
-
-                        <Tooltip delay={0}>
-                          <Button
-                            type="button"
-                            isIconOnly
-                            aria-label="Delete tracker"
-                            className="h-9 w-9 min-w-0 p-0 text-red-500 transition hover:text-red-600"
-                            onClick={() => openDeleteModal(tracker)}
-                          >
-                            <FiTrash2 size={16} />
-                          </Button>
-
-                          <Tooltip.Content className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-xs font-medium text-[var(--text)] shadow-lg">
-                            Delete tracker
-                          </Tooltip.Content>
-                        </Tooltip>
-                      </div>
+                              onClick={() => handlePauseResumeTracker(tracker)}
+                            >
+                              {tracker.status === TrackerStatusEnum.PAUSED ? (
+                                <FiPlayCircle size={16} />
+                              ) : (
+                                <FiPauseCircle size={16} />
+                              )}
+                              <Label className="text-sm">
+                                {tracker.status === TrackerStatusEnum.PAUSED
+                                  ? "Pause Tracker"
+                                  : "Resume Tracker"}
+                              </Label>
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              id="view-tracker"
+                              textValue="View Tracker"
+                              className="flex items-center gap-2 cursor-pointer"
+                              href={`/trackers/${tracker.id}`}
+                            >
+                              <FiEye size={16} />
+                              <Label className="text-sm">View Tracker</Label>
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              id="edit-tracker"
+                              textValue="Edit Tracker"
+                              className="flex items-center gap-2 cursor-pointer"
+                              onClick={() => openEditTrackerModal(tracker)}
+                              target="_blank"
+                              aria-label="Edit Tracker"
+                            >
+                              <FiEdit2 size={16} />
+                              <Label className="text-sm">Edit Tracker</Label>
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              id="open-career-page"
+                              textValue="Open Career Page"
+                              className="flex items-center gap-2 cursor-pointer"
+                              href={tracker.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="Open Tracker URL"
+                            >
+                              <FiExternalLink size={16} />
+                              <Label className="text-sm">Open URL</Label>
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              id="delete-tracker"
+                              textValue="Delete Tracker"
+                              className="flex items-center gap-2 cursor-pointer"
+                              onClick={() => openDeleteModal(tracker)}
+                              target="_blank"
+                              aria-label="Delete Tracker"
+                            >
+                              <FiTrash2 size={16} />
+                              <Label className="text-sm">Delete Tracker</Label>
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown.Popover>
+                      </Dropdown>
                     </td>
                   </tr>
                 ))

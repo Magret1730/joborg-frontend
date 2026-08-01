@@ -1,10 +1,11 @@
-import { UnderConstruction } from "@/components/shared/UnderConstruction";
+import type { Metadata } from "next";
+import { ChangesClient } from "@/app/(app)/changes/ChangesClient";
 
-export default function Changes() {
-  return (
-    <UnderConstruction
-      title="Changes Page is coming soon"
-      description="We are working hard to bring you the Changes page. Stay tuned for updates!"
-    />
-  );
+export const metadata: Metadata = {
+  title: "Changes",
+  description: "Overview of your career changes page monitoring.",
+};
+
+export default function ChangesPage() {
+  return <ChangesClient />;
 }
