@@ -66,10 +66,10 @@ export const AlertsClient = () => {
       <div className="flex items-center justify-between ">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] sm:text-4xl">
-            Changes
+            Alerts
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)] sm:text-base">
-            View all detected changes to your tracked pages.
+            View all detected alerts to your tracked pages.
           </p>
         </div>
       </div>

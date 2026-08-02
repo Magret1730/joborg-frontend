@@ -594,7 +594,7 @@ export default function TrackerDetails() {
                 <tr>
                   <th className="w-[150px] px-5 py-3 font-semibold">Channel</th>
                   <th className="w-[280px] px-5 py-3 font-semibold">
-                    Recipient
+                    Detected At
                   </th>
                   <th className="w-[210px] px-5 py-3 font-semibold">Sent At</th>
                   <th className="w-[140px] px-5 py-3 font-semibold">Status</th>
@@ -619,14 +619,16 @@ export default function TrackerDetails() {
                     >
                       <td className="px-5 py-4 align-top">
                         <span className="inline-flex items-center gap-2 font-medium text-[var(--text)]">
-                          <FiMail size={15} />
+                          {/* <FiMail size={15} /> */}
                           {alert.channel.charAt(0).toUpperCase() +
                             alert.channel.slice(1).toLowerCase()}
                         </span>
                       </td>
 
                       <td className="px-5 py-4 align-top text-[var(--muted)]">
-                        <span className="break-all">{alert.recipient}</span>
+                        <span className="break-all">
+                          {alert.detected_at}
+                        </span>
                       </td>
 
                       <td className="px-5 py-4 align-top text-[var(--muted)]">
