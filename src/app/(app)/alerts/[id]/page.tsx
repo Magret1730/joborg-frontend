@@ -17,52 +17,52 @@ import { formatDate } from "@/lib/dateFormatter";
 import { getStatusClass } from "@/lib/getStatusClass";
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
-import { useGetChange } from "@/hooks/changes/useGetChange";
+import { useGetAlert } from "@/hooks/alerts/useGetAlert";
 
-export default function ChangeDetails() {
+export default function AlertDetails() {
   const params = useParams();
 
-  const changeId = params?.id as string;
+  const alertId = params?.id as string;
 
-  const {
-    change,
-    isLoading: isChangeLoading,
-    error: changeError,
-    fetchChange,
-  } = useGetChange();
+const {
+    alert,
+    isLoading: isAlertLoading,
+    error: alertError,
+    fetchAlert,
+} = useGetAlert();
 
   useEffect(() => {
-    if (!changeId) return;
+    if (!alertId) return;
 
-    fetchChange(changeId);
-  }, [changeId]);
+    fetchAlert(alertId);
+  }, [alertId]);
 
-  if (isChangeLoading) {
-    return <PageLoader message="Loading change details..." />;
+  if (isAlertLoading) {
+    return <PageLoader message="Loading alert details..." />;
   }
 
-  if (changeError) {
+  if (alertError) {
     return (
       <PageError
-        message={changeError}
+        message={alertError}
         onRetry={() => {
-          fetchChange(changeId);
+          fetchAlert(alertId);
         }}
       />
     );
   }
 
   // Handles both cases:
-  // 1. change is an object
-  // 2. change is an array with one object
-  const selectedChange = Array.isArray(change) ? change[0] : change;
+  // 1. alert is an object
+  // 2. alert is an array with one object
+  const selectedAlert = Array.isArray(alert) ? alert[0] : alert;
 
-  if (!selectedChange) {
+  if (!selectedAlert) {
     return (
       <PageError
-        message="Change record not found."
+        message="Alert record not found."
         onRetry={() => {
-          fetchChange(changeId);
+          fetchAlert(alertId);
         }}
       />
     );
@@ -72,11 +72,11 @@ export default function ChangeDetails() {
     <section className="space-y-6">
       {/* Back link */}
       <Link
-        href={RouteEnum.CHANGES}
+        href={RouteEnum.ALERTS}
         className="inline-flex items-center gap-2 text-sm font-medium text-[var(--muted)] transition hover:text-[var(--primary)]"
       >
         <FiArrowLeft size={16} />
-        Back to Changes
+        Back to Alerts
       </Link>
 
       {/* Header */}
@@ -90,29 +90,29 @@ export default function ChangeDetails() {
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="text-2xl font-bold tracking-tight text-[var(--text)] sm:text-3xl">
-                  {selectedChange.company_name}
+                  {selectedAlert.company_name}
                 </h1>
 
                 <span
                   className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
-                    selectedChange.status?.toLowerCase() || ""
+                    selectedAlert.status?.toLowerCase() || ""
                   )}`}
                 >
-                  {selectedChange.status}
+                  {selectedAlert.status}
                 </span>
               </div>
 
               <p className="mt-1 text-sm text-[var(--muted)]">
-                {selectedChange.label || "No label"}
+                {selectedAlert.label || "No label"}
               </p>
 
               <a
-                href={selectedChange.url}
+                href={selectedAlert.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 inline-flex max-w-full items-center gap-2 text-sm font-medium text-[var(--primary)] hover:underline"
               >
-                <span className="truncate">{selectedChange.url}</span>
+                <span className="truncate">{selectedAlert.url}</span>
                 <FiExternalLink size={14} />
               </a>
             </div>
@@ -121,7 +121,7 @@ export default function ChangeDetails() {
           {/* Actions */}
           <div className="flex flex-wrap gap-2">
             <Link
-              href={`/trackers/${selectedChange.tracker_id}`}
+              href={`/trackers/${selectedAlert.tracker_id}`}
               className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)]"
             >
               <FiActivity size={16} />
@@ -129,7 +129,7 @@ export default function ChangeDetails() {
             </Link>
 
             <a
-              href={selectedChange.url}
+              href={selectedAlert.url}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)]"
@@ -142,16 +142,16 @@ export default function ChangeDetails() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-blue-100 text-blue-600 dark:bg-blue-500/15 dark:text-blue-300">
               <FiClock size={20} />
             </div>
             <div>
-              <p className="text-sm text-[var(--muted)]">Detected At</p>
+              <p className="text-sm text-[var(--muted)]">Sent At</p>
               <p className="mt-1 text-sm font-semibold text-[var(--text)]">
-                {formatDate(selectedChange.detected_at)}
+                {formatDate(selectedAlert.sent_at)}
               </p>
             </div>
           </div>
@@ -165,18 +165,32 @@ export default function ChangeDetails() {
             <div>
               <p className="text-sm text-[var(--muted)]">Tracker Status</p>
               <p className="mt-1 text-sm font-semibold text-[var(--text)]">
-                {selectedChange.status}
+                {selectedAlert.status}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-purple-100 text-purple-600 dark:bg-purple-500/15 dark:text-purple-300">
+              <FiActivity size={20} />
+            </div>
+            <div>
+              <p className="text-sm text-[var(--muted)]">Alert Channel</p>
+              <p className="mt-1 text-sm font-semibold text-[var(--text)]">
+                {selectedAlert.channel.toUpperCase()}
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Change summary */}
+      {/* Alert summary */}
       <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] shadow-sm">
         <div className="border-b border-[var(--border)] px-5 py-4">
           <h2 className="text-lg font-semibold text-[var(--text)]">
-            Change Summary
+            Alert Summary
           </h2>
           <p className="mt-1 text-sm text-[var(--muted)]">
             Details about the page update Joborg detected.
@@ -184,21 +198,11 @@ export default function ChangeDetails() {
         </div>
 
         <div className="space-y-5 p-5">
-          <div className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-4">
-            <p className="text-sm font-medium text-[var(--text)]">
-              Page content changed
-            </p>
-            <p className="mt-1 text-sm text-[var(--muted)]">
-              Joborg detected a new version of this tracked career page. Open
-              the page to review the latest content.
-            </p>
-          </div>
-
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="rounded-[var(--radius-md)] border border-[var(--border)] p-4">
               <p className="text-sm font-medium text-[var(--muted)]">Company</p>
               <p className="mt-1 text-sm font-semibold text-[var(--text)]">
-                {selectedChange.company_name}
+                {selectedAlert.company_name}
               </p>
             </div>
 
@@ -207,7 +211,7 @@ export default function ChangeDetails() {
                 Tracker Label
               </p>
               <p className="mt-1 text-sm font-semibold text-[var(--text)]">
-                {selectedChange.label || "No label"}
+                {selectedAlert.label || "No label"}
               </p>
             </div>
 
@@ -216,22 +220,31 @@ export default function ChangeDetails() {
                 Detected At
               </p>
               <p className="mt-1 text-sm font-semibold text-[var(--text)]">
-                {formatDate(selectedChange.detected_at)}
+                {formatDate(selectedAlert.detected_at)}
               </p>
             </div>
 
             <div className="rounded-[var(--radius-md)] border border-[var(--border)] p-4">
               <p className="text-sm font-medium text-[var(--muted)]">
+                Sent At
+              </p>
+              <p className="mt-1 text-sm font-semibold text-[var(--text)]">
+                {formatDate(selectedAlert.sent_at)}
+              </p>
+            </div>
+
+            <div className="rounded-[var(--radius-md)] border border-[var(--border)] p-4 col-span-1 md:col-span-2">
+              <p className="text-sm font-medium text-[var(--muted)]">
                 Tracked URL
               </p>
 
               <a
-                href={selectedChange.url}
+                href={selectedAlert.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-1 inline-flex max-w-full items-center gap-2 text-sm font-semibold text-[var(--primary)] hover:underline"
               >
-                <span className="truncate">{selectedChange.url}</span>
+                <span className="truncate">{selectedAlert.url}</span>
                 <FiExternalLink size={14} />
               </a>
             </div>

@@ -228,7 +228,7 @@ export default function Login() {
             <span
               className="text-[var(--primary)] cursor-pointer hover:underline"
               onClick={() => {
-                router.push(RouteEnum.DASHBOARD);
+                router.push(RouteEnum.REGISTER);
               }}
             >
               Create one

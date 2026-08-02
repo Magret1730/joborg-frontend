@@ -62,3 +62,34 @@ export const getAlert = async (trackerId: string): Promise<AlertResponse> => {
     throw error;
   }
 };
+
+export const getAlertsByTrackerId = async (trackerId: string): Promise<AlertResponse> => {
+  try {
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("jotoken") : null;
+
+    const response = await fetch(
+      `${BACKEND_URL}/alerts/tracker/${trackerId}/alerts-by-tracker`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && {
+            Authorization: `Bearer ${token}`,
+          }),
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || "Failed to fetch alerts");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in Get Alerts By Tracker ID API:", error);
+    throw error;
+  }
+}

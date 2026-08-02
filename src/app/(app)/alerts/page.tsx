@@ -1,10 +1,11 @@
-import { UnderConstruction } from "@/components/shared/UnderConstruction";
+import type { Metadata } from "next";
+import { AlertsClient } from "@/app/(app)/alerts/AlertsClient";
 
-export default function Alerts() {
-  return (
-    <UnderConstruction
-      title="Alerts Page is coming soon"
-      description="We are working hard to bring you this feature. Stay tuned for updates!"
-    />
-  );
+export const metadata: Metadata = {
+  title: "Alerts",
+  description: "Overview of your career Alerts page monitoring.",
+};
+
+export default function AlertsPage() {
+  return <AlertsClient />;
 }
