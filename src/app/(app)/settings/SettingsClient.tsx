@@ -1,29 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Switch } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import {
   FiUser,
-  FiLock,
   FiBell,
   FiMonitor,
   FiTrash2,
-  FiShield,
   FiMoon,
   FiSun,
-  FiAlertTriangle,
+  // FiAlertTriangle,
   FiX,
 } from "react-icons/fi";
 import { useAuthStore } from "@/stores/authStore";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useUpdateUser } from "@/hooks/auth/useUpdateUser";
 import { Spinner } from "@/components/ui/Spinner";
-
-// Work on all the save functionalites
-// Save user profile isnt updating properly and it should also reflect changes in the side bar. Something should disable the button as well. it should only be enabled when it detects change.
-
+import posthog from "posthog-js";
 
 export const SettingsClient = () => {
   const router = useRouter();
@@ -40,7 +35,6 @@ export const SettingsClient = () => {
 
   const [firstName, setFirstName] = useState(user?.first_name || "");
   const [lastName, setLastName] = useState(user?.last_name || "");
-  const [emailAlertsEnabled, setEmailAlertsEnabled] = useState(true);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
@@ -70,6 +64,12 @@ export const SettingsClient = () => {
       });
 
       toast.success("Profile updated successfully.");
+
+      posthog.capture("profile_updated", {
+        userId: user.id,
+        firstName: updatedUser.first_name,
+        lastName: updatedUser.last_name,
+      });
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Failed to update profile.";
@@ -196,7 +196,7 @@ export const SettingsClient = () => {
         </div>
 
         {/* Security */}
-        <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm sm:p-6">
+        {/* <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm sm:p-6">
           <div className="flex items-start gap-4">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--surface)] text-[var(--primary)]">
               <FiLock size={22} />
@@ -223,29 +223,17 @@ export const SettingsClient = () => {
 
               <Button
                 type="button"
-                onPress={handleChangePassword}
+                // onPress={handleChangePassword}
+                onPress={() => {
+                  router.push(RouteEnum.CHANGE_PASSWORD);
+                }}
                 className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)]"
               >
                 Change Password
               </Button>
             </div>
-
-            <div className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-semibold text-[var(--text)]">
-                  Email verification
-                </p>
-                <p className="mt-1 text-sm text-[var(--muted)]">
-                  Your email verification status.
-                </p>
-              </div>
-
-              <span className="inline-flex w-fit items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
-                Verified
-              </span>
-            </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Notifications */}
         <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm sm:p-6">
@@ -274,11 +262,6 @@ export const SettingsClient = () => {
                   Receive an email when a tracked career page changes.
                 </p>
               </div>
-
-              <Switch
-                isSelected={emailAlertsEnabled}
-                onChange={setEmailAlertsEnabled}
-              />
             </div>
 
             <div className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
@@ -333,7 +316,7 @@ export const SettingsClient = () => {
         </div>
 
         {/* Danger Zone */}
-        <div className="rounded-[var(--radius-lg)] border border-red-200 bg-[var(--card)] p-5 shadow-sm dark:border-red-500/30 sm:p-6">
+        {/* <div className="rounded-[var(--radius-lg)] border border-red-200 bg-[var(--card)] p-5 shadow-sm dark:border-red-500/30 sm:p-6">
           <div className="flex items-start gap-4">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-red-100 text-red-600 dark:bg-red-500/15 dark:text-red-400">
               <FiAlertTriangle size={22} />
@@ -370,11 +353,11 @@ export const SettingsClient = () => {
               </Button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Delete Account Modal */}
-      {isDeleteModalOpen && (
+      {/* {isDeleteModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-4 py-6 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--card)] p-5 shadow-2xl sm:p-6">
             <div className="flex items-start justify-between gap-4">
@@ -438,7 +421,7 @@ export const SettingsClient = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </section>
   );
 };
