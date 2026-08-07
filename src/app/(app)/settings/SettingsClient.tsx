@@ -18,7 +18,7 @@ import {
 } from "react-icons/fi";
 import { useAuthStore } from "@/stores/authStore";
 import { useTheme } from "@/components/providers/ThemeProvider";
-import { useUpdateUser } from "@/hooks/users/useUpdateUser";
+import { useUpdateUser } from "@/hooks/auth/useUpdateUser";
 import { Spinner } from "@/components/ui/Spinner";
 
 // Work on all the save functionalites
@@ -34,6 +34,7 @@ export const SettingsClient = () => {
   } = useUpdateUser();
 
   const user = useAuthStore((state) => state.user);
+  const updateStoredUser = useAuthStore((state) => state.updateUser);
   const logout = useAuthStore((state) => state.logout);
   const { theme, toggleTheme } = useTheme();
 
@@ -53,7 +54,20 @@ export const SettingsClient = () => {
     if (!user) return;
 
     try {
-      await update(user.id, { first_name: firstName, last_name: lastName });
+      const response = await update(user.id,
+        { first_name: firstName, last_name: lastName }
+      );
+
+      if (!response.success) {
+        throw new Error(response.message || "Failed to update profile.");
+      }
+
+      const updatedUser = response.data.user || response.data;
+
+      updateStoredUser({
+        first_name: updatedUser.first_name,
+        last_name: updatedUser.last_name,
+      });
 
       toast.success("Profile updated successfully.");
     } catch (error) {

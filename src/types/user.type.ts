@@ -5,6 +5,18 @@ export type UpdateUserPayload = {
 };
 
 export type UpdateUserResponse = {
-    success: boolean;
-    message: string;
+    message?: string;
+    error?: string;
+    success?: boolean;
+    data: {
+    //   token: string;
+      user: {
+        // id: string;
+        // email: string;
+        first_name: string;
+        last_name: string;
+        // is_admin: boolean;
+        // is_verified: boolean;
+      };
+    };
 };

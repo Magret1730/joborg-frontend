@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { updateUser } from "@/api/userApi";
 import { UpdateUserPayload, UpdateUserResponse } from "@/types/user.type";
+import { useAuthStore } from "@/stores/authStore";
 
 export const useUpdateUser = () => {
-  const [data, setData] = useState<UpdateUserResponse | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+//   const setAuth = useAuthStore((state) => state.setAuth);
 
   const update = async (id: string, payload: UpdateUserPayload) => {
     try {
@@ -15,8 +17,16 @@ export const useUpdateUser = () => {
       setError("");
 
       const response = await updateUser(id, payload);
+      if (!response.success) {
+        throw new Error(response.message || "Failed to update profile.");
+      }
+    //   console.log("Update User Hook response:", response);
+    //   if (response.data?.user) {
+    //     setAuth(response.data.user, response.data.token);
+    //   } else {
+    //     throw new Error("User data or token is missing");
+    //   }
 
-      setData(response);
       return response;
     } catch (err) {
       const message =
@@ -31,7 +41,6 @@ export const useUpdateUser = () => {
 
   return {
     update,
-    data,
     error,
     isLoading,
     setIsLoading,

@@ -18,6 +18,7 @@ type AuthStore = {
   setAuth: (user: User, token: string) => void;
   loadAuthFromStorage: () => void;
   logout: () => void;
+  updateUser: (updatedUser: Partial<User>) => void;
 };
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -91,6 +92,27 @@ export const useAuthStore = create<AuthStore>((set) => ({
       token: null,
       isAuthenticated: false,
       isAuthLoaded: true,
+    });
+  },
+
+  updateUser: (updatedUser: Partial<User>) => {
+    posthog.capture("user_updated", {
+      updatedUser,
+    });
+
+    set((state) => {
+      if (!state.user) return state;
+
+      const newUser = {
+        ...state.user,
+        ...updatedUser,
+      };
+
+      localStorage.setItem("jouser", JSON.stringify(newUser));
+
+      return {
+        user: newUser,
+      };
     });
   },
 }));
