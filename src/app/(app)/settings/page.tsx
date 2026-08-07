@@ -1,10 +1,11 @@
-import { UnderConstruction } from "@/components/shared/UnderConstruction";
+import { SettingsClient } from "@/app/(app)/settings/SettingsClient";
+import type { Metadata } from "next";
 
-export default function Settings() {
-  return (
-    <UnderConstruction
-      title="Settings Page is coming soon"
-      description="We are working hard to bring you the Settings page. Stay tuned for updates!"
-    />
-  );
+export const metadata: Metadata = {
+  title: "Settings",
+  description: "Overview of your career settings page.",
+};
+
+export default function SettingsPage() {
+  return <SettingsClient />;
 }

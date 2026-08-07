@@ -23,5 +23,6 @@ export enum RouteEnum {
   CHANGES = "/changes",
   ALERTS = "/alerts",
   JOBS = "/jobs",
-  SETTINGS = "/settings"
+  SETTINGS = "/settings",
+  CHANGE_PASSWORD = "/settings/change_password",
 }
