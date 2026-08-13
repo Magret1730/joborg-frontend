@@ -61,7 +61,7 @@ export const TrackersClient = () => {
   }, []);
 
   if (isTrackerLoading) {
-    return <PageLoader message="Loading trackers page..." />;
+    return <PageLoader message="Loading Trackers..." />;
   }
 
   if (trackerError) {

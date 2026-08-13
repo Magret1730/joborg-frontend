@@ -130,7 +130,7 @@ export const DashboardClient = () => {
   const slicedAlerts = alerts.slice(0, 5);
 
   if (isTrackerLoading || isAlertsLoading) {
-    return <PageLoader message="Loading dashboard..." />;
+    return <PageLoader message="Loading Dashboard..." />;
   }
 
   if (trackerError || alertsError) {
