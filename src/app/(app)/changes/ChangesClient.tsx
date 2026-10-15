@@ -43,7 +43,7 @@ export const ChangesClient = () => {
   }, []);
 
   if (isChangesLoading) {
-    return <PageLoader message="Loading changes page..." />;
+    return <PageLoader message="Loading Changes..." />;
   }
 
   if (changesError) {

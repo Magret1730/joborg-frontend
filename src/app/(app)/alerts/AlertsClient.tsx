@@ -44,7 +44,7 @@ export const AlertsClient = () => {
   }, []);
 
   if (isAlertsLoading) {
-    return <PageLoader message="Loading alerts page..." />;
+    return <PageLoader message="Loading Alerts..." />;
   }
 
   if (alertsError) {
